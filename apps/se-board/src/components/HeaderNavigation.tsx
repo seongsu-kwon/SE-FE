@@ -1,22 +1,34 @@
 import {
+  Avatar,
   Box,
   Button,
   ButtonGroup,
   Center,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerProps,
   Flex,
+  Hide,
   Icon,
   Link as ExternalLink,
+  Show,
   Text,
+  useDisclosure,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { BsBoxArrowUpRight } from "react-icons/bs";
+import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { Link, NavLink } from "react-router-dom";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
 import { semanticColors } from "@/styles";
 
-const NAV_ITEMS: readonly NavProps[] = [
+const NAV_ITEMS: readonly NavItemProps[] = [
   { name: "공지", path: "notice" },
   { name: "자유", path: "free-board" },
   { name: "아카이브", path: "archive" },
@@ -26,7 +38,7 @@ const NAV_ITEMS: readonly NavProps[] = [
   { name: "서버 대여", path: "server-rental" },
 ];
 
-const DESKTOP_NAV_ITEMS: readonly NavProps[] = [
+const DESKTOP_NAV_ITEMS: readonly NavItemProps[] = [
   ...NAV_ITEMS,
   {
     name: "학사",
@@ -41,6 +53,7 @@ const DESKTOP_NAV_ITEMS: readonly NavProps[] = [
 ] as const;
 
 export const DesktopHeaderNavigation = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Center as="header" shadow="base">
       <Flex
@@ -51,20 +64,63 @@ export const DesktopHeaderNavigation = () => {
         px="1rem"
       >
         <Logo size="3.5rem" />
-        <Box as="nav">
-          <Wrap spacingX="2rem" spacingY="0px">
-            {DESKTOP_NAV_ITEMS.map((item) => (
-              <DesktopNav key={item.name} {...item} />
-            ))}
-          </Wrap>
-        </Box>
-        <ButtonGroup>
-          <Button variant="primary-outline" rounded="full">
-            로그인
+        <Show above="lg">
+          <Box as="nav">
+            <Wrap spacingX="2rem" spacingY="0px">
+              {DESKTOP_NAV_ITEMS.map((item) => (
+                <DesktopNavItem key={item.name} {...item} />
+              ))}
+            </Wrap>
+          </Box>
+          <ButtonGroup>
+            <Button variant="primary-outline" rounded="full">
+              로그인
+            </Button>
+          </ButtonGroup>
+        </Show>
+        {/* tablet 사이즈에서 노출 desktop 사이즈에서 노출X */}
+        <Hide above="lg">
+          <Button onClick={onOpen} variant="ghost" p="0">
+            <Icon as={BsList} color="gray.7" boxSize="2rem" />
           </Button>
-        </ButtonGroup>
+          <DrawerNavigation isOpen={isOpen} onClose={onClose} />
+        </Hide>
       </Flex>
     </Center>
+  );
+};
+
+const DrawerNavigation = ({
+  onClose,
+  isOpen,
+  ...props
+}: Omit<DrawerProps, "children">) => {
+  return (
+    <Drawer isOpen={isOpen} onClose={onClose} {...props}>
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerCloseButton />
+        {/* 로그인 했을 때 DrawerHeader 보여주기 */}
+        <DrawerHeader borderBottomWidth="1px">
+          <Flex alignItems="center" gap="1rem">
+            <Avatar />
+            <Text>박형준</Text>
+          </Flex>
+        </DrawerHeader>
+        <DrawerBody>
+          <Wrap>
+            {DESKTOP_NAV_ITEMS.map((item) => (
+              <DrawerNavItem {...item} onClick={onClose} />
+            ))}
+          </Wrap>
+        </DrawerBody>
+        <DrawerFooter borderTopWidth="1px">
+          <Button variant="primary" w="full">
+            로그인
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
@@ -95,7 +151,7 @@ export const HeaderNavigation = () => {
           bgColor="primary"
         >
           {NAV_ITEMS.map((item, i) => (
-            <Nav key={item.name} {...item} />
+            <NavItem key={item.name} {...item} />
           ))}
         </Flex>
       </Center>
@@ -103,14 +159,14 @@ export const HeaderNavigation = () => {
   );
 };
 
-interface NavProps {
+interface NavItemProps {
   name: string;
   path: string;
   isExternalSite?: boolean;
   onClick?: () => void;
 }
 
-const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
+const DesktopNavItem = ({ name, path, isExternalSite }: NavItemProps) => {
   return (
     <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
       {isExternalSite ? (
@@ -159,7 +215,65 @@ const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
   );
 };
 
-const Nav = ({ name, path, onClick }: NavProps) => {
+const DrawerNavItem = ({
+  name,
+  path,
+  isExternalSite,
+  onClick,
+}: NavItemProps) => {
+  return (
+    <WrapItem
+      onClick={onClick}
+      w="full"
+      m="0px"
+      fontSize="1.125rem"
+      fontWeight="bold"
+    >
+      {isExternalSite ? (
+        <ExternalLink
+          isExternal
+          href={path}
+          target="_blank"
+          w="full"
+          _hover={{ textDecoration: "none" }}
+        >
+          <Box
+            display="flex"
+            alignItems="center"
+            columnGap="0.25rem"
+            w="full"
+            p="1rem"
+            rounded="lg"
+            transition="background-color 0.2s"
+            _hover={{ bgColor: "gray.0" }}
+          >
+            <Text>{name}</Text>
+            <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
+          </Box>
+        </ExternalLink>
+      ) : (
+        <NavLink to={path} style={{ width: "100%" }}>
+          {({ isActive }) => (
+            <Box
+              w="full"
+              p="1rem"
+              bgColor={isActive ? "gray.1" : "transparent"}
+              rounded="lg"
+              transition="background-color 0.2s"
+              _hover={{ bgColor: "gray.0" }}
+            >
+              <Text fontWeight="bold" color={isActive ? "primary" : "gray.7"}>
+                {name}
+              </Text>
+            </Box>
+          )}
+        </NavLink>
+      )}
+    </WrapItem>
+  );
+};
+
+const NavItem = ({ name, path }: NavItemProps) => {
   return (
     <WrapItem m={0}>
       <NavLink to={path}>

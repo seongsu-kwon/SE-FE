@@ -6,10 +6,10 @@ import { DesktopHeaderNavigation, HeaderNavigation } from "@/components";
 export const MainLayout = () => {
   return (
     <>
-      <Show above="lg">
+      <Show above="md">
         <DesktopHeaderNavigation />
       </Show>
-      <Hide above="lg">
+      <Hide above="md">
         <HeaderNavigation />
       </Hide>
       <Outlet />
