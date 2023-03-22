@@ -48,11 +48,11 @@ export const DesktopHeaderNavigation = () => {
         w="full"
         align="center"
         justify="space-between"
-        px="16px"
+        px="1rem"
       >
-        <Logo size="56px" />
+        <Logo size="3.5rem" />
         <Box as="nav">
-          <Wrap spacingX="32px" spacingY="0px">
+          <Wrap spacingX="2rem" spacingY="0px">
             {DESKTOP_NAV_ITEMS.map((item) => (
               <DesktopNav key={item.name} {...item} />
             ))}
@@ -74,10 +74,10 @@ export const HeaderNavigation = () => {
       <Flex
         align="center"
         justify="space-between"
-        px={{ base: "8px", md: "16px" }}
-        py="8px"
+        px={{ base: "0.5rem", md: "1rem" }}
+        py="0.5rem"
       >
-        <Logo size="48px" />
+        <Logo size="3rem" />
         <Button variant="primary-outline" rounded="full">
           로그인
         </Button>
@@ -85,11 +85,11 @@ export const HeaderNavigation = () => {
       <Center as="nav" w="full" position="sticky" top="0">
         <Flex
           as="ul"
-          gap="24px"
+          gap="1.5rem"
           overflowX="auto"
           flexWrap="nowrap"
           w="full"
-          px="12px"
+          px="0.75rem"
           borderY="1px"
           borderColor="primary"
           bgColor="primary"
@@ -112,19 +112,19 @@ interface NavProps {
 
 const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
   return (
-    <WrapItem m={0} fontSize="18px" fontWeight="bold">
+    <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
       {isExternalSite ? (
         <ExternalLink
           href={path}
           target="_blank"
           display="flex"
           alignItems="center"
-          columnGap={1}
+          columnGap="0.25rem"
           isExternal
           _hover={{ textDecoration: "none" }}
         >
-          <Text py={4}>{name}</Text>
-          <Icon as={BsBoxArrowUpRight} mb="1" boxSize="14px" />
+          <Text py="1rem">{name}</Text>
+          <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
         </ExternalLink>
       ) : (
         <NavLink to={path}>
@@ -133,7 +133,7 @@ const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
               fontWeight="bold"
               color={isActive ? "primary" : "gray.7"}
               position="relative"
-              py={4}
+              py="1rem"
               _before={
                 isActive
                   ? {
@@ -141,9 +141,9 @@ const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
                       position: "absolute",
                       display: "block",
                       w: "full",
-                      h: "4px",
-                      roundedTopLeft: "4px",
-                      roundedTopRight: "4px",
+                      h: "0.25rem",
+                      roundedTopLeft: "0.25rem",
+                      roundedTopRight: "0.25rem",
                       bgColor: "primary",
                       bottom: 0,
                     }
@@ -166,7 +166,7 @@ const Nav = ({ name, path, onClick }: NavProps) => {
         {({ isActive }) => (
           <Text
             position="relative"
-            py={3}
+            py="0.75rem"
             whiteSpace="nowrap"
             fontWeight="bold"
             color="primary-content"
@@ -179,9 +179,9 @@ const Nav = ({ name, path, onClick }: NavProps) => {
                     display: "block",
                     bottom: "1px",
                     w: "full",
-                    h: "4px",
-                    roundedTopLeft: "4px",
-                    roundedTopRight: "4px",
+                    h: "0.25rem",
+                    roundedTopLeft: "0.25rem",
+                    roundedTopRight: "0.25rem",
                     bgColor: "primary-content",
                     opacity: 0.6,
                   }
