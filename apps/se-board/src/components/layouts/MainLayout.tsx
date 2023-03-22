@@ -1,7 +1,7 @@
-import { Show } from "@chakra-ui/react";
+import { Hide, Show } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
-import { DesktopHeaderNavigation } from "@/components/HeaderNavigation";
+import { DesktopHeaderNavigation, HeaderNavigation } from "@/components";
 
 export const MainLayout = () => {
   return (
@@ -9,7 +9,9 @@ export const MainLayout = () => {
       <Show above="lg">
         <DesktopHeaderNavigation />
       </Show>
-
+      <Hide above="lg">
+        <HeaderNavigation />
+      </Hide>
       <Outlet />
     </>
   );

@@ -16,7 +16,7 @@ import { Link, NavLink } from "react-router-dom";
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
 import { semanticColors } from "@/styles";
 
-const DESKTOP_NAV_ITEMS: readonly NavProps[] = [
+const NAV_ITEMS: readonly NavProps[] = [
   { name: "공지", path: "notice" },
   { name: "자유", path: "free-board" },
   { name: "아카이브", path: "archive" },
@@ -24,6 +24,10 @@ const DESKTOP_NAV_ITEMS: readonly NavProps[] = [
   { name: "팀모집", path: "recruitment" },
   { name: "프로젝트실 예약", path: "projectroom-reservation" },
   { name: "서버 대여", path: "server-rental" },
+];
+
+const DESKTOP_NAV_ITEMS: readonly NavProps[] = [
+  ...NAV_ITEMS,
   {
     name: "학사",
     path: "https://cs.kumoh.ac.kr/cs/sub0601.do",
@@ -64,10 +68,46 @@ export const DesktopHeaderNavigation = () => {
   );
 };
 
+export const HeaderNavigation = () => {
+  return (
+    <>
+      <Flex
+        align="center"
+        justify="space-between"
+        px={{ base: "8px", md: "16px" }}
+        py="8px"
+      >
+        <Logo size="48px" />
+        <Button variant="primary-outline" rounded="full">
+          로그인
+        </Button>
+      </Flex>
+      <Center as="nav" w="full" position="sticky" top="0">
+        <Flex
+          as="ul"
+          gap="24px"
+          overflowX="auto"
+          flexWrap="nowrap"
+          w="full"
+          px="12px"
+          borderY="1px"
+          borderColor="primary"
+          bgColor="primary"
+        >
+          {NAV_ITEMS.map((item, i) => (
+            <Nav key={item.name} {...item} />
+          ))}
+        </Flex>
+      </Center>
+    </>
+  );
+};
+
 interface NavProps {
   name: string;
   path: string;
   isExternalSite?: boolean;
+  onClick?: () => void;
 }
 
 const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
@@ -119,11 +159,48 @@ const DesktopNav = ({ name, path, isExternalSite }: NavProps) => {
   );
 };
 
+const Nav = ({ name, path, onClick }: NavProps) => {
+  return (
+    <WrapItem m={0}>
+      <NavLink to={path}>
+        {({ isActive }) => (
+          <Text
+            position="relative"
+            py={3}
+            whiteSpace="nowrap"
+            fontWeight="bold"
+            color="primary-content"
+            opacity={isActive ? 1 : 0.5}
+            _before={
+              isActive
+                ? {
+                    content: `""`,
+                    position: "absolute",
+                    display: "block",
+                    bottom: "1px",
+                    w: "full",
+                    h: "4px",
+                    roundedTopLeft: "4px",
+                    roundedTopRight: "4px",
+                    bgColor: "primary-content",
+                    opacity: 0.6,
+                  }
+                : {}
+            }
+          >
+            {name}
+          </Text>
+        )}
+      </NavLink>
+    </WrapItem>
+  );
+};
+
 const Logo = ({ size }: { size: string }) => {
   return (
     <Link to="/">
       <Box boxSize={size}>
-        <SELogo width="full" height="full" fill={semanticColors.primary} />
+        <SELogo width="100%" height="100%" fill={semanticColors.primary} />
       </Box>
     </Link>
   );
