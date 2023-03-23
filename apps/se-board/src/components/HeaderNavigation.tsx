@@ -138,7 +138,7 @@ export const HeaderNavigation = () => {
           로그인
         </Button>
       </Flex>
-      <Center as="nav" w="full" position="sticky" top="0">
+      <Center as="nav" w="full" position="sticky" top="0" zIndex={10}>
         <Flex
           as="ul"
           gap="1.5rem"
