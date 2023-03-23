@@ -1,3 +1,27 @@
-import * as React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-export const App = () => <div>hello</div>;
+import { MainLayout } from "@/components/layouts";
+
+export const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="" element={<MainLayout />}>
+        <Route path="" element={<div>메인</div>} />
+        <Route path="notice" element={<div>공지사항</div>} />
+        <Route path="notice/write" element={<div>공지 글쓰기</div>} />
+        <Route path="free-board" element={<div>자유게시판</div>} />
+        <Route path="free-board/write" element={<div>자유게시판 글쓰기</div>} />
+        <Route path="archive" element={<div>아카이브</div>} />
+        <Route path="archive/write" element={<div>아카이브 글쓰기</div>} />
+        <Route path="consulting" element={<div>지도교수 상담 신청</div>} />
+        <Route path="recruitment" element={<div>팀모집</div>} />
+        <Route
+          path="projectroom-reservation"
+          element={<div>프로젝트실 예약</div>}
+        />
+        <Route path="server-rental" element={<div>서버 대여</div>} />
+      </Route>
+      <Route />
+    </Routes>
+  </BrowserRouter>
+);
