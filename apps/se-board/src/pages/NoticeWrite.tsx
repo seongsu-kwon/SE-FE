@@ -1,17 +1,16 @@
-import { Hide, Show } from "@chakra-ui/react";
+import { Box, Hide, Show } from "@chakra-ui/react";
 
-// import { CKEditor } from "@ckeditor/ckeditor5-react";
-// import Editor from "ckeditor5-custom-build/build/ckeditor";
 import {
   CategoryAndPrivacySetting,
   DesktopCategoryAndPrivacySetting,
   DesktopFileUploader,
   MobileFileUploader,
+  WritingEditor,
 } from "@/components/writing";
 
 export const NoticeWrite = () => {
   return (
-    <div>
+    <Box>
       <Show above="md">
         <DesktopCategoryAndPrivacySetting />
         <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
@@ -20,7 +19,7 @@ export const NoticeWrite = () => {
         <CategoryAndPrivacySetting />
         <MobileFileUploader />
       </Hide>
-      {/* <CKEditor editor={Editor} data="<p>Hello from CKEditor 5!</p>" /> */}
-    </div>
+      <WritingEditor />
+    </Box>
   );
 };

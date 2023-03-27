@@ -59,7 +59,6 @@ importers:
       web-vitals: ^2.1.4
     dependencies:
       '@chakra-ui/react': 2.5.1_j67epygnvuadckncmqi3unwoce
-      '@ckeditor/ckeditor5-react': 5.1.0_react@18.2.0
       '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
       '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
       '@fontsource/noto-sans-kr': 4.5.12
@@ -87,6 +86,7 @@ importers:
       web-vitals: 2.1.4
     devDependencies:
       '@chakra-ui/cli': 2.3.0_prfxyxghnskheluimpb6dvby4q
+      '@ckeditor/ckeditor5-react': 5.1.0_react@18.2.0
       '@craco/craco': 7.1.0_5y7fcuqyr6sbnvguznlaidal7m
       react-app-alias: 2.2.2
       react-app-alias-ex: 2.1.0
@@ -2452,7 +2452,7 @@ packages:
     dependencies:
       prop-types: 15.8.1
       react: 18.2.0
-    dev: false
+    dev: true
 
   /@craco/craco/7.1.0_5y7fcuqyr6sbnvguznlaidal7m:
     resolution: {integrity: sha512-oRAcPIKYrfPXp9rSzlsDNeOaVtDiKhoyqSXUoqiK24jCkHr4T8m/a2f74yXIzCbIheoUWDOIfWZyRgFgT+cpqA==}

@@ -12,7 +12,6 @@ import Subscript from "@ckeditor/ckeditor5-basic-styles/src/subscript.js";
 import Superscript from "@ckeditor/ckeditor5-basic-styles/src/superscript.js";
 import Underline from "@ckeditor/ckeditor5-basic-styles/src/underline.js";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote.js";
-import CloudServices from "@ckeditor/ckeditor5-cloud-services/src/cloudservices.js";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock.js";
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor.js";
 import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials.js";
@@ -20,7 +19,7 @@ import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolo
 import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
 import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
 import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
-import Highlight from "@ckeditor/ckeditor5-highlight/src/highlight.js";
+import Title from "@ckeditor/ckeditor5-heading/src/title.js";
 import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js";
 import AutoImage from "@ckeditor/ckeditor5-image/src/autoimage.js";
 import Image from "@ckeditor/ckeditor5-image/src/image.js";
@@ -32,7 +31,6 @@ import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar.js";
 import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload.js";
 import Indent from "@ckeditor/ckeditor5-indent/src/indent.js";
 import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock.js";
-import AutoLink from "@ckeditor/ckeditor5-link/src/autolink.js";
 import Link from "@ckeditor/ckeditor5-link/src/link.js";
 import LinkImage from "@ckeditor/ckeditor5-link/src/linkimage.js";
 import List from "@ckeditor/ckeditor5-list/src/list.js";
@@ -66,10 +64,8 @@ Editor.builtinPlugins = [
   Alignment,
   Autoformat,
   AutoImage,
-  AutoLink,
   BlockQuote,
   Bold,
-  CloudServices,
   Code,
   CodeBlock,
   Essentials,
@@ -77,7 +73,6 @@ Editor.builtinPlugins = [
   FontColor,
   FontFamily,
   FontSize,
-  Highlight,
   HorizontalLine,
   Image,
   ImageCaption,
@@ -115,6 +110,7 @@ Editor.builtinPlugins = [
   TableProperties,
   TableToolbar,
   TextTransformation,
+  Title,
   TodoList,
   Underline,
   WordCount,
@@ -127,30 +123,27 @@ Editor.defaultConfig = {
       "alignment",
       "outdent",
       "indent",
-      "|",
-      "todoList",
       "bulletedList",
       "numberedList",
+      "todoList",
       "|",
       "undo",
       "redo",
       "|",
       "insertTable",
-      "code",
-      "codeBlock",
-      "|",
       "link",
       "imageUpload",
       "imageInsert",
       "mediaEmbed",
+      "code",
+      "codeBlock",
       "-",
       "bold",
       "italic",
       "fontFamily",
-      "fontSize",
-      "fontColor",
       "fontBackgroundColor",
-      "highlight",
+      "fontColor",
+      "fontSize",
       "|",
       "blockQuote",
       "strikethrough",
