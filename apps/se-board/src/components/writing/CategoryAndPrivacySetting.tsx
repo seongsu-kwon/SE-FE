@@ -231,7 +231,7 @@ export const DesktopCategoryAndPrivacySetting = () => {
       direction="row"
       maxWidth="984px"
       minHeight="75px"
-      margin="60px auto"
+      margin="60px auto 0 auto"
       borderTopWidth="0.6px"
       borderBottomWidth="0.6px"
       borderTopColor={openColors.gray[3]}
