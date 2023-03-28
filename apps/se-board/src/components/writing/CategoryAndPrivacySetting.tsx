@@ -48,7 +48,13 @@ const PasswordInput = () => {
         placeholder="비밀번호를 입력해주세요."
       />
       <InputRightElement width="4.5rem">
-        <Button h="1.75rem" size="sm" onClick={handleClick}>
+        <Button
+          h="1.5rem"
+          bgColor={openColors.gray[3]}
+          _hover={{ bgColor: openColors.gray[4] }}
+          size="sm"
+          onClick={handleClick}
+        >
           {show ? "Hide" : "Show"}
         </Button>
       </InputRightElement>
@@ -107,11 +113,15 @@ export const CategoryAndPrivacySetting = () => {
   return (
     <Center h="60px">
       <ButtonGroup gap="2.5rem">
-        <Button variant="link">취소</Button>
+        <Button variant="link" color={openColors.red[5]}>
+          취소
+        </Button>
         <Button variant="link" onClick={onOpen}>
           {selectedCategory} / {active} 설정
         </Button>
-        <Button variant="link">등록</Button>
+        <Button variant="link" color={openColors.blue[5]}>
+          등록
+        </Button>
       </ButtonGroup>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -124,7 +134,12 @@ export const CategoryAndPrivacySetting = () => {
               <Heading as="h4" size="sm" pb="5px">
                 카테고리
               </Heading>
-              <Select placeholder="카테고리" py="5px" onChange={selectOption}>
+              <Select
+                placeholder="카테고리"
+                py="5px"
+                onChange={selectOption}
+                _hover={{ borderColor: openColors.blue[5] }}
+              >
                 {NOTICE_CATEGORY_OPTIONS.map((option) => (
                   <option key={option.id} value={option.value}>
                     {option.value}
@@ -145,43 +160,35 @@ export const CategoryAndPrivacySetting = () => {
 
               <Flex direction="row" py="5px">
                 <Button
-                  variant="outline"
+                  variant={active === "전체" ? "primary" : "outline"}
                   flexGrow="1"
                   borderRadius="0"
                   w="150px"
                   borderColor={openColors.gray[3]}
                   borderWidth="0.6px"
                   onClick={onClickDisclosure}
-                  backgroundColor={active === "전체" ? openColors.blue[5] : ""}
-                  color={active === "전체" ? openColors.white : ""}
                 >
                   전체
                 </Button>
                 <Button
-                  variant="outline"
+                  variant={active === "금오인" ? "primary" : "outline"}
                   flexGrow="1"
                   borderRadius="0"
                   w="150px"
                   borderColor={openColors.gray[3]}
                   borderWidth="0.6px"
                   onClick={onClickDisclosure}
-                  backgroundColor={
-                    active === "금오인" ? openColors.blue[5] : ""
-                  }
-                  color={active === "금오인" ? openColors.white : ""}
                 >
                   금오인
                 </Button>
                 <Button
-                  variant="outline"
+                  variant={active === "비밀" ? "primary" : "outline"}
                   flexGrow="1"
                   borderRadius="0"
                   w="150px"
                   borderColor={openColors.gray[3]}
                   borderWidth="0.6px"
                   onClick={onClickDisclosure}
-                  backgroundColor={active === "비밀" ? openColors.blue[5] : ""}
-                  color={active === "비밀" ? openColors.white : ""}
                 >
                   비밀
                 </Button>
@@ -190,10 +197,10 @@ export const CategoryAndPrivacySetting = () => {
             </Box>
           </ModalBody>
           <ModalFooter>
-            <Button variant={"danger-outline"} onClick={cancelClick} mr="9px">
+            <Button variant={"danger"} onClick={cancelClick} mr="9px">
               취소
             </Button>
-            <Button variant={"primary-outline"} onClick={onClose}>
+            <Button variant={"primary"} onClick={onClose}>
               설정
             </Button>
           </ModalFooter>
@@ -250,6 +257,7 @@ export const DesktopCategoryAndPrivacySetting = () => {
           borderColor={openColors.gray[3]}
           borderRadius="5"
           onChange={selectOption}
+          _hover={{ borderColor: openColors.blue[5] }}
         >
           {NOTICE_CATEGORY_OPTIONS.map((option) => (
             <option key={option.id} value={option.value}>
@@ -270,15 +278,13 @@ export const DesktopCategoryAndPrivacySetting = () => {
 
         <Flex direction="row" py="7px">
           <Button
-            variant="outline"
+            variant={active === "전체" ? "primary" : "outline"}
             flexGrow="1"
             borderRadius="0"
             w="150px"
             borderColor={openColors.gray[3]}
             borderWidth="1px"
             onClick={onClickDisclosure}
-            backgroundColor={active === "전체" ? openColors.blue[5] : ""}
-            color={active === "전체" ? openColors.white : ""}
           >
             전체
           </Button>
@@ -290,21 +296,17 @@ export const DesktopCategoryAndPrivacySetting = () => {
             borderColor={openColors.gray[3]}
             borderWidth="0.6px"
             onClick={onClickDisclosure}
-            // backgroundColor={active === "금오인" ? "primary" : ""}
-            // color={active === "금오인" ? openColors.white : ""}
           >
             금오인
           </Button>
           <Button
-            variant="outline"
+            variant={active === "비밀" ? "primary" : "outline"}
             flexGrow="1"
             borderRadius="0"
             w="150px"
             borderColor={openColors.gray[3]}
             borderWidth="0.6px"
             onClick={onClickDisclosure}
-            backgroundColor={active === "비밀" ? openColors.blue[5] : ""}
-            color={active === "비밀" ? openColors.white : ""}
           >
             비밀
           </Button>

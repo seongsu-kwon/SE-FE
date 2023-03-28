@@ -9,7 +9,7 @@ export const DesktopAnonymousRegister = () => {
       h="75px"
       maxW="984px"
       m="0 auto 50px auto"
-      borderBottom="0.6px solid"
+      borderBottom="1px solid"
       borderColor={openColors.gray[3]}
       display="flex"
       justifyContent="flex-end"
