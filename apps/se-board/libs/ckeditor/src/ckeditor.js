@@ -19,6 +19,7 @@ import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolo
 import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
 import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
 import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
+import Heading from "@ckeditor/ckeditor5-heading/src/heading.js";
 import Title from "@ckeditor/ckeditor5-heading/src/title.js";
 import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js";
 import AutoImage from "@ckeditor/ckeditor5-image/src/autoimage.js";
@@ -31,13 +32,13 @@ import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar.js";
 import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload.js";
 import Indent from "@ckeditor/ckeditor5-indent/src/indent.js";
 import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock.js";
+import AutoLink from "@ckeditor/ckeditor5-link/src/autolink.js";
 import Link from "@ckeditor/ckeditor5-link/src/link.js";
 import LinkImage from "@ckeditor/ckeditor5-link/src/linkimage.js";
 import List from "@ckeditor/ckeditor5-list/src/list.js";
 import ListProperties from "@ckeditor/ckeditor5-list/src/listproperties.js";
 import TodoList from "@ckeditor/ckeditor5-list/src/todolist";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed.js";
-import MediaEmbedToolbar from "@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar.js";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph.js";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js";
 import SpecialCharacters from "@ckeditor/ckeditor5-special-characters/src/specialcharacters.js";
@@ -64,6 +65,7 @@ Editor.builtinPlugins = [
   Alignment,
   Autoformat,
   AutoImage,
+  AutoLink,
   BlockQuote,
   Bold,
   Code,
@@ -73,6 +75,7 @@ Editor.builtinPlugins = [
   FontColor,
   FontFamily,
   FontSize,
+  Heading,
   HorizontalLine,
   Image,
   ImageCaption,
@@ -89,7 +92,6 @@ Editor.builtinPlugins = [
   List,
   ListProperties,
   MediaEmbed,
-  MediaEmbedToolbar,
   Paragraph,
   PasteFromOffice,
   SimpleUploadAdapter,
@@ -120,41 +122,41 @@ Editor.builtinPlugins = [
 Editor.defaultConfig = {
   toolbar: {
     items: [
+      "bold",
+      "italic",
+      "fontFamily",
+      "fontSize",
+      "fontColor",
+      "fontBackgroundColor",
+      "|",
       "alignment",
-      "outdent",
-      "indent",
+      "blockQuote",
+      "strikethrough",
+      "underline",
+      "horizontalLine",
+      "|",
+      "undo",
+      "redo",
+      "|",
       "bulletedList",
       "numberedList",
       "todoList",
       "|",
-      "undo",
-      "redo",
+      "outdent",
+      "indent",
       "|",
       "insertTable",
       "link",
       "imageUpload",
       "imageInsert",
       "mediaEmbed",
-      "code",
-      "codeBlock",
-      "-",
-      "bold",
-      "italic",
-      "fontFamily",
-      "fontBackgroundColor",
-      "fontColor",
-      "fontSize",
-      "|",
-      "blockQuote",
-      "strikethrough",
-      "underline",
-      "horizontalLine",
       "|",
       "specialCharacters",
       "subscript",
       "superscript",
+      "code",
+      "codeBlock",
     ],
-    shouldNotGroupWhenFull: true,
   },
   language: "ko",
   image: {

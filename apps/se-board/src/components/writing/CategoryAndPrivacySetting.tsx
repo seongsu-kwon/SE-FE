@@ -283,15 +283,15 @@ export const DesktopCategoryAndPrivacySetting = () => {
             전체
           </Button>
           <Button
-            variant="outline"
+            variant={active === "금오인" ? "primary" : "outline"}
             flexGrow="1"
             borderRadius="0"
             w="150px"
             borderColor={openColors.gray[3]}
             borderWidth="0.6px"
             onClick={onClickDisclosure}
-            backgroundColor={active === "금오인" ? openColors.blue[5] : ""}
-            color={active === "금오인" ? openColors.white : ""}
+            // backgroundColor={active === "금오인" ? "primary" : ""}
+            // color={active === "금오인" ? openColors.white : ""}
           >
             금오인
           </Button>

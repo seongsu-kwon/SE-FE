@@ -31,14 +31,13 @@ export const WritingEditor = () => {
   //     };
   //   }
   return (
-    <Box maxW="984px" m="0 auto 50px auto">
+    <Box maxW="984px" m="0 auto">
       <CKEditor
         editor={Editor}
         config={{
           fontSize: {
             options: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
           },
-          width: "100px",
         }}
         onReady={(editor: any) => {
           editor.editing.view.change((writer: any) => {
@@ -49,6 +48,10 @@ export const WritingEditor = () => {
             );
           });
         }}
+        // onChange={(event: any, editor: any) => {
+        //   const data = editor.getData();
+        //   console.log({ data });
+        // }}
       />
     </Box>
   );
