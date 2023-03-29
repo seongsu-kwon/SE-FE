@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "@/components/layouts";
-import { FreeBoardWrite, NoticeWrite } from "@/pages";
+import { ArchiveWrite, FreeBoardWrite, NoticeWrite } from "@/pages";
 
 export const App = () => (
   <BrowserRouter>
@@ -13,7 +13,7 @@ export const App = () => (
         <Route path="free-board" element={<div>자유게시판</div>} />
         <Route path="free-board/write" element={<FreeBoardWrite />} />
         <Route path="archive" element={<div>아카이브</div>} />
-        <Route path="archive/write" element={<div>아카이브 글쓰기</div>} />
+        <Route path="archive/write" element={<ArchiveWrite />} />
         <Route path="consulting" element={<div>지도교수 상담 신청</div>} />
         <Route path="recruitment" element={<div>팀모집</div>} />
         <Route
