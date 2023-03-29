@@ -15,25 +15,24 @@ interface category_option {
   value: string;
 }
 
-const NOTICE_CATEGORY_OPTIONS: Array<category_option> = [
+const FREE_CATEGORY_OPTIONS: Array<category_option> = [
   { id: "general", value: "일반" },
-  { id: "lecture", value: "강의" },
-  { id: "bachelor", value: "학사" },
-  { id: "event", value: "행사" },
-  { id: "studentCouncil", value: "학생회" },
+  { id: "QnA", value: "Q&A" },
+  { id: "career", value: "진로" },
+  { id: "lecture", value: "전공" },
 ];
 
-export const NoticeWrite = () => {
+export const FreeBoardWrite = () => {
   return (
     <Box>
       <Show above="md">
         <DesktopCategoryAndPrivacySetting
-          CATEGORY_OPTIONS={NOTICE_CATEGORY_OPTIONS}
+          CATEGORY_OPTIONS={FREE_CATEGORY_OPTIONS}
         />
         <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
       </Show>
       <Hide above="md">
-        <CategoryAndPrivacySetting CATEGORY_OPTIONS={NOTICE_CATEGORY_OPTIONS} />
+        <CategoryAndPrivacySetting CATEGORY_OPTIONS={FREE_CATEGORY_OPTIONS} />
         <MobileFileUploader />
       </Hide>
       <WritingEditor />

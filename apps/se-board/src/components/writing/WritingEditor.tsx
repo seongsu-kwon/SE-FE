@@ -49,6 +49,7 @@ export const WritingEditor = () => {
           });
         }}
         // onChange={(event: any, editor: any) => {
+        //   console.log(event);
         //   const data = editor.getData();
         //   console.log({ data });
         // }}

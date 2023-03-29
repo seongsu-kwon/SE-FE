@@ -23,19 +23,6 @@ import React, { useState } from "react";
 
 import { openColors } from "@/styles";
 
-interface category_option {
-  id: string;
-  value: string;
-}
-
-const NOTICE_CATEGORY_OPTIONS: ReadonlyArray<category_option> = [
-  { id: "general", value: "일반" },
-  { id: "lecture", value: "강의" },
-  { id: "bachelor", value: "학사" },
-  { id: "event", value: "행사" },
-  { id: "studentCouncil", value: "학생회" },
-];
-
 const PasswordInput = () => {
   const [show, setShow] = useState<boolean>(false);
   const handleClick = () => setShow(!show);
@@ -62,7 +49,11 @@ const PasswordInput = () => {
   );
 };
 
-export const CategoryAndPrivacySetting = () => {
+export const CategoryAndPrivacySetting = (props: {
+  CATEGORY_OPTIONS: Array<{ id: string; value: string }>;
+}) => {
+  const { CATEGORY_OPTIONS } = props;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCategory, setSelectedCategory] = useState<string>("카테고리");
   const [subscript, setSubscript] = useState<string>("");
@@ -72,8 +63,7 @@ export const CategoryAndPrivacySetting = () => {
     const { value } = e.target;
 
     if (
-      NOTICE_CATEGORY_OPTIONS.find((option) => option.value === value) ===
-      undefined
+      CATEGORY_OPTIONS.find((option) => option.value === value) === undefined
     ) {
       setSelectedCategory("카테고리");
     } else {
@@ -83,7 +73,7 @@ export const CategoryAndPrivacySetting = () => {
 
   const cancelClick = () => {
     if (
-      NOTICE_CATEGORY_OPTIONS.find(
+      CATEGORY_OPTIONS.find(
         (option) => (option.value === selectedCategory) !== undefined
       )
     ) {
@@ -140,7 +130,7 @@ export const CategoryAndPrivacySetting = () => {
                 onChange={selectOption}
                 _hover={{ borderColor: openColors.blue[5] }}
               >
-                {NOTICE_CATEGORY_OPTIONS.map((option) => (
+                {CATEGORY_OPTIONS.map((option) => (
                   <option key={option.id} value={option.value}>
                     {option.value}
                   </option>
@@ -210,7 +200,10 @@ export const CategoryAndPrivacySetting = () => {
   );
 };
 
-export const DesktopCategoryAndPrivacySetting = () => {
+export const DesktopCategoryAndPrivacySetting = (props: {
+  CATEGORY_OPTIONS: Array<{ id: string; value: string }>;
+}) => {
+  const { CATEGORY_OPTIONS } = props;
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [subscript, setSubscript] = useState<string>("");
   const [active, setActive] = useState<string>("");
@@ -259,7 +252,7 @@ export const DesktopCategoryAndPrivacySetting = () => {
           onChange={selectOption}
           _hover={{ borderColor: openColors.blue[5] }}
         >
-          {NOTICE_CATEGORY_OPTIONS.map((option) => (
+          {CATEGORY_OPTIONS.map((option) => (
             <option key={option.id} value={option.value}>
               {option.value}
             </option>
