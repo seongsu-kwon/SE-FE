@@ -1,14 +1,17 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
+  Icon,
   Input,
   ListItem,
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
+import { BsPaperclip } from "react-icons/bs";
 
 import { openColors } from "@/styles";
 
@@ -62,6 +65,7 @@ export const DesktopFileUploader: React.FC<Props> = ({ onFileDrop }) => {
     <Box
       margin="0 auto"
       maxWidth="984px"
+      minH="64px"
       backgroundColor={openColors.gray[0]}
       borderBottom="0.6px solid"
       borderColor={openColors.gray[3]}
@@ -69,14 +73,33 @@ export const DesktopFileUploader: React.FC<Props> = ({ onFileDrop }) => {
       onDrop={handleDrop}
     >
       <FormControl>
-        <FormLabel pt="10px" ml="20px" fontSize="lg">
-          첨부 파일
-          {files.length === 0 && (
-            <Text mx="auto" w="fit-content" fontSize="md">
-              파일을 Drag & drop하거나 파일 선택 버튼을 클릭하세요.
-            </Text>
-          )}
-        </FormLabel>
+        <Flex
+          justifyContent="center"
+          borderBottom={`1px solid ${openColors.gray[3]}`}
+          pb="4px"
+        >
+          <FormLabel
+            w="fit-content"
+            fontSize="lg"
+            my="auto"
+            p="4px 8px"
+            htmlFor="file-input"
+            color={openColors.gray[6]}
+            _hover={{
+              color: openColors.gray[8],
+              borderColor: openColors.gray[8],
+            }}
+            border={`1px solid ${openColors.gray[5]}`}
+            borderRadius="5px"
+          >
+            <Icon as={BsPaperclip} w="20px" h="20px" mb="-0.5" />
+            파일 선택
+          </FormLabel>
+          <Text w="fit-content" fontSize="md" my="auto">
+            버튼을 누르거나 파일을 Drag & drop 하세요.
+          </Text>
+        </Flex>
+
         <Input
           type="file"
           id="file-input"
@@ -85,10 +108,11 @@ export const DesktopFileUploader: React.FC<Props> = ({ onFileDrop }) => {
           border="none"
           w="fit-content"
           h="fit-content"
+          display="none"
         />
-        <Box mt="15px">
+        <Box my="12px">
           {files.length > 0 && (
-            <Box borderTop="0.6px solid" borderColor={openColors.gray[3]}>
+            <Box>
               <Text ml="15px" mt="10px">
                 추가된 파일
               </Text>
