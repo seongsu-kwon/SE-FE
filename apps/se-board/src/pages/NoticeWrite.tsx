@@ -34,7 +34,7 @@ export const NoticeWrite = () => {
       </Show>
       <Hide above="md">
         <CategoryAndPrivacySetting CATEGORY_OPTIONS={NOTICE_CATEGORY_OPTIONS} />
-        <MobileFileUploader />
+        <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">

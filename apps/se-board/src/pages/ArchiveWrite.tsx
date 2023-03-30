@@ -32,7 +32,7 @@ export const ArchiveWrite = () => {
         <CategoryAndPrivacySetting
           CATEGORY_OPTIONS={Archive_CATEGORY_OPTIONS}
         />
-        <MobileFileUploader />
+        <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">

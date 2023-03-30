@@ -21,17 +21,33 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import {
+  usePasswordInput,
+  useSelectCategory,
+  useSelectDisclosure,
+} from "@/hooks";
 import { openColors } from "@/styles";
 
-const PasswordInput = () => {
-  const [show, setShow] = useState<boolean>(false);
-  const handleClick = () => setShow(!show);
+interface PasswordInputProps {
+  password: string;
+  show: boolean;
+  handleClick: () => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
+const PasswordInput = ({
+  password,
+  show,
+  handleClick,
+  handleChange,
+}: PasswordInputProps) => {
   return (
     <InputGroup size="sm">
       <Input
         pr="4rem"
         type={show ? "text" : "password"}
+        onChange={handleChange}
+        value={password}
         placeholder="비밀번호를 입력해주세요."
       />
       <InputRightElement width="4.5rem">
@@ -55,49 +71,33 @@ export const CategoryAndPrivacySetting = (props: {
   const { CATEGORY_OPTIONS } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedCategory, setSelectedCategory] = useState<string>("카테고리");
-  const [subscript, setSubscript] = useState<string>("");
-  const [active, setActive] = useState<string>("");
+  const [prevOption, setPrevOption] = useState({
+    category: "카테고리",
+    active: "공개범위",
+    subscript: "",
+    password: "",
+  });
+  const { selectedCategory, setSelectedCategory, selectOption } =
+    useSelectCategory();
+  const { subscript, setSubscript, active, setActive, onClickDisclosure } =
+    useSelectDisclosure();
+  const { password, show, handleClick, handleChange } = usePasswordInput();
 
-  const selectOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-
-    if (
-      CATEGORY_OPTIONS.find((option) => option.value === value) === undefined
-    ) {
-      setSelectedCategory("카테고리");
-    } else {
-      setSelectedCategory(value);
-    }
+  const settingClick = () => {
+    setPrevOption({
+      category: selectedCategory,
+      active: active,
+      subscript,
+      password,
+    });
+    onClose();
   };
 
   const cancelClick = () => {
-    if (
-      CATEGORY_OPTIONS.find(
-        (option) => (option.value === selectedCategory) !== undefined
-      )
-    ) {
-      onClose();
-    } else {
-      setSelectedCategory("카테고리");
-      onClose();
-    }
-
-    setSubscript("공개범위");
-  };
-
-  const onClickDisclosure = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const { innerHTML } = e.currentTarget;
-
-    if (innerHTML === "전체") {
-      setSubscript("모든 사용자가 볼 수 있습니다.");
-    } else if (innerHTML === "금오인") {
-      setSubscript("인증된 금오인만 볼 수 있습니다.");
-    } else if (innerHTML === "비밀") {
-      setSubscript("비밀글입니다.");
-    }
-
-    setActive(innerHTML);
+    setSelectedCategory(prevOption.category);
+    setActive(prevOption.active);
+    setSubscript(prevOption.subscript);
+    onClose();
   };
 
   return (
@@ -107,7 +107,9 @@ export const CategoryAndPrivacySetting = (props: {
           취소
         </Button>
         <Button variant="link" onClick={onOpen}>
-          {selectedCategory} / {active} 설정
+          {selectedCategory === "" ? "카테고리" : selectedCategory} /
+          {active === "" ? " 공개범위 " : ` ${active} `}
+          설정
         </Button>
         <Button variant="link" color={openColors.blue[5]}>
           등록
@@ -183,14 +185,23 @@ export const CategoryAndPrivacySetting = (props: {
                   비밀
                 </Button>
               </Flex>
-              {active === "비밀" ? <PasswordInput /> : ""}
+              {active === "비밀" ? (
+                <PasswordInput
+                  password={password}
+                  show={show}
+                  handleClick={handleClick}
+                  handleChange={handleChange}
+                />
+              ) : (
+                ""
+              )}
             </Box>
           </ModalBody>
           <ModalFooter>
             <Button variant={"danger"} onClick={cancelClick} mr="9px">
               취소
             </Button>
-            <Button variant={"primary"} onClick={onClose}>
+            <Button variant={"primary"} onClick={settingClick}>
               설정
             </Button>
           </ModalFooter>
@@ -204,27 +215,9 @@ export const DesktopCategoryAndPrivacySetting = (props: {
   CATEGORY_OPTIONS: Array<{ id: string; value: string }>;
 }) => {
   const { CATEGORY_OPTIONS } = props;
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [subscript, setSubscript] = useState<string>("");
-  const [active, setActive] = useState<string>("");
-
-  const selectOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-  };
-
-  const onClickDisclosure = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const { innerHTML } = e.currentTarget;
-
-    if (innerHTML === "전체") {
-      setSubscript("모든 사용자가 볼 수 있습니다.");
-    } else if (innerHTML === "금오인") {
-      setSubscript("인증된 금오인만 볼 수 있습니다.");
-    } else if (innerHTML === "비밀") {
-      setSubscript("비밀글입니다.");
-    }
-
-    setActive(innerHTML);
-  };
+  const { selectOption } = useSelectCategory();
+  const { subscript, active, onClickDisclosure } = useSelectDisclosure();
+  const { password, show, handleClick, handleChange } = usePasswordInput();
 
   return (
     <Flex
@@ -304,7 +297,16 @@ export const DesktopCategoryAndPrivacySetting = (props: {
             비밀
           </Button>
         </Flex>
-        {active === "비밀" ? <PasswordInput /> : ""}
+        {active === "비밀" ? (
+          <PasswordInput
+            password={password}
+            show={show}
+            handleClick={handleClick}
+            handleChange={handleChange}
+          />
+        ) : (
+          ""
+        )}
       </Box>
     </Flex>
   );

@@ -10,52 +10,15 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
 import { BsPaperclip } from "react-icons/bs";
 
+import { Props } from "@/@types";
+import { useFileInput } from "@/hooks";
 import { openColors } from "@/styles";
 
-type Props = {
-  onFileDrop: (file: Array<File>) => void;
-};
-
-export const DesktopFileUploader: React.FC<Props> = ({ onFileDrop }) => {
-  const [files, setFiles] = useState<File[]>([]);
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
-    const newFiles: Array<File> = [...files];
-    for (let i = 0; i < e.dataTransfer.files.length; i++) {
-      newFiles.push(e.dataTransfer.files[i]);
-    }
-
-    setFiles(newFiles);
-    onFileDrop(newFiles);
-  };
-
-  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  }, []);
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (!e.target.files) return;
-
-    const newFiles: Array<File> = [...files];
-
-    for (let i = 0; i < e.target.files.length; i++) {
-      newFiles.push(e.target.files[i]);
-    }
-
-    onFileDrop(newFiles);
-    setFiles(newFiles);
-  };
-  const handleRemove = (index: number): void => {
-    console.log(index);
-    const newFiles: Array<File> = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
-  };
+export const DesktopFileUploader = ({ onFileDrop }: Props) => {
+  const { files, handleDrop, handleDragOver, handleFileInput, handleRemove } =
+    useFileInput(onFileDrop);
 
   const onClick = () => {
     console.log(files);
@@ -141,26 +104,8 @@ export const DesktopFileUploader: React.FC<Props> = ({ onFileDrop }) => {
   );
 };
 
-export const MobileFileUploader = () => {
-  const [files, setFiles] = useState<File[]>([]);
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (!e.target.files) return;
-
-    const newFiles: Array<File> = [...files];
-
-    for (let i = 0; i < e.target.files.length; i++) {
-      newFiles.push(e.target.files[i]);
-    }
-
-    setFiles(newFiles);
-  };
-  const handleRemove = (index: number): void => {
-    console.log(index);
-    const newFiles: Array<File> = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
-  };
+export const MobileFileUploader = ({ onFileDrop }: Props) => {
+  const { files, handleFileInput, handleRemove } = useFileInput(onFileDrop);
 
   return (
     <FormControl borderY="0.6px solid" borderColor={openColors.gray[3]}>

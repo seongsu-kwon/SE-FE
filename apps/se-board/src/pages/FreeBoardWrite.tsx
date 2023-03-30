@@ -33,7 +33,7 @@ export const FreeBoardWrite = () => {
       </Show>
       <Hide above="md">
         <CategoryAndPrivacySetting CATEGORY_OPTIONS={FREE_CATEGORY_OPTIONS} />
-        <MobileFileUploader />
+        <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">
