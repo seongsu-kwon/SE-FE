@@ -29,6 +29,7 @@ declare module "@types" {
     title: string;
     author: Author;
     views: number;
+    category: CategoryDTO;
     createdDateTime: DateType;
     modifiedDateTime: DateType;
     hasAttachment: boolean;

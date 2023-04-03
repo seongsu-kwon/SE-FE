@@ -1,5 +1,5 @@
 import { PostListItem } from "@types";
-export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
+export const MOCK_NOTICE_LIST: PostListItem[] = [
   {
     postId: 17,
     title:
@@ -14,6 +14,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 123,
     pined: true,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 16,
@@ -29,6 +33,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 123,
     pined: true,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 15,
@@ -43,6 +51,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 14,
@@ -57,6 +69,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 13,
@@ -71,6 +87,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 12,
@@ -85,6 +105,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 11,
@@ -99,6 +123,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 10,
@@ -113,6 +141,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 9,
@@ -127,6 +159,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 8,
@@ -141,6 +177,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 7,
@@ -155,6 +195,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 6,
@@ -169,6 +213,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 5,
@@ -183,6 +231,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 4,
@@ -197,6 +249,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 3,
@@ -211,6 +267,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 2,
@@ -225,6 +285,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 1,
@@ -239,6 +303,10 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: true,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
   {
     postId: 0,
@@ -253,5 +321,9 @@ export const MOCK_NOTICE_LIST: readonly PostListItem[] = [
     hasAttachment: false,
     commentsSize: 32,
     pined: false,
+    category: {
+      mainCategory: "공지사항",
+      subCategory: "공지공지",
+    },
   },
-] as const;
+];
