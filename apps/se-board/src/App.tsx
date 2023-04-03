@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "@/components/layouts";
 
+import { PostPage } from "./pages";
+
 export const App = () => (
   <BrowserRouter>
     <Routes>
@@ -20,6 +22,8 @@ export const App = () => (
           element={<div>프로젝트실 예약</div>}
         />
         <Route path="server-rental" element={<div>서버 대여</div>} />
+
+        <Route path="post/:id" element={<PostPage />} />
       </Route>
       <Route />
     </Routes>
