@@ -1,10 +1,28 @@
-import { Flex, Heading, Hide, Img, Show, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  Hide,
+  Icon,
+  Img,
+  Show,
+  Stack,
+} from "@chakra-ui/react";
+import { BsPencilFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 import NoticeIcon from "@/assets/images/notice_icon.png";
 
+import { CategoryNavigation } from "./CategoryNavigation";
 import { NoticeList } from "./NoticeList";
 import { NoticeTable } from "./NoticeTable";
+
 export const NoticePage = () => {
+  const navigate = useNavigate();
+  const goWritePage = () => {
+    navigate("write");
+  };
+
   return (
     <Stack alignItems="center" maxW="1180px" w="full" px="1rem" py="3rem">
       <Show above="md">
@@ -26,6 +44,23 @@ export const NoticePage = () => {
             right="2rem"
             top="-1.5rem"
           />
+        </Flex>
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          w="full"
+          py="0.5rem"
+          borderY="1px"
+          borderColor="gray.3"
+        >
+          <CategoryNavigation />
+          <Button
+            onClick={goWritePage}
+            variant="primary"
+            leftIcon={<Icon as={BsPencilFill} />}
+          >
+            글쓰기
+          </Button>
         </Flex>
         <NoticeTable />
       </Show>
