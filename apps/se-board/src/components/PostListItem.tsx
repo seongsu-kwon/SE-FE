@@ -1,6 +1,7 @@
 import { Center, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { BsFileZipFill, BsPinAngleFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 import { commentsSizeFormat, isModified } from "@/utils/postUtils";
@@ -14,6 +15,7 @@ export const PostListItem = ({
   title,
   author,
   views,
+  category,
   createdDateTime,
   modifiedDateTime,
   hasAttachment,
@@ -21,8 +23,15 @@ export const PostListItem = ({
   pined,
   ellipsisLine = 0,
 }: PostListItemProps) => {
+  const navigate = useNavigate();
+  const goDetailPost = () => navigate(`${postId}`);
   return (
-    <Flex p="1rem" alignItems="flex-start">
+    <Flex
+      onClick={goDetailPost}
+      alignItems="flex-start"
+      p="1rem"
+      _hover={{ bgColor: "gray.0" }}
+    >
       {pined && <Icon as={BsPinAngleFill} mr="0.5rem" color="primary" />}
       <Flex direction="column" gap="0.5rem" mr="2rem">
         <Heading
@@ -32,7 +41,7 @@ export const PostListItem = ({
           fontWeight={pined ? "black" : "bold"}
           color={pined ? "primary" : "gray.7"}
         >
-          {title}
+          [{category.subCategory}] {title}
         </Heading>
         <Flex
           alignItems="center"
