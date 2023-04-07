@@ -16,6 +16,7 @@ import NoticeIcon from "@/assets/images/notice_icon.png";
 import { CategoryNavigation } from "./CategoryNavigation";
 import { NoticeList } from "./NoticeList";
 import { NoticeTable } from "./NoticeTable";
+import { PostSearchForm } from "./PostSearchForm";
 
 export const NoticePage = () => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ export const NoticePage = () => {
           w="full"
           px="2rem"
           py="1.2rem"
+          mb="2rem"
           bgColor="gray.1"
           borderRadius="0.5rem"
         >
@@ -44,6 +46,9 @@ export const NoticePage = () => {
             right="2rem"
             top="-1.5rem"
           />
+        </Flex>
+        <Flex justifyContent="flex-end" w="full">
+          <PostSearchForm />
         </Flex>
         <Flex
           alignItems="center"
