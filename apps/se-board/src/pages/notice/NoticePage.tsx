@@ -25,53 +25,55 @@ export const NoticePage = () => {
   };
 
   return (
-    <Stack alignItems="center" maxW="1180px" w="full" px="1rem" py="3rem">
+    <>
       <Show above="md">
-        <Flex
-          position="relative"
-          alignItems="center"
-          maxW="container.sm"
-          w="full"
-          px="2rem"
-          py="1.2rem"
-          mb="2rem"
-          bgColor="gray.1"
-          borderRadius="0.5rem"
-        >
-          <Heading fontSize="2rem">공지사항</Heading>
-          <Img
-            src={NoticeIcon}
-            position="absolute"
-            w="6rem"
-            right="2rem"
-            top="-1.5rem"
-          />
-        </Flex>
-        <Flex justifyContent="flex-end" w="full">
-          <PostSearchForm />
-        </Flex>
-        <Flex
-          alignItems="center"
-          justifyContent="space-between"
-          w="full"
-          py="0.5rem"
-          borderY="1px"
-          borderColor="gray.3"
-        >
-          <CategoryNavigation />
-          <Button
-            onClick={goWritePage}
-            variant="primary"
-            leftIcon={<Icon as={BsPencilFill} />}
+        <Stack alignItems="center" maxW="1180px" w="full" px="1rem" py="3rem">
+          <Flex
+            position="relative"
+            alignItems="center"
+            maxW="container.sm"
+            w="full"
+            px="2rem"
+            py="1.2rem"
+            mb="2rem"
+            bgColor="gray.1"
+            borderRadius="0.5rem"
           >
-            글쓰기
-          </Button>
-        </Flex>
-        <NoticeTable />
+            <Heading fontSize="2rem">공지사항</Heading>
+            <Img
+              src={NoticeIcon}
+              position="absolute"
+              w="6rem"
+              right="2rem"
+              top="-1.5rem"
+            />
+          </Flex>
+          <Flex justifyContent="flex-end" w="full">
+            <PostSearchForm />
+          </Flex>
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            w="full"
+            py="0.5rem"
+            borderY="1px"
+            borderColor="gray.3"
+          >
+            <CategoryNavigation />
+            <Button
+              onClick={goWritePage}
+              variant="primary"
+              leftIcon={<Icon as={BsPencilFill} />}
+            >
+              글쓰기
+            </Button>
+          </Flex>
+          <NoticeTable />
+        </Stack>
       </Show>
       <Hide above="md">
         <NoticeList />
       </Hide>
-    </Stack>
+    </>
   );
 };
