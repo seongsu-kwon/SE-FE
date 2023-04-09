@@ -12,6 +12,7 @@ import { BsPencilFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
 import NoticeIcon from "@/assets/images/notice_icon.png";
+import { MobilePostPageBottonMenu } from "@/components";
 
 import { CategoryNavigation } from "./CategoryNavigation";
 import { NoticeList } from "./NoticeList";
@@ -73,6 +74,7 @@ export const NoticePage = () => {
       </Show>
       <Hide above="md">
         <NoticeList />
+        <MobilePostPageBottonMenu />
       </Hide>
     </>
   );
