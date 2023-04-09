@@ -1,4 +1,5 @@
 import { Divider, Flex } from "@chakra-ui/react";
+import { Fragment } from "react";
 
 import { PostListItem } from "@/components";
 
@@ -8,10 +9,10 @@ export const NoticeList = () => {
   return (
     <Flex direction="column">
       {MOCK_NOTICE_LIST.map((notice) => (
-        <>
-          <PostListItem key={notice.postId} {...notice} />
+        <Fragment key={notice.postId}>
+          <PostListItem {...notice} />
           <Divider />
-        </>
+        </Fragment>
       ))}
     </Flex>
   );
