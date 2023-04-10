@@ -25,6 +25,8 @@ import {
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
+import { useNavigatePage } from "@/hooks";
+
 import { Logo } from "./Logo";
 
 const NAV_ITEMS: readonly NavItemProps[] = [
@@ -53,6 +55,8 @@ const DESKTOP_NAV_ITEMS: readonly NavItemProps[] = [
 
 export const DesktopHeaderNavigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { goToLoginPage } = useNavigatePage();
+
   return (
     <Center as="header" shadow="base">
       <Flex
@@ -72,7 +76,11 @@ export const DesktopHeaderNavigation = () => {
             </Wrap>
           </Box>
           <ButtonGroup>
-            <Button variant="primary-outline" rounded="full">
+            <Button
+              onClick={goToLoginPage}
+              variant="primary-outline"
+              rounded="full"
+            >
               로그인
             </Button>
           </ButtonGroup>
@@ -94,6 +102,8 @@ const DrawerNavigation = ({
   isOpen,
   ...props
 }: Omit<DrawerProps, "children">) => {
+  const { goToLoginPage } = useNavigatePage();
+
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
       <DrawerOverlay />
@@ -114,7 +124,7 @@ const DrawerNavigation = ({
           </Wrap>
         </DrawerBody>
         <DrawerFooter borderTopWidth="1px">
-          <Button variant="primary" w="full">
+          <Button onClick={goToLoginPage} variant="primary" w="full">
             로그인
           </Button>
         </DrawerFooter>
@@ -124,6 +134,7 @@ const DrawerNavigation = ({
 };
 
 export const HeaderNavigation = () => {
+  const { goToLoginPage } = useNavigatePage();
   return (
     <>
       <Flex
@@ -133,7 +144,11 @@ export const HeaderNavigation = () => {
         py="0.5rem"
       >
         <Logo size="3rem" />
-        <Button variant="primary-outline" rounded="full">
+        <Button
+          onClick={goToLoginPage}
+          variant="primary-outline"
+          rounded="full"
+        >
           로그인
         </Button>
       </Flex>
