@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "@/components/layouts";
 
+import { LoginPage } from "./pages";
+
 export const App = () => (
   <BrowserRouter>
     <Routes>
@@ -20,6 +22,10 @@ export const App = () => (
           element={<div>프로젝트실 예약</div>}
         />
         <Route path="server-rental" element={<div>서버 대여</div>} />
+      </Route>
+      <Route>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="signup" element={<div>회원가입</div>} />
       </Route>
       <Route />
     </Routes>
