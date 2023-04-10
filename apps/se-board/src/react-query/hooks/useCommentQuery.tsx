@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 
 interface resData {
@@ -52,4 +52,23 @@ export const useGetCommentQuery = (
   return useQuery<resData>(["comments", postId], () =>
     fetchComments(postId, page, perPage)
   );
+};
+
+interface postCommentData {
+  postId: number;
+  contents: string;
+  isAnonymous: boolean;
+}
+
+interface postResData {
+  message?: string;
+}
+
+const postComment = (postData: postCommentData): Promise<postResData> => {
+  const response = axios.post("/comments", postData);
+  return response.then((res: AxiosResponse<postResData>) => res.data);
+};
+
+export const usePostCommentMutation = () => {
+  return useMutation(postComment);
 };

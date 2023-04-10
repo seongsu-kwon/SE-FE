@@ -100,7 +100,7 @@ export const Comment = ({
             <Text whiteSpace="nowrap">{tag}</Text>
           </Box>
         )}
-        <Text mb="-2px" textAlign="left">
+        <Text mb="-2px" textAlign="left" maxW="850px">
           {contents}
         </Text>
       </Box>

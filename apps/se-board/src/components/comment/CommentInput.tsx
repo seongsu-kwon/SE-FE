@@ -7,10 +7,11 @@ import {
   ScaleFade,
   Switch,
   Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
+import { usePostCommentMutation } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 interface CommentInputProps {
@@ -18,11 +19,26 @@ interface CommentInputProps {
 }
 
 export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { postId } = useParams();
   const [value, setValue] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
   const [secretPassword, setSecretPassword] = useState("");
+
+  const postCommentMutation = usePostCommentMutation();
+
+  const handleSubmit = () => {
+    postCommentMutation.mutate({
+      postId: Number(postId),
+      contents: value,
+      isAnonymous,
+    });
+
+    setIsAnonymous(false);
+    setValue("");
+    setIsSecret(false);
+    setSecretPassword("");
+  };
 
   return (
     <Box
@@ -69,6 +85,7 @@ export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
           mx={{ base: "auto", md: "0" }}
           variant="primary"
           size={{ base: "sm", md: "md" }}
+          onClick={handleSubmit}
         >
           등록
         </Button>
