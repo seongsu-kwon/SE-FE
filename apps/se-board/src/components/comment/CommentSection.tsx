@@ -130,7 +130,7 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
-  const { data, isLoading, isError } = useGetCommentQuery(postId);
+  const { data, isLoading, isError } = useGetCommentQuery(postId, 1, 25);
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   if (isLoading) {
@@ -140,6 +140,13 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   if (isError) {
     // 에러 화면 렌더링
   }
+
+  const moreCommentsOnClick = () => {
+    // 댓글 더보기 버튼 클릭 시
+    if (data) {
+      useGetCommentQuery(postId, data.pagenationInfo.currentPage + 1, 25);
+    }
+  };
 
   return (
     <Box
@@ -156,7 +163,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           key={comment.comment_id}
           commentId={comment.comment_id}
           author={{
-            userId: comment.author.user_id,
+            userId: comment.author.user_id, // loginId로 수정 필요
             name: comment.author.name,
           }}
           createdAt={comment.created_at}
@@ -169,9 +176,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       ))}
       {comments.comments.pagenation_info.current_page <
         comments.comments.pagenation_info.last_page && (
-        <ShowMoreButton
-          currentPage={comments.comments.pagenation_info.current_page}
-        />
+        <ShowMoreButton onClick={moreCommentsOnClick} />
       )}
     </Box>
   );

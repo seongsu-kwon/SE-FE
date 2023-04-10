@@ -35,21 +35,21 @@ interface resData {
 
 const fetchComments = (
   postId: string | undefined,
-  page?: number,
-  query?: number
+  page: number,
+  perPage: number
 ): Promise<resData> => {
   const response = axios.get(
-    `/post/${postId}/comments?page=${page}&query=${query}`
+    `/post/${postId}/comments?page=${page}&perPage=${perPage}`
   );
   return response.then((res: AxiosResponse<resData>) => res.data);
 };
 
 export const useGetCommentQuery = (
   postId: string | undefined,
-  page?: number,
-  query?: number
+  page: number,
+  perPage: number
 ) => {
   return useQuery<resData>(["comments", postId], () =>
-    fetchComments(postId, page, query)
+    fetchComments(postId, page, perPage)
   );
 };

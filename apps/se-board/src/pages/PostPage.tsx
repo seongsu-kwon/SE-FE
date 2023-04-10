@@ -8,6 +8,7 @@ import {
   DesktopHeader,
   Header,
 } from "@/components/detailPost";
+import { useGetPostQuery } from "@/react-query/hooks";
 
 const post = {
   post_id: 2234,
@@ -68,6 +69,7 @@ const files = [
 
 export const PostPage = () => {
   const { postId } = useParams<{ postId: string }>();
+  const { data, isLoading, isError } = useGetPostQuery(postId);
 
   const headerInfo = {
     title: post.title,

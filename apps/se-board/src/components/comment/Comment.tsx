@@ -41,7 +41,7 @@ const editMenus = (isEditable: boolean) => {
 
 interface CommentProps {
   author: {
-    userId: string | null;
+    userId: string | null; // loginId로 수정 필요
     name: string;
   };
   contents: string;
@@ -67,7 +67,7 @@ export const Comment = ({
     }
   };
 
-  return author.userId !== null ? (
+  return author.userId !== null ? ( // loginId로 수정 필요
     <>
       <Box display="flex" justifyContent="space-between">
         <Box display="flex" w="fit-content">

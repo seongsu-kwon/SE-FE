@@ -8,7 +8,7 @@ import { openColors } from "@/styles";
 interface CommentContentProps {
   commentId: number;
   author: {
-    userId: string | null;
+    userId: string | null; // loginId로 수정 필요
     name: string;
   };
   createdAt: string;
@@ -61,7 +61,7 @@ export const CommentContent = ({
           >
             <Comment
               author={{
-                userId: subComment.author.user_id,
+                userId: subComment.author.user_id, // loginId로 수정 필요
                 name: subComment.author.name,
               }}
               contents={subComment.contents}
