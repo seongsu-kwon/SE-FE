@@ -23,10 +23,9 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
-import { semanticColors } from "@/styles";
+import { Logo } from "./Logo";
 
 const NAV_ITEMS: readonly NavItemProps[] = [
   { name: "공지", path: "notice" },
@@ -307,15 +306,5 @@ const NavItem = ({ name, path }: NavItemProps) => {
         )}
       </NavLink>
     </WrapItem>
-  );
-};
-
-const Logo = ({ size }: { size: string }) => {
-  return (
-    <Link to="/">
-      <Box boxSize={size}>
-        <SELogo width="100%" height="100%" fill={semanticColors.primary} />
-      </Box>
-    </Link>
   );
 };
