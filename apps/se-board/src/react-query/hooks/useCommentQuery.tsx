@@ -1,47 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 
-interface resData {
-  pagenationInfo: {
-    contentSize: number;
-    perPage: number;
-    currentPage: number;
-    lastPage: number;
-  };
-  data: {
-    commentId: number;
-    author: {
-      userId: string;
-      name: string;
-    };
-    createdAt: string;
-    modifiedAt: string;
-    contents: string;
-    isEditable: boolean;
-    subComments: {
-      commentId: number;
-      tag: number;
-      author: {
-        userId: string;
-        name: string;
-      };
-      createdAt: string;
-      modifiedAt: string;
-      contents: string;
-      isEditable: boolean;
-    }[];
-  }[];
-}
+import { Comment } from "@/@types";
 
 const fetchComments = (
   postId: string | undefined,
   page: number,
   perPage: number
-): Promise<resData> => {
+): Promise<Comment> => {
   const response = axios.get(
     `/post/${postId}/comments?page=${page}&perPage=${perPage}`
   );
-  return response.then((res: AxiosResponse<resData>) => res.data);
+  return response.then((res: AxiosResponse<Comment>) => res.data);
 };
 
 export const useGetCommentQuery = (
@@ -49,7 +19,7 @@ export const useGetCommentQuery = (
   page: number,
   perPage: number
 ) => {
-  return useQuery<resData>(["comments", postId], () =>
+  return useQuery<Comment>(["comments", postId], () =>
     fetchComments(postId, page, perPage)
   );
 };

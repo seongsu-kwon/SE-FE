@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
+import { Comment } from "@/@types";
 import {
   CommentContent,
   CommentHeader,
@@ -23,7 +24,7 @@ const comments = {
       {
         comment_id: 123,
         author: {
-          user_id: "m1234", //익명 사용자면, anonymous
+          loginId: "m1234", //익명 사용자면, anonymous
           name: "min jeong",
         },
         created_at: "2022-05-05-12:00:02",
@@ -35,7 +36,7 @@ const comments = {
             comment_id: 4322,
             tag: 123, //댓글 태그가 가능하다
             author: {
-              user_id: "j1111", //익명 사용자면, anonymous
+              loginId: "j1111", //익명 사용자면, anonymous
               name: "jin woo",
             },
             created_at: "2022-05-08-12:12:32",
@@ -48,7 +49,7 @@ const comments = {
             comment_id: 4325,
             tag: 123, //댓글 태그가 가능하다
             author: {
-              user_id: null, //익명 사용자면, anonymous
+              loginId: null, //익명 사용자면, anonymous
               name: "삭제된 사용자",
             },
             created_at: "2022-05-08-12:12:32",
@@ -60,7 +61,7 @@ const comments = {
             comment_id: 153,
             tag: 4322, // 대댓글 태그도 가능하다
             author: {
-              user_id: "chung12312", //익명 사용자면, anonymous
+              loginId: "chung12312", //익명 사용자면, anonymous
               name: "chung yeop",
             },
             created_at: "2022-04-12-12:12:02",
@@ -73,7 +74,7 @@ const comments = {
       {
         comment_id: 123,
         author: {
-          user_id: "m1234", //익명 사용자면, anonymous
+          loginId: "m1234", //익명 사용자면, anonymous
           name: "min jeong",
         },
         created_at: "2022-05-05-12:00:02",
@@ -85,7 +86,7 @@ const comments = {
             comment_id: 4322,
             tag: 123, //댓글 태그가 가능하다
             author: {
-              user_id: "j1111", //익명 사용자면, anonymous
+              loginId: "j1111", //익명 사용자면, anonymous
               name: "jin woo",
             },
             created_at: "2022-05-08-12:12:32",
@@ -99,7 +100,7 @@ const comments = {
             comment_id: 4325,
             tag: 123, //댓글 태그가 가능하다
             author: {
-              user_id: null, //익명 사용자면, anonymous
+              loginId: null, //익명 사용자면, anonymous
               name: "삭제된 사용자",
             },
             created_at: "2022-05-08-12:12:32",
@@ -111,7 +112,7 @@ const comments = {
             comment_id: 153,
             tag: 4322, // 대댓글 태그도 가능하다
             author: {
-              user_id: "chung12312", //익명 사용자면, anonymous
+              loginId: "chung12312", //익명 사용자면, anonymous
               name: "chung yeop",
             },
             created_at: "2022-04-12-12:12:02",
@@ -131,6 +132,7 @@ interface CommentSectionProps {
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data, isLoading, isError } = useGetCommentQuery(postId, 1, 25);
+  const [commentssss, setComments] = useState<Comment>();
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   if (isLoading) {
@@ -160,10 +162,9 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       <CommentInput replyInputRef={replyInputRef} />
       {comments.comments.data.map((comment) => (
         <CommentContent
-          key={comment.comment_id}
           commentId={comment.comment_id}
           author={{
-            userId: comment.author.user_id, // loginId로 수정 필요
+            userId: comment.author.loginId, // loginId로 수정 필요
             name: comment.author.name,
           }}
           createdAt={comment.created_at}

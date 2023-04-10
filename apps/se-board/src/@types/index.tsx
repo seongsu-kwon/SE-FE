@@ -1,1 +1,1 @@
-export * from "@/@types/SubComment";
+export * from "@/@types/Comment";

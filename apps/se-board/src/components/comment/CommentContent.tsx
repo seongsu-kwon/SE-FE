@@ -61,7 +61,7 @@ export const CommentContent = ({
           >
             <Comment
               author={{
-                userId: subComment.author.user_id, // loginId로 수정 필요
+                userId: subComment.author.loginId, // loginId로 수정 필요
                 name: subComment.author.name,
               }}
               contents={subComment.contents}
