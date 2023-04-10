@@ -1,5 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 
+import { CommentSection } from "@/components/comment";
 import {
   AttachmentFile,
   Content,
@@ -39,7 +40,13 @@ const post = {
   attachment: {}, // file
 };
 
-const categories = [{ eng: "class", kor: "학사" }];
+const categories = [
+  { eng: "class", kor: "학사" },
+  { eng: "general", kor: "일반" },
+  { eng: "lecture", kor: "강의" },
+  { eng: "event", kor: "행사" },
+  { eng: "council", kor: "학생회" },
+];
 
 const files = [
   {
@@ -85,6 +92,7 @@ export const PostPage = () => {
       </Hide>
       <AttachmentFile files={files} />
       <Content contents={post.contents} />
+      <CommentSection postId={post.post_id} />
     </Box>
   );
 };

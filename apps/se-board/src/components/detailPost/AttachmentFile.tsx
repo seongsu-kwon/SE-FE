@@ -36,9 +36,10 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
               <Tooltip
                 label="다운로드"
                 aria-label="다운로드"
-                placement="auto-start"
+                placement="right-end"
               >
                 <Box
+                  w="fit-content"
                   key={file.file_id}
                   color={openColors.gray[6]}
                   _hover={{ color: openColors.gray[7] }}

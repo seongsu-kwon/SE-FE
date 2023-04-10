@@ -10,7 +10,6 @@ export const Content = ({ contents }: { contents: string }) => {
       minH="450px"
       mx="auto"
       borderBottom={`1px solid ${openColors.gray[3]}`}
-      mb="100px"
     >
       <Box
         mx="16px"

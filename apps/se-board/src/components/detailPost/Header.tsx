@@ -120,8 +120,8 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
     >
       <Box m="16px 0 16px 16px">
         <Heading
-          as="h1"
-          size="xl"
+          as="h2"
+          size="lg"
           w="fit-content"
         >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
