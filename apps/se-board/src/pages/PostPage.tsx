@@ -1,4 +1,5 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
 
 import { CommentSection } from "@/components/comment";
 import {
@@ -66,6 +67,8 @@ const files = [
 ];
 
 export const PostPage = () => {
+  const { postId } = useParams<{ postId: string }>();
+
   const headerInfo = {
     title: post.title,
     author: { login_id: post.author.login_id, name: post.author.name },
@@ -92,7 +95,7 @@ export const PostPage = () => {
       </Hide>
       <AttachmentFile files={files} />
       <Content contents={post.contents} />
-      <CommentSection postId={post.post_id} />
+      <CommentSection postId={postId} />
     </Box>
   );
 };

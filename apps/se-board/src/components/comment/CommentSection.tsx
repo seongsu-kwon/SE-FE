@@ -7,6 +7,7 @@ import {
   CommentInput,
   ShowMoreButton,
 } from "@/components/comment";
+import { useGetCommentQuery } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 const comments = {
@@ -125,11 +126,21 @@ const comments = {
 };
 
 interface CommentSectionProps {
-  postId: number;
+  postId: string | undefined;
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
+  const { data, isLoading, isError } = useGetCommentQuery(postId);
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
+
+  if (isLoading) {
+    // 로딩중 화면 렌더링
+  }
+
+  if (isError) {
+    // 에러 화면 렌더링
+  }
+
   return (
     <Box
       maxW="984px"
