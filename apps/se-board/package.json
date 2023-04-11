@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.3.0",
-    "@ckeditor/ckeditor5-react": "^5.1.0",
+    "@ckeditor/ckeditor5-react": "^6.0.0",
     "@craco/craco": "^7.1.0",
     "react-app-alias": "^2.2.2",
     "react-app-alias-ex": "^2.1.0"

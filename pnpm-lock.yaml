@@ -28,7 +28,7 @@ importers:
     specifiers:
       '@chakra-ui/cli': ^2.3.0
       '@chakra-ui/react': ^2.5.1
-      '@ckeditor/ckeditor5-react': ^5.1.0
+      '@ckeditor/ckeditor5-react': ^6.0.0
       '@craco/craco': ^7.1.0
       '@emotion/react': ^11.10.6
       '@emotion/styled': ^11.10.6
@@ -86,7 +86,7 @@ importers:
       web-vitals: 2.1.4
     devDependencies:
       '@chakra-ui/cli': 2.3.0_prfxyxghnskheluimpb6dvby4q
-      '@ckeditor/ckeditor5-react': 5.1.0_react@18.2.0
+      '@ckeditor/ckeditor5-react': 6.0.0_eew4aakj62yqeeo6p2nnavpf2a
       '@craco/craco': 7.1.0_5y7fcuqyr6sbnvguznlaidal7m
       react-app-alias: 2.2.2
       react-app-alias-ex: 2.1.0
@@ -2443,15 +2443,54 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@ckeditor/ckeditor5-react/5.1.0_react@18.2.0:
-    resolution: {integrity: sha512-7+okLprneCOD/zXceiONstUjRQtMSnsYiW7C2uODgXpglYDANw9QbAoyA4+M0ZC2Sjxok56YPy46F7uXB+a6mA==}
-    engines: {node: '>=14.0.0', npm: '>=5.7.1'}
+  /@ckeditor/ckeditor5-core/37.0.1:
+    resolution: {integrity: sha512-xzcAG8aAzzHZbpwUNfpNfkSoEJcofugvMA+Qk4h9dQCNW2hEoacRmaxkWsiKoRyw6WOLGomiJQE2s3EfemEN1g==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
+    dependencies:
+      '@ckeditor/ckeditor5-engine': 37.0.1
+      '@ckeditor/ckeditor5-utils': 37.0.1
+      lodash-es: 4.17.21
+    dev: true
+
+  /@ckeditor/ckeditor5-engine/37.0.1:
+    resolution: {integrity: sha512-vc6jxyAf8t0t/xjyU8ACUzcNce1FyzBd3yTc+uNONLnrFUoWA3t8VKVxqCHfx50QaPAW3e/MLa1uR7NSLwb8dQ==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
+    dependencies:
+      '@ckeditor/ckeditor5-utils': 37.0.1
+      lodash-es: 4.17.21
+    dev: true
+
+  /@ckeditor/ckeditor5-react/6.0.0_eew4aakj62yqeeo6p2nnavpf2a:
+    resolution: {integrity: sha512-Yw0MlWfUXelGJ7qcFCYlaRlDEsEr0Lh7Wa2NGDT4+kscwcck9x8F1qm7xmjwJZ9bj79GC9rnCxsIqmq2etmZFA==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
     requiresBuild: true
     peerDependencies:
+      '@ckeditor/ckeditor5-core': '>=37.0.0'
+      '@ckeditor/ckeditor5-engine': '>=37.0.0'
+      '@ckeditor/ckeditor5-utils': '>=37.0.0'
+      '@ckeditor/ckeditor5-watchdog': '>=37.0.0'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0
     dependencies:
+      '@ckeditor/ckeditor5-core': 37.0.1
+      '@ckeditor/ckeditor5-engine': 37.0.1
+      '@ckeditor/ckeditor5-utils': 37.0.1
+      '@ckeditor/ckeditor5-watchdog': 37.0.1
       prop-types: 15.8.1
       react: 18.2.0
+    dev: true
+
+  /@ckeditor/ckeditor5-utils/37.0.1:
+    resolution: {integrity: sha512-QMTHVbHNckDG9mCaFNjUhjlosxvyBPQ0fGlCyn9p+kHM7iEfP0a1Y63y9lg3n9bXDRYJ8k9Ms1G7xOZvYTBPNg==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
+    dependencies:
+      lodash-es: 4.17.21
+    dev: true
+
+  /@ckeditor/ckeditor5-watchdog/37.0.1:
+    resolution: {integrity: sha512-SWAsA9aDdc1s+24xFMRYJR3EpgWQLT/J0WYS1PdR5kmTA3YoYvIVXq20iPKyvFywiyNXNHQ5HOYJG2zPN0ACJw==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
+    dependencies:
+      lodash-es: 4.17.21
     dev: true
 
   /@craco/craco/7.1.0_5y7fcuqyr6sbnvguznlaidal7m:
@@ -8233,6 +8272,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: true
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
