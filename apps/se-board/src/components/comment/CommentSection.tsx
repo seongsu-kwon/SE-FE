@@ -25,7 +25,7 @@ const comments = {
         comment_id: 123,
         author: {
           loginId: "m1234", //익명 사용자면, anonymous
-          name: "min jeong",
+          name: "min jong",
         },
         created_at: "2022-05-05-12:00:02",
         modified_at: "2022-05-06-12:00:01",
@@ -146,7 +146,11 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   const moreCommentsOnClick = () => {
     // 댓글 더보기 버튼 클릭 시
     if (data) {
-      useGetCommentQuery(postId, data.pagenationInfo.currentPage + 1, 25);
+      const newData = useGetCommentQuery(
+        postId,
+        data.pagenationInfo.currentPage + 1,
+        25
+      ).data; // comment에 data 추가 후 더보기 버튼 클릭 시 기존 데이터와 새로운 데이터 합치기 필요
     }
   };
 
