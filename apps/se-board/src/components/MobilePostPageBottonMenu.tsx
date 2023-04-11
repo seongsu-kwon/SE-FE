@@ -68,7 +68,7 @@ export const MobilePostPageBottonMenu = () => {
               searchPrams.delete("category");
               setSearchParams(searchPrams);
             }}
-            bgColor={!searchPrams.get("category") ? "gary.1" : ""}
+            bgColor={!searchPrams.get("category") ? "gray.1" : ""}
           >
             전체
           </MenuItem>
