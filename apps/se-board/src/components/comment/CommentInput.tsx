@@ -3,8 +3,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Input,
-  ScaleFade,
   Switch,
   Textarea,
 } from "@chakra-ui/react";
@@ -113,7 +111,7 @@ export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
           <Box
             display="flex"
             alignItems="center"
-            mr={{ base: "6px", sm: "12px" }}
+            mr={{ base: "12px", sm: "16px" }}
           >
             <FormLabel htmlFor="anonymous" mb="0" mr="4px" minW="36px">
               익명
@@ -128,7 +126,7 @@ export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
           </Box>
           <Box display="flex" alignItems="center">
             <FormLabel htmlFor="secret" mb="0" mr="4px" minW="64px">
-              비밀댓글
+              작성자에게만 보이기
             </FormLabel>
             <Switch
               id="secret"
@@ -138,7 +136,7 @@ export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
               }}
             />
           </Box>
-          <ScaleFade initialScale={0.6} in={isSecret}>
+          {/* <ScaleFade initialScale={0.6} in={isSecret}>
             <Input
               type="password"
               placeholder="비밀글 비밀번호"
@@ -152,7 +150,7 @@ export const CommentInput = ({ replyInputRef }: CommentInputProps) => {
               my={{ base: "2px", md: "0" }}
               size="sm"
             />
-          </ScaleFade>
+          </ScaleFade> */}
         </FormControl>
       </Box>
     </Box>
