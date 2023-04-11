@@ -8,6 +8,7 @@ import {
   BsShare,
   BsTrash3,
 } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 import { useBookmarked } from "@/hooks";
 import { openColors } from "@/styles";
@@ -17,13 +18,13 @@ import { Bookmark, BookmarkFill } from "./Bookmark";
 import { MoreButton } from "./MoreButton";
 
 const menuItems = [
-  { name: "수정", onClick: () => {}, isWriter: true, icon: BsPencilSquare },
-  { name: "삭제", onClick: () => {}, isWriter: true, icon: BsTrash3 },
+  { name: "수정", onClick: () => {}, isWriter: false, icon: BsPencilSquare },
+  { name: "삭제", onClick: () => {}, isWriter: false, icon: BsTrash3 },
   { name: "공유", onClick: () => {}, isWriter: true, icon: BsShare },
   {
     name: "신고",
     onClick: () => {},
-    isWriter: true,
+    isWriter: false,
     icon: BsExclamationCircle,
   },
 ];
@@ -41,6 +42,7 @@ interface HeaderProps {
       sub_category: string;
     };
     created_at: string;
+    contents: string;
     bookmarked: boolean;
     isEditalbe: boolean;
   };
@@ -51,9 +53,22 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
     HeadingInfo.bookmarked
   );
 
-  if (!HeadingInfo.isEditalbe) {
-    menuItems[0].isWriter = false;
-    menuItems[1].isWriter = false;
+  const modificationOnClick = () => {
+    const navigate = useNavigate();
+
+    navigate("url", {
+      state: {
+        header: HeadingInfo.title,
+        contents: HeadingInfo.contents,
+        files: [],
+      },
+    });
+  };
+
+  if (HeadingInfo.isEditalbe) {
+    menuItems[0].isWriter = true;
+    menuItems[0].onClick = modificationOnClick;
+    menuItems[1].isWriter = true;
   }
 
   if (HeadingInfo.author.login_id === "anonymous") {

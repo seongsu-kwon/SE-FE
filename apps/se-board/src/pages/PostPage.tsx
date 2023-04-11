@@ -83,6 +83,7 @@ export const PostPage = () => {
         )?.kor || "",
     },
     created_at: post.created_at,
+    contents: post.contents,
     bookmarked: post.bookmarked,
     isEditalbe: post.isEditalbe,
   };

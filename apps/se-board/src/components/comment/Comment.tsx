@@ -12,33 +12,6 @@ import {
 import { MoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
 
-const editMenus = (isEditable: boolean) => {
-  return isEditable
-    ? [
-        {
-          name: "수정",
-          onClick: () => {},
-          isWriter: true,
-          icon: BsPencilSquare,
-        },
-        { name: "삭제", onClick: () => {}, isWriter: true, icon: BsTrash3 },
-        {
-          name: "신고",
-          onClick: () => {},
-          isWriter: true,
-          icon: BsExclamationCircle,
-        },
-      ]
-    : [
-        {
-          name: "신고",
-          onClick: () => {},
-          isWriter: true,
-          icon: BsExclamationCircle,
-        },
-      ];
-};
-
 interface CommentProps {
   author: {
     userId: string | null; // loginId로 수정 필요
@@ -67,6 +40,40 @@ export const Comment = ({
     }
   };
 
+  const editMenus = () => {
+    return isEditable
+      ? [
+          {
+            name: "수정",
+            onClick: () => {
+              replyInputRef.current?.focus();
+
+              // 수정 시 api 호출 로직 추가 필요
+              if (replyInputRef.current) {
+                replyInputRef.current.value = `@${author.name} ${contents}`;
+              }
+            },
+            isWriter: true,
+            icon: BsPencilSquare,
+          },
+          { name: "삭제", onClick: () => {}, isWriter: true, icon: BsTrash3 },
+          {
+            name: "신고",
+            onClick: () => {},
+            isWriter: true,
+            icon: BsExclamationCircle,
+          },
+        ]
+      : [
+          {
+            name: "신고",
+            onClick: () => {},
+            isWriter: true,
+            icon: BsExclamationCircle,
+          },
+        ];
+  };
+
   return author.userId !== null ? ( // loginId로 수정 필요
     <>
       <Box display="flex" justifyContent="space-between">
@@ -77,7 +84,7 @@ export const Comment = ({
           </Text>
         </Box>
         <Box w="fit-content">
-          <MoreButton fontSize="24px" menuItems={editMenus(isEditable)} />
+          <MoreButton fontSize="24px" menuItems={editMenus()} />
         </Box>
       </Box>
 
