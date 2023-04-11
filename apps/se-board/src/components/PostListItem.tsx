@@ -1,6 +1,6 @@
 import { Center, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
-import { BsFileZipFill, BsPinAngleFill } from "react-icons/bs";
+import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
@@ -45,22 +45,26 @@ export const PostListItem = ({
         </Heading>
         <Flex
           alignItems="center"
-          columnGap="0.75rem"
+          columnGap="0.375rem"
           fontSize="sm"
           flexWrap="wrap"
         >
-          <Text>{author.name}</Text>
-          <Flex>
-            <Text>{toYYMMDD_DOT(createdDateTime)}</Text>
-            {isModified(createdDateTime, modifiedDateTime) && (
-              <Text>(수정됨)</Text>
-            )}
+          <Flex alignItems="center" columnGap="0.375rem">
+            <Text>{author.name}</Text>
+            <Flex>
+              <Text>{toYYMMDD_DOT(createdDateTime)}</Text>
+              {isModified(createdDateTime, modifiedDateTime) && (
+                <Text>(수정됨)</Text>
+              )}
+            </Flex>
           </Flex>
-          <Flex gap="0.25rem">
-            <Text as="span">조회</Text>
-            <Text as="span">{views}</Text>
+          <Flex alignItems="center" columnGap="0.375rem">
+            <Flex gap="0.125rem">
+              <Text as="span">조회</Text>
+              <Text as="span">{views}</Text>
+            </Flex>
+            {hasAttachment && <Icon as={BsLink45Deg} />}
           </Flex>
-          {hasAttachment && <Icon as={BsFileZipFill} />}
         </Flex>
       </Flex>
       <Center
