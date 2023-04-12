@@ -8,7 +8,7 @@ import { MOCK_NOTICE_LIST } from "./mockData";
 export const NoticeTable = () => {
   const { currentPage, totalPages, onChangePage } = usePagination(1001, 20);
   return (
-    <Flex direction="column" alignItems="center" gap="2rem">
+    <Flex direction="column" alignItems="center" gap="2rem" w="full">
       <PostTable data={MOCK_NOTICE_LIST} />
       <Pagination
         currentPage={currentPage}
