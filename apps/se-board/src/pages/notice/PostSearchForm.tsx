@@ -1,5 +1,15 @@
-import { Flex, Input, Select } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Icon,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Select,
+  Tooltip,
+} from "@chakra-ui/react";
 import React from "react";
+import { BsSearch } from "react-icons/bs";
 import { useSearchParams } from "react-router-dom";
 
 export const PostSearchForm = () => {
@@ -29,7 +39,16 @@ export const PostSearchForm = () => {
           <option value="title">제목</option>
           <option value="author">작성자</option>
         </Select>
-        <Input name="query" placeholder="검색" rounded="full" />
+        <InputGroup>
+          <Input name="query" placeholder="검색" rounded="full" />
+          <Tooltip label="검색">
+            <InputRightElement>
+              <Button variant="ghost" _hover={{ bgColor: "transparent" }}>
+                <Icon as={BsSearch} />
+              </Button>
+            </InputRightElement>
+          </Tooltip>
+        </InputGroup>
       </Flex>
     </form>
   );
