@@ -1,4 +1,5 @@
 import {
+  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -99,13 +100,16 @@ export const MobilePostPageBottonMenu = () => {
                 onClose();
               }}
             >
-              <Stack pb="10rem">
+              <Stack pb="6rem">
                 <Select name="field">
                   <option value="all">전체</option>
                   <option value="title">제목</option>
                   <option value="author">작성자</option>
                 </Select>
                 <Input name="query" placeholder="검색어를 입력하세요" />
+                <Button type="submit" variant="primary">
+                  검색
+                </Button>
               </Stack>
             </form>
           </DrawerBody>
