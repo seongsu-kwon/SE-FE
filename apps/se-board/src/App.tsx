@@ -1,13 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "@/components/layouts";
+import { NoticePage } from "@/pages";
 
 export const App = () => (
   <BrowserRouter>
     <Routes>
       <Route path="" element={<MainLayout />}>
         <Route path="" element={<div>메인</div>} />
-        <Route path="notice" element={<div>공지사항</div>} />
+        <Route path="notice" element={<NoticePage />} />
         <Route path="notice/write" element={<div>공지 글쓰기</div>} />
         <Route path="free-board" element={<div>자유게시판</div>} />
         <Route path="free-board/write" element={<div>자유게시판 글쓰기</div>} />

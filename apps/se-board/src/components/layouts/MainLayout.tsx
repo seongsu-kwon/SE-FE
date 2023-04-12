@@ -1,4 +1,4 @@
-import { Hide, Show } from "@chakra-ui/react";
+import { Flex, Hide, Show } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
 import { DesktopHeaderNavigation, HeaderNavigation } from "@/components";
@@ -12,7 +12,9 @@ export const MainLayout = () => {
       <Hide above="md">
         <HeaderNavigation />
       </Hide>
-      <Outlet />
+      <Flex justifyContent="center">
+        <Outlet />
+      </Flex>
     </>
   );
 };
