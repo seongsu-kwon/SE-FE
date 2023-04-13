@@ -10,14 +10,16 @@ import {
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+// import { usePutCommentMutation } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 interface SubCommentInputProps {
   superCommentId: number | null;
   tagCommentId: number | null;
-  tagCommentAuthorName: string | null;
-  subCommentInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
+  tagCommentAuthorName?: string | null;
+  subCommentInputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
+  contents?: string;
 }
 
 export const SubCommentInput = ({
@@ -26,20 +28,43 @@ export const SubCommentInput = ({
   tagCommentAuthorName,
   setIsWriteSubComment,
   subCommentInputRef,
+  contents,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
-  const [comment, setComment] = useState(`@ ${tagCommentAuthorName}`);
+
+  const initialComment = {
+    tag: "",
+    contents: "",
+  };
+
+  if (tagCommentAuthorName !== null) {
+    initialComment.tag = `@${tagCommentAuthorName} `;
+  }
+
+  if (contents !== undefined) {
+    initialComment.contents = contents;
+  }
+
+  const [comment, setComment] = useState<string>(
+    `${initialComment.tag} ${initialComment.contents}`
+  );
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
 
   useEffect(() => {
-    if (subCommentInputRef.current) {
+    if (subCommentInputRef?.current) {
       subCommentInputRef.current.focus();
     }
   }, [subCommentInputRef]);
 
   const handleSubmitSubComment = () => {
     // TODO: 답글 등록, state 초기화
+    //답글 인지 수정 인지 확인 작업 필요 -> contents가 있으면 수정
+    if (contents !== undefined) {
+      //수정
+    } else {
+      //답글
+    }
   };
 
   return (
@@ -86,7 +111,7 @@ export const SubCommentInput = ({
           variant="danger"
           size={{ base: "sm", md: "md" }}
           onClick={() => {
-            setIsWriteSubComment(false);
+            setIsWriteSubComment(false); // 댓글 수정에서 취소 안됨
           }}
         >
           취소

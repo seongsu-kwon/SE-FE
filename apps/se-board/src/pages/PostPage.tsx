@@ -38,7 +38,7 @@ const post = {
   
   <p><span style="font-size:18px;">미니게임&nbsp;</span><span style="font-size:18px;">진행 동안은 DB134 사용이 어려울 예정이니 이점 양해부탁드립니다</span></p></div>`, // contents
   bookmarked: false, // 익명 사용자이면 항상 false // header
-  isEditalbe: false, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
+  isEditable: true, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
   attachment: {}, // file
 };
 
@@ -85,7 +85,7 @@ export const PostPage = () => {
     created_at: post.created_at,
     contents: post.contents,
     bookmarked: post.bookmarked,
-    isEditalbe: post.isEditalbe,
+    isEditable: post.isEditable,
   };
 
   return (

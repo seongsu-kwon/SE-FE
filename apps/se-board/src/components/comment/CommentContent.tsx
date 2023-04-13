@@ -51,7 +51,6 @@ export const CommentContent = ({
           isEditable={isEditable}
           setIsWriteSubComment={setIsWriteSubComment}
           setSubCommentInfo={setSubCommentInfo}
-          subCommentInputRef={subCommentInputRef}
         />
       </Box>
       {subComments?.map((subComment: subComment) => {
@@ -82,7 +81,6 @@ export const CommentContent = ({
               tag={tagName}
               setIsWriteSubComment={setIsWriteSubComment}
               setSubCommentInfo={setSubCommentInfo}
-              subCommentInputRef={subCommentInputRef}
             />
           </Box>
         );

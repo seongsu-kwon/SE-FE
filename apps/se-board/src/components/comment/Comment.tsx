@@ -1,16 +1,10 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { subCommentInfoType } from "@types";
-import React from "react";
-import {
-  BsArrowReturnRight,
-  BsAt,
-  BsExclamationCircle,
-  BsPencilSquare,
-  BsPersonCircle,
-  BsTrash3,
-} from "react-icons/bs";
+import React, { useState } from "react";
+import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
-import { MoreButton } from "@/components/detailPost";
+import { SubCommentInput } from "@/components/comment";
+import { CommentMoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
 
 interface CommentProps {
@@ -26,7 +20,6 @@ interface CommentProps {
   tag?: string;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   setSubCommentInfo: React.Dispatch<React.SetStateAction<subCommentInfoType>>;
-  subCommentInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 export const Comment = ({
@@ -39,8 +32,9 @@ export const Comment = ({
   tag,
   setIsWriteSubComment,
   setSubCommentInfo,
-  subCommentInputRef,
 }: CommentProps) => {
+  const [isModify, setIsModify] = useState(false); // 수정 하기 버튼 클릭 시 true
+
   const replyOnClick = () => {
     setSubCommentInfo({
       superCommentId: superCommentId,
@@ -48,38 +42,6 @@ export const Comment = ({
       tagCommentAuthorName: author.name,
     });
     setIsWriteSubComment(true);
-  };
-
-  const editMenus = () => {
-    return isEditable
-      ? [
-          {
-            name: "수정",
-            onClick: () => {},
-            isWriter: true,
-            icon: BsPencilSquare,
-          },
-          {
-            name: "삭제",
-            onClick: () => {},
-            isWriter: true,
-            icon: BsTrash3,
-          },
-          {
-            name: "신고",
-            onClick: () => {},
-            isWriter: true,
-            icon: BsExclamationCircle,
-          },
-        ]
-      : [
-          {
-            name: "신고",
-            onClick: () => {},
-            isWriter: true,
-            icon: BsExclamationCircle,
-          },
-        ];
   };
 
   return author.userId !== null ? ( // loginId로 수정 필요
@@ -92,60 +54,74 @@ export const Comment = ({
           </Text>
         </Box>
         <Box w="fit-content">
-          <MoreButton fontSize="24px" menuItems={editMenus()} />
+          <CommentMoreButton
+            isEditable={isEditable}
+            setIsModify={setIsModify}
+          />
         </Box>
       </Box>
-
-      <Box display="inline-block" w="100%" mt="8px">
-        {tag && (
+      {isModify ? (
+        <SubCommentInput
+          superCommentId={superCommentId}
+          tagCommentId={commentId}
+          tagCommentAuthorName={author.name} // 태그할 사람의 이름이 들어가야 함
+          setIsWriteSubComment={setIsWriteSubComment}
+          contents={contents}
+        />
+      ) : (
+        <>
+          <Box display="inline-block" w="100%" mt="8px">
+            {tag && (
+              <Box
+                display="flex"
+                alignItems="center"
+                textAlign="center"
+                w="fit-content"
+                mr="6px"
+                mb="-2px"
+                p="1px 4px"
+                bgColor={openColors.blue[1]}
+                color={openColors.blue[7]}
+                borderRadius="10px"
+                float="left"
+              >
+                <BsAt fontSize="18px" />
+                <Text whiteSpace="nowrap">{tag}</Text>
+              </Box>
+            )}
+            <Text mb="-2px" textAlign="left" maxW="850px">
+              {contents}
+            </Text>
+          </Box>
+          <Box mt="2px">
+            <Text textAlign="left" fontSize={{ base: "sm" }} fontWeight="400">
+              {createdAt
+                .replace("-", ".")
+                .replace("-", ".")
+                .replace("-", " ")
+                .slice(0, 16)}
+            </Text>
+          </Box>
           <Box
             display="flex"
             alignItems="center"
-            textAlign="center"
+            mt="12px"
             w="fit-content"
-            mr="6px"
-            mb="-2px"
-            p="1px 4px"
-            bgColor={openColors.blue[1]}
-            color={openColors.blue[7]}
-            borderRadius="10px"
-            float="left"
+            color={openColors.gray[5]}
           >
-            <BsAt fontSize="18px" />
-            <Text whiteSpace="nowrap">{tag}</Text>
+            <Button
+              size="sm"
+              p="0"
+              leftIcon={<BsArrowReturnRight />}
+              variant="ghost"
+              _hover={{ bgColor: openColors.white }}
+              onClick={replyOnClick}
+            >
+              답글 작성
+            </Button>
           </Box>
-        )}
-        <Text mb="-2px" textAlign="left" maxW="850px">
-          {contents}
-        </Text>
-      </Box>
-      <Box mt="2px">
-        <Text textAlign="left" fontSize={{ base: "sm" }} fontWeight="400">
-          {createdAt
-            .replace("-", ".")
-            .replace("-", ".")
-            .replace("-", " ")
-            .slice(0, 16)}
-        </Text>
-      </Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        mt="12px"
-        w="fit-content"
-        color={openColors.gray[5]}
-      >
-        <Button
-          size="sm"
-          p="0"
-          leftIcon={<BsArrowReturnRight />}
-          variant="ghost"
-          _hover={{ bgColor: openColors.white }}
-          onClick={replyOnClick}
-        >
-          답글 작성
-        </Button>
-      </Box>
+        </>
+      )}
     </>
   ) : (
     <Box display="flex" alignItems="center" justifyContent="center" h="120px">

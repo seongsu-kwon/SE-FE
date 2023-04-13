@@ -33,11 +33,39 @@ interface postResData {
   message?: string;
 }
 
-const postComment = (postData: postCommentData): Promise<postResData> => {
+const postComment = async (postData: postCommentData): Promise<postResData> => {
   const response = axios.post("/comments", postData);
-  return response.then((res: AxiosResponse<postResData>) => res.data);
+  const res = await response;
+  return res.data;
 };
 
 export const usePostCommentMutation = () => {
   return useMutation(postComment);
+};
+
+interface putCommentData {
+  contents: string;
+}
+
+interface putResData {
+  message: string;
+}
+
+const putComment = async (
+  commentId: number,
+  putCommentData: putCommentData
+): Promise<putResData> => {
+  const response = axios.put<putResData>(
+    `/comments/${commentId}`,
+    putCommentData
+  );
+  const res = await response;
+  return res.data;
+};
+
+export const usePutCommentMutation = (
+  commentId: number,
+  putCommentData: putCommentData
+) => {
+  return useMutation(() => putComment(commentId, putCommentData));
 };
