@@ -1,4 +1,5 @@
 import { Box, Button, Text } from "@chakra-ui/react";
+import { subCommentInfoType } from "@types";
 import React from "react";
 import {
   BsArrowReturnRight,
@@ -13,6 +14,8 @@ import { MoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
 
 interface CommentProps {
+  superCommentId: number;
+  commentId: number;
   author: {
     userId: string | null; // loginId로 수정 필요
     name: string;
@@ -21,23 +24,30 @@ interface CommentProps {
   createdAt: string;
   isEditable: boolean;
   tag?: string;
-  replyInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
+  setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubCommentInfo: React.Dispatch<React.SetStateAction<subCommentInfoType>>;
+  subCommentInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 export const Comment = ({
+  superCommentId,
+  commentId,
   author,
   contents,
   createdAt,
   isEditable,
   tag,
-  replyInputRef,
+  setIsWriteSubComment,
+  setSubCommentInfo,
+  subCommentInputRef,
 }: CommentProps) => {
   const replyOnClick = () => {
-    replyInputRef.current?.focus();
-
-    if (replyInputRef.current) {
-      replyInputRef.current.value = `@${author.name} `;
-    }
+    setSubCommentInfo({
+      superCommentId: superCommentId,
+      tagCommentId: commentId,
+      tagCommentAuthorName: author.name,
+    });
+    setIsWriteSubComment(true);
   };
 
   const editMenus = () => {
@@ -45,18 +55,16 @@ export const Comment = ({
       ? [
           {
             name: "수정",
-            onClick: () => {
-              replyInputRef.current?.focus();
-
-              // 수정 시 api 호출 로직 추가 필요
-              if (replyInputRef.current) {
-                replyInputRef.current.value = `@${author.name} ${contents}`;
-              }
-            },
+            onClick: () => {},
             isWriter: true,
             icon: BsPencilSquare,
           },
-          { name: "삭제", onClick: () => {}, isWriter: true, icon: BsTrash3 },
+          {
+            name: "삭제",
+            onClick: () => {},
+            isWriter: true,
+            icon: BsTrash3,
+          },
           {
             name: "신고",
             onClick: () => {},

@@ -6,7 +6,13 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import {
+  BsExclamationCircle,
+  BsPencilSquare,
+  BsShare,
+  BsThreeDotsVertical,
+  BsTrash3,
+} from "react-icons/bs";
 
 import { openColors } from "@/styles";
 
@@ -46,6 +52,51 @@ export const MoreButton = ({ fontSize, menuItems }: MoreButtonProps) => {
                 {item.name}
               </MenuItem>
             )
+        )}
+      </MenuList>
+    </Menu>
+  );
+};
+
+export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
+  return (
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        aria-label="더보기 버튼"
+        icon={<BsThreeDotsVertical />}
+        fontSize="24px"
+        mx="1vw"
+        backgroundColor={openColors.white}
+        _hover={{ backgroundColor: openColors.white }}
+        _expanded={{ backgroundColor: openColors.white }}
+      />
+      <MenuList minWidth="120px" shadow="xl">
+        {isEditable ? (
+          <>
+            <MenuItem icon={<BsPencilSquare />} onClick={() => {}} maxW="120px">
+              수정
+            </MenuItem>
+            <MenuItem icon={<BsTrash3 />} onClick={() => {}} maxW="120px">
+              삭제
+            </MenuItem>
+            <MenuItem icon={<BsShare />} onClick={() => {}} maxW="120px">
+              공유
+            </MenuItem>
+          </>
+        ) : (
+          <>
+            <MenuItem icon={<BsShare />} onClick={() => {}} maxW="120px">
+              공유
+            </MenuItem>
+            <MenuItem
+              icon={<BsExclamationCircle />}
+              onClick={() => {}}
+              maxW="120px"
+            >
+              신고
+            </MenuItem>
+          </>
         )}
       </MenuList>
     </Menu>

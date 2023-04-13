@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { Comment } from "@types";
+import { useState } from "react";
 
-import { Comment } from "@/@types";
 import {
   CommentContent,
   CommentHeader,
@@ -133,7 +133,6 @@ interface CommentSectionProps {
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data, isLoading, isError } = useGetCommentQuery(postId, 1, 25);
   const [commentssss, setComments] = useState<Comment>();
-  const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   if (isLoading) {
     // 로딩중 화면 렌더링
@@ -163,7 +162,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       textAlign="center"
     >
       <CommentHeader commentTotalSize={comments.comments.totalSize} />
-      <CommentInput replyInputRef={replyInputRef} />
+      <CommentInput />
       {comments.comments.data.map((comment) => (
         <CommentContent
           commentId={comment.comment_id}
@@ -176,7 +175,6 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           contents={comment.contents}
           isEditable={comment.isEditable}
           subComments={comment.sub_comments}
-          replyInputRef={replyInputRef}
         />
       ))}
       {comments.comments.pagenation_info.current_page <

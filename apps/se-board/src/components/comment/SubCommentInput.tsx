@@ -7,32 +7,39 @@ import {
   Textarea,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { usePostCommentMutation } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
-interface CommentInputProps {}
+interface SubCommentInputProps {
+  superCommentId: number | null;
+  tagCommentId: number | null;
+  tagCommentAuthorName: string | null;
+  subCommentInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
+  setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export const CommentInput = () => {
-  const { postId } = useParams();
-  const [value, setValue] = useState("");
+export const SubCommentInput = ({
+  superCommentId,
+  tagCommentId,
+  tagCommentAuthorName,
+  setIsWriteSubComment,
+  subCommentInputRef,
+}: SubCommentInputProps) => {
+  const { postId } = useParams<{ postId: string }>();
+  const [comment, setComment] = useState(`@ ${tagCommentAuthorName}`);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
 
-  const postCommentMutation = usePostCommentMutation();
+  useEffect(() => {
+    if (subCommentInputRef.current) {
+      subCommentInputRef.current.focus();
+    }
+  }, [subCommentInputRef]);
 
-  const handleSubmit = () => {
-    postCommentMutation.mutate({
-      postId: Number(postId),
-      contents: value,
-      isAnonymous,
-    });
-
-    setIsAnonymous(false);
-    setValue("");
-    setIsSecret(false);
+  const handleSubmitSubComment = () => {
+    // TODO: 답글 등록, state 초기화
   };
 
   return (
@@ -50,8 +57,8 @@ export const CommentInput = () => {
       >
         <Textarea
           placeholder="댓글을 입력해주세요."
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
           minH="100px"
           h={{ md: "120px" }}
           maxW={{ base: "600px", md: "100%" }}
@@ -60,23 +67,34 @@ export const CommentInput = () => {
           focusBorderColor={openColors.blue[5]}
           my="10px"
           mx={{ base: "12px", md: "0" }}
+          ref={subCommentInputRef}
         />
       </Box>
       <Box
         display="flex"
+        minW={{ base: "110px", md: "135px" }}
         w="fit-content"
         h="fit-content"
         mx={{ base: "12px", md: "0" }}
         ml={{ md: "20px" }}
         bgColor={openColors.white}
         alignItems="center"
-        justifyContent="right"
+        justifyContent="space-between"
         float="right"
       >
         <Button
+          variant="danger"
+          size={{ base: "sm", md: "md" }}
+          onClick={() => {
+            setIsWriteSubComment(false);
+          }}
+        >
+          취소
+        </Button>
+        <Button
           variant="primary"
           size={{ base: "sm", md: "md" }}
-          onClick={handleSubmit}
+          onClick={handleSubmitSubComment}
         >
           등록
         </Button>
@@ -95,14 +113,14 @@ export const CommentInput = () => {
           alignItems="center"
           h="100%"
           flexWrap="wrap"
-          justifyContent="right"
+          justifyContent="space-between"
         >
           <Box
             display="flex"
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
           >
-            <FormLabel htmlFor="anonymous" mb="0" mr="4px" minW="36px">
+            <FormLabel htmlFor="anonymous" mb="0" mr="2px" minW="36px">
               익명
             </FormLabel>
             <Switch
@@ -120,7 +138,7 @@ export const CommentInput = () => {
             closeDelay={1000}
           >
             <Box display="flex" alignItems="center">
-              <FormLabel htmlFor="secret" mb="0" mr="4px" minW="64px">
+              <FormLabel htmlFor="secret" mb="0" mr="2px" minW="64px">
                 비밀댓글
               </FormLabel>
               <Switch

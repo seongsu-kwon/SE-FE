@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
-import React from "react";
+import { subComment, subCommentInfoType } from "@types";
+import React, { useRef, useState } from "react";
 
-import { subComment } from "@/@types";
-import { Comment } from "@/components/comment";
+import { Comment, SubCommentInput } from "@/components/comment";
 import { openColors } from "@/styles";
 
 interface CommentContentProps {
@@ -16,7 +16,6 @@ interface CommentContentProps {
   contents: string;
   isEditable: boolean;
   subComments?: subComment[];
-  replyInputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 export const CommentContent = ({
@@ -27,8 +26,15 @@ export const CommentContent = ({
   contents,
   isEditable,
   subComments,
-  replyInputRef,
 }: CommentContentProps) => {
+  const [isWriteSubComment, setIsWriteSubComment] = useState(false);
+  const subCommentInputRef = useRef<HTMLTextAreaElement>(null);
+  const [subCommentInfo, setSubCommentInfo] = useState<subCommentInfoType>({
+    superCommentId: null,
+    tagCommentId: null,
+    tagCommentAuthorName: null,
+  });
+
   return (
     <Box
       borderTop={{ md: `1px solid ${openColors.gray[3]}` }}
@@ -37,11 +43,15 @@ export const CommentContent = ({
     >
       <Box w="100%" bg={openColors.white} p="16px">
         <Comment
+          superCommentId={commentId}
+          commentId={commentId}
           author={author}
           contents={contents}
           createdAt={createdAt}
           isEditable={isEditable}
-          replyInputRef={replyInputRef}
+          setIsWriteSubComment={setIsWriteSubComment}
+          setSubCommentInfo={setSubCommentInfo}
+          subCommentInputRef={subCommentInputRef}
         />
       </Box>
       {subComments?.map((subComment: subComment) => {
@@ -60,6 +70,8 @@ export const CommentContent = ({
             bg={openColors.white}
           >
             <Comment
+              superCommentId={commentId}
+              commentId={subComment.comment_id}
               author={{
                 userId: subComment.author.loginId, // loginId로 수정 필요
                 name: subComment.author.name,
@@ -68,11 +80,30 @@ export const CommentContent = ({
               createdAt={subComment.created_at}
               isEditable={subComment.isEditable}
               tag={tagName}
-              replyInputRef={replyInputRef}
+              setIsWriteSubComment={setIsWriteSubComment}
+              setSubCommentInfo={setSubCommentInfo}
+              subCommentInputRef={subCommentInputRef}
             />
           </Box>
         );
       })}
+      {isWriteSubComment && (
+        <Box
+          w="100%"
+          p={{ base: "16px 16px 16px 16px", md: "16px 16px 16px 16px" }}
+          borderTop={`1px solid ${openColors.gray[3]}`}
+          bg={openColors.white}
+          onFocus={() => {}}
+        >
+          <SubCommentInput
+            superCommentId={subCommentInfo.superCommentId}
+            tagCommentId={subCommentInfo.tagCommentId}
+            tagCommentAuthorName={subCommentInfo.tagCommentAuthorName}
+            subCommentInputRef={subCommentInputRef}
+            setIsWriteSubComment={setIsWriteSubComment}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

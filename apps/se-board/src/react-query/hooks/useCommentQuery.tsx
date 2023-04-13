@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Comment } from "@types";
 import axios, { AxiosResponse } from "axios";
-
-import { Comment } from "@/@types";
 
 const fetchComments = (
   postId: string | undefined,
