@@ -1,4 +1,13 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
 import { subCommentInfoType } from "@types";
 import React, { useState } from "react";
 import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
@@ -6,6 +15,29 @@ import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 import { SubCommentInput } from "@/components/comment";
 import { CommentMoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
+
+const AuthorInfoMenuList = ({ name }: { name: string }) => {
+  return (
+    <Menu autoSelect={false}>
+      <MenuButton>
+        <Box display="flex" alignItems="center" w="fit-content">
+          <Icon
+            as={BsPersonCircle}
+            boxSize="32px"
+            color={openColors.gray[4]}
+            my="auto"
+          />
+          <Text px="10px" fontSize="lg" fontWeight="600" whiteSpace="nowrap">
+            {name}
+          </Text>
+        </Box>
+      </MenuButton>
+      <MenuList>
+        <MenuItem>작성글 보기</MenuItem>
+      </MenuList>
+    </Menu>
+  );
+};
 
 interface CommentContentProps {
   superCommentId: number;
@@ -48,12 +80,7 @@ export const CommentContent = ({
   return author.userId !== null ? ( // loginId로 수정 필요
     <>
       <Box display="flex" justifyContent="space-between">
-        <Box display="flex" w="fit-content">
-          <BsPersonCircle color={openColors.gray[4]} fontSize="32px" />
-          <Text px="10px" fontSize={{ base: "lg" }} fontWeight="600">
-            {author.name}
-          </Text>
-        </Box>
+        <AuthorInfoMenuList name={author.name} />
         <Box w="fit-content">
           <CommentMoreButton
             isEditable={isEditable}

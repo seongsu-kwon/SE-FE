@@ -1,4 +1,16 @@
-import { Box, Flex, Heading, HStack, Icon, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spacer,
+  Text,
+} from "@chakra-ui/react";
 import { BsClock, BsFillEyeFill, BsPerson } from "react-icons/bs";
 
 import { useBookmarked } from "@/hooks";
@@ -27,6 +39,32 @@ interface HeaderProps {
   };
 }
 
+const AuthorInfoMenuList = ({ name }: { name: string }) => {
+  return (
+    <Menu autoSelect={false}>
+      <MenuButton>
+        <Box display="flex" alignItems="center">
+          <Icon
+            as={BsPerson}
+            boxSize={{ base: "20px", md: "24px" }}
+            my="auto"
+          />
+          <Text
+            ml="6px"
+            fontSize={{ base: "md", md: "lg" }}
+            whiteSpace="nowrap"
+          >
+            {name}
+          </Text>
+        </Box>
+      </MenuButton>
+      <MenuList maxW={{ base: "100px" }}>
+        <MenuItem w="100%">작성글 보기</MenuItem>
+      </MenuList>
+    </Menu>
+  );
+};
+
 export const Header = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
     HeadingInfo.bookmarked
@@ -51,12 +89,8 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
             w="fit-content"
           >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
           <HStack mt="4px" spacing="12px">
-            <Box display="flex">
-              <Icon as={BsPerson} boxSize="20px" my="auto" />
-              <Box ml="6px" fontSize="md">
-                {HeadingInfo.author.name}
-              </Box>
-            </Box>
+            <AuthorInfoMenuList name={HeadingInfo.author.name} />
+
             <Box display="flex">
               <Icon as={BsClock} boxSize="16px" my="auto" />
               <Box ml="6px" fontSize="md">
@@ -97,12 +131,7 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
           w="fit-content"
         >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
-          <Box display="flex">
-            <Icon as={BsPerson} boxSize="24px" my="auto" />
-            <Box ml="6px" fontSize="lg">
-              {HeadingInfo.author.name}
-            </Box>
-          </Box>
+          <AuthorInfoMenuList name={HeadingInfo.author.name} />
           <Box display="flex">
             <Icon as={BsClock} boxSize="20px" my="auto" />
             <Box ml="6px" fontSize="lg">
