@@ -5,17 +5,16 @@ import {
   DesktopAnonymousRegister,
   DesktopCategoryAndPrivacySetting,
   DesktopFileUploader,
-  MobileAnonymousRegister,
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
 
-interface category_option {
+interface CategoryOption {
   id: string;
   value: string;
 }
 
-const NOTICE_CATEGORY_OPTIONS: Array<category_option> = [
+const noticeCategoryOptions: CategoryOption[] = [
   { id: "general", value: "일반" },
   { id: "lecture", value: "강의" },
   { id: "bachelor", value: "학사" },
@@ -25,24 +24,21 @@ const NOTICE_CATEGORY_OPTIONS: Array<category_option> = [
 
 export const NoticeWrite = () => {
   return (
-    <Box>
+    <Box maxW="984px" mx="auto">
       <Show above="md">
         <DesktopCategoryAndPrivacySetting
-          CATEGORY_OPTIONS={NOTICE_CATEGORY_OPTIONS}
+          categoryOptions={noticeCategoryOptions}
         />
         <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
       </Show>
       <Hide above="md">
-        <CategoryAndPrivacySetting CATEGORY_OPTIONS={NOTICE_CATEGORY_OPTIONS} />
+        <CategoryAndPrivacySetting categoryOptions={noticeCategoryOptions} />
         <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">
         <DesktopAnonymousRegister />
       </Show>
-      <Hide above="md">
-        <MobileAnonymousRegister />
-      </Hide>
     </Box>
   );
 };

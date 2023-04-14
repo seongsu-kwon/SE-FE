@@ -5,17 +5,16 @@ import {
   DesktopAnonymousRegister,
   DesktopCategoryAndPrivacySetting,
   DesktopFileUploader,
-  MobileAnonymousRegister,
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
 
-interface category_option {
+interface CategoryOption {
   id: string;
   value: string;
 }
 
-const FREE_CATEGORY_OPTIONS: Array<category_option> = [
+const freeCategoryOptions: CategoryOption[] = [
   { id: "general", value: "일반" },
   { id: "QnA", value: "Q&A" },
   { id: "career", value: "진로" },
@@ -26,22 +25,21 @@ export const FreeBoardWrite = () => {
   return (
     <Box>
       <Show above="md">
-        <DesktopCategoryAndPrivacySetting
-          CATEGORY_OPTIONS={FREE_CATEGORY_OPTIONS}
-        />
-        <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
+        <Box mx="auto" maxW="984px">
+          <DesktopCategoryAndPrivacySetting
+            categoryOptions={freeCategoryOptions}
+          />
+          <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
+        </Box>
       </Show>
       <Hide above="md">
-        <CategoryAndPrivacySetting CATEGORY_OPTIONS={FREE_CATEGORY_OPTIONS} />
+        <CategoryAndPrivacySetting categoryOptions={freeCategoryOptions} />
         <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">
         <DesktopAnonymousRegister />
       </Show>
-      <Hide above="md">
-        <MobileAnonymousRegister />
-      </Hide>
     </Box>
   );
 };

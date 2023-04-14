@@ -29,7 +29,7 @@ const buttonStyle: ComponentStyleConfig = {
     },
     danger: {
       backgroundColor: semanticColors.error,
-      color: semanticColors["primary-content"],
+      color: semanticColors["error-content"],
       _hover: {
         backgroundColor: semanticColors["error-focus"],
         _disabled: {

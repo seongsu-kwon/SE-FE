@@ -30,15 +30,20 @@ export const WritingEditor = () => {
   //       return customUploaadAdapterPlugin(loader);
   //     };
   //   }
+
+  const editorConfiguration = {
+    fontSize: {
+      options: [
+        6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 30, 32,
+      ],
+    },
+  };
+
   return (
-    <Box maxW="984px" m="0 auto">
+    <Box maxW="100%" m="0 auto">
       <CKEditor
         editor={Editor}
-        config={{
-          fontSize: {
-            options: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-          },
-        }}
+        config={editorConfiguration}
         onReady={(editor: any) => {
           editor.editing.view.change((writer: any) => {
             writer.setStyle(

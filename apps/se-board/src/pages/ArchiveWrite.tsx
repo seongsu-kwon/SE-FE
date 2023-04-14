@@ -5,17 +5,16 @@ import {
   DesktopAnonymousRegister,
   DesktopCategoryAndPrivacySetting,
   DesktopFileUploader,
-  MobileAnonymousRegister,
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
 
-interface category_option {
+interface CategoryOption {
   id: string;
   value: string;
 }
 
-const Archive_CATEGORY_OPTIONS: Array<category_option> = [
+const achiveCategoryOptions: CategoryOption[] = [
   { id: "bachelor", value: "학사" },
 ];
 
@@ -23,24 +22,21 @@ export const ArchiveWrite = () => {
   return (
     <Box>
       <Show above="md">
-        <DesktopCategoryAndPrivacySetting
-          CATEGORY_OPTIONS={Archive_CATEGORY_OPTIONS}
-        />
-        <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
+        <Box mx="auto" maxW="984px">
+          <DesktopCategoryAndPrivacySetting
+            categoryOptions={achiveCategoryOptions}
+          />
+          <DesktopFileUploader onFileDrop={(file) => console.log(file)} />
+        </Box>
       </Show>
       <Hide above="md">
-        <CategoryAndPrivacySetting
-          CATEGORY_OPTIONS={Archive_CATEGORY_OPTIONS}
-        />
+        <CategoryAndPrivacySetting categoryOptions={achiveCategoryOptions} />
         <MobileFileUploader onFileDrop={(file) => console.log(file)} />
       </Hide>
       <WritingEditor />
       <Show above="md">
         <DesktopAnonymousRegister />
       </Show>
-      <Hide above="md">
-        <MobileAnonymousRegister />
-      </Hide>
     </Box>
   );
 };
