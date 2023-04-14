@@ -1,106 +1,133 @@
-import { Box } from "@chakra-ui/react";
-import { subComment, subCommentInfoType } from "@types";
-import React, { useRef, useState } from "react";
+import { Box, Button, Text } from "@chakra-ui/react";
+import { subCommentInfoType } from "@types";
+import React, { useState } from "react";
+import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
-import { Comment, SubCommentInput } from "@/components/comment";
+import { SubCommentInput } from "@/components/comment";
+import { CommentMoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
 
 interface CommentContentProps {
+  superCommentId: number;
   commentId: number;
   author: {
     userId: string | null; // loginId로 수정 필요
     name: string;
   };
-  createdAt: string;
-  modifiedAt: string;
   contents: string;
+  createdAt: string;
   isEditable: boolean;
-  subComments?: subComment[];
+  tag?: string;
+  setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubCommentInfo: React.Dispatch<React.SetStateAction<subCommentInfoType>>;
 }
 
 export const CommentContent = ({
+  superCommentId,
   commentId,
   author,
-  createdAt,
-  modifiedAt,
   contents,
+  createdAt,
   isEditable,
-  subComments,
+  tag,
+  setIsWriteSubComment,
+  setSubCommentInfo,
 }: CommentContentProps) => {
-  const [isWriteSubComment, setIsWriteSubComment] = useState(false);
-  const subCommentInputRef = useRef<HTMLTextAreaElement>(null);
-  const [subCommentInfo, setSubCommentInfo] = useState<subCommentInfoType>({
-    superCommentId: null,
-    tagCommentId: null,
-    tagCommentAuthorName: null,
-  });
+  const [isModify, setIsModify] = useState(false); // 수정 하기 버튼 클릭 시 true
 
-  return (
-    <Box
-      borderTop={{ md: `1px solid ${openColors.gray[3]}` }}
-      py={{ base: "8px", md: "0" }}
-      bgColor={openColors.gray[1]}
-    >
-      <Box w="100%" bg={openColors.white} p="16px">
-        <Comment
-          superCommentId={commentId}
-          commentId={commentId}
-          author={author}
-          contents={contents}
-          createdAt={createdAt}
-          isEditable={isEditable}
-          setIsWriteSubComment={setIsWriteSubComment}
-          setSubCommentInfo={setSubCommentInfo}
-        />
-      </Box>
-      {subComments?.map((subComment: subComment) => {
-        const tagName =
-          subComment.tag === commentId
-            ? author.name
-            : subComments.find(
-                (comment) => comment.comment_id === subComment.tag
-              )?.author.name;
-        return (
-          <Box
-            key={subComment.comment_id}
-            w="100%"
-            p={{ base: "16px 16px 16px 36px", md: "16px 16px 16px 64px" }}
-            borderTop={`1px solid ${openColors.gray[3]}`}
-            bg={openColors.white}
-          >
-            <Comment
-              superCommentId={commentId}
-              commentId={subComment.comment_id}
-              author={{
-                userId: subComment.author.loginId, // loginId로 수정 필요
-                name: subComment.author.name,
-              }}
-              contents={subComment.contents}
-              createdAt={subComment.created_at}
-              isEditable={subComment.isEditable}
-              tag={tagName}
-              setIsWriteSubComment={setIsWriteSubComment}
-              setSubCommentInfo={setSubCommentInfo}
-            />
-          </Box>
-        );
-      })}
-      {isWriteSubComment && (
-        <Box
-          w="100%"
-          p={{ base: "16px 16px 16px 16px", md: "16px 16px 16px 16px" }}
-          borderTop={`1px solid ${openColors.gray[3]}`}
-          bg={openColors.white}
-        >
-          <SubCommentInput
-            superCommentId={subCommentInfo.superCommentId}
-            tagCommentId={subCommentInfo.tagCommentId}
-            tagCommentAuthorName={subCommentInfo.tagCommentAuthorName}
-            subCommentInputRef={subCommentInputRef}
-            setIsWriteSubComment={setIsWriteSubComment}
+  const replyOnClick = () => {
+    setSubCommentInfo({
+      superCommentId: superCommentId,
+      tagCommentId: commentId,
+      tagCommentAuthorName: author.name,
+    });
+
+    setIsWriteSubComment(true);
+  };
+
+  return author.userId !== null ? ( // loginId로 수정 필요
+    <>
+      <Box display="flex" justifyContent="space-between">
+        <Box display="flex" w="fit-content">
+          <BsPersonCircle color={openColors.gray[4]} fontSize="32px" />
+          <Text px="10px" fontSize={{ base: "lg" }} fontWeight="600">
+            {author.name}
+          </Text>
+        </Box>
+        <Box w="fit-content">
+          <CommentMoreButton
+            isEditable={isEditable}
+            setIsModify={setIsModify}
           />
         </Box>
+      </Box>
+      {isModify ? (
+        <SubCommentInput
+          superCommentId={superCommentId}
+          tagCommentId={commentId}
+          tagCommentAuthorName={tag}
+          setIsWriteSubComment={setIsWriteSubComment}
+          contents={contents}
+          setIsModify={setIsModify}
+        />
+      ) : (
+        <>
+          <Box display="inline-block" w="100%" mt="8px">
+            {tag && (
+              <Box
+                display="flex"
+                alignItems="center"
+                textAlign="center"
+                w="fit-content"
+                mr="6px"
+                mb="-2px"
+                p="1px 4px"
+                bgColor={openColors.blue[1]}
+                color={openColors.blue[7]}
+                borderRadius="10px"
+                float="left"
+              >
+                <BsAt fontSize="18px" />
+                <Text whiteSpace="nowrap">{tag}</Text>
+              </Box>
+            )}
+            <Text mb="-2px" textAlign="left" maxW="850px">
+              {contents}
+            </Text>
+          </Box>
+          <Box mt="2px">
+            <Text textAlign="left" fontSize={{ base: "sm" }} fontWeight="400">
+              {createdAt
+                .replace("-", ".")
+                .replace("-", ".")
+                .replace("-", " ")
+                .slice(0, 16)}
+            </Text>
+          </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            mt="12px"
+            w="fit-content"
+            color={openColors.gray[5]}
+          >
+            <Button
+              size="sm"
+              p="0"
+              leftIcon={<BsArrowReturnRight />}
+              variant="ghost"
+              _hover={{ bgColor: openColors.white }}
+              onClick={replyOnClick}
+            >
+              답글 작성
+            </Button>
+          </Box>
+        </>
       )}
+    </>
+  ) : (
+    <Box display="flex" alignItems="center" justifyContent="center" h="120px">
+      <Text fontSize="xl">삭제된 댓글입니다.</Text>
     </Box>
   );
 };

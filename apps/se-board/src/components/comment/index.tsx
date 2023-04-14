@@ -1,4 +1,4 @@
-export * from "./Comment";
+export * from "./CommentBody";
 export * from "./CommentContent";
 export * from "./CommentHeader";
 export * from "./CommentInput";

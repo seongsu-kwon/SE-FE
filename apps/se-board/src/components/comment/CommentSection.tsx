@@ -3,7 +3,7 @@ import { Comment } from "@types";
 import { useState } from "react";
 
 import {
-  CommentContent,
+  CommentBody,
   CommentHeader,
   CommentInput,
   ShowMoreCommentButton,
@@ -164,7 +164,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       <CommentHeader commentTotalSize={comments.comments.totalSize} />
       <CommentInput />
       {comments.comments.data.map((comment) => (
-        <CommentContent
+        <CommentBody
           commentId={comment.comment_id}
           author={{
             userId: comment.author.loginId, // loginId로 수정 필요

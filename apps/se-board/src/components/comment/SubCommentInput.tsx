@@ -48,7 +48,7 @@ export const SubCommentInput = ({
   }
 
   const [comment, setComment] = useState<string>(
-    `${initialComment.tag} ${initialComment.contents}`
+    `${initialComment.tag} ` + `${initialComment.contents}`
   );
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
