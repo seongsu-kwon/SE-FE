@@ -41,6 +41,7 @@ export const Comment = ({
       tagCommentId: commentId,
       tagCommentAuthorName: author.name,
     });
+
     setIsWriteSubComment(true);
   };
 
@@ -64,9 +65,10 @@ export const Comment = ({
         <SubCommentInput
           superCommentId={superCommentId}
           tagCommentId={commentId}
-          tagCommentAuthorName={author.name} // 태그할 사람의 이름이 들어가야 함
+          tagCommentAuthorName={tag} // 태그할 사람의 이름이 들어가야 함
           setIsWriteSubComment={setIsWriteSubComment}
           contents={contents}
+          setIsModify={setIsModify}
         />
       ) : (
         <>

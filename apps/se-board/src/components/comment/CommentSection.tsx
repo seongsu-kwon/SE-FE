@@ -6,7 +6,7 @@ import {
   CommentContent,
   CommentHeader,
   CommentInput,
-  ShowMoreButton,
+  ShowMoreCommentButton,
 } from "@/components/comment";
 import { useGetCommentQuery } from "@/react-query/hooks";
 import { openColors } from "@/styles";
@@ -179,7 +179,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       ))}
       {comments.comments.pagenation_info.current_page <
         comments.comments.pagenation_info.last_page && (
-        <ShowMoreButton onClick={moreCommentsOnClick} />
+        <ShowMoreCommentButton onClick={moreCommentsOnClick} />
       )}
     </Box>
   );

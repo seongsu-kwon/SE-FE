@@ -314,7 +314,7 @@ const CommentReportAlert = () => {
             </AlertDialogHeader>
             <AlertDialogBody> 해당 댓글을 신고하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button variant="primary" ref={reportAlertRef} onClick={onClose}>
+              <Button ref={reportAlertRef} onClick={onClose}>
                 취소
               </Button>
               <Button variant="danger" onClick={commentReportClick} ml="8px">

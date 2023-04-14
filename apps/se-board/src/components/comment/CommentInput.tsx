@@ -60,6 +60,7 @@ export const CommentInput = () => {
           focusBorderColor={openColors.blue[5]}
           my="10px"
           mx={{ base: "12px", md: "0" }}
+          resize="none"
         />
       </Box>
       <Box

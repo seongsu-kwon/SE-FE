@@ -20,6 +20,7 @@ interface SubCommentInputProps {
   subCommentInputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   contents?: string;
+  setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SubCommentInput = ({
@@ -29,6 +30,7 @@ export const SubCommentInput = ({
   setIsWriteSubComment,
   subCommentInputRef,
   contents,
+  setIsModify,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
 
@@ -37,7 +39,7 @@ export const SubCommentInput = ({
     contents: "",
   };
 
-  if (tagCommentAuthorName !== null) {
+  if (tagCommentAuthorName !== undefined) {
     initialComment.tag = `@${tagCommentAuthorName} `;
   }
 
@@ -93,6 +95,7 @@ export const SubCommentInput = ({
           my="10px"
           mx={{ base: "12px", md: "0" }}
           ref={subCommentInputRef}
+          resize="none"
         />
       </Box>
       <Box
@@ -111,7 +114,8 @@ export const SubCommentInput = ({
           variant="danger"
           size={{ base: "sm", md: "md" }}
           onClick={() => {
-            setIsWriteSubComment(false); // 댓글 수정에서 취소 안됨
+            setIsWriteSubComment(false);
+            setIsModify && setIsModify(false);
           }}
         >
           취소

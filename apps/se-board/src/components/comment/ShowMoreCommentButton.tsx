@@ -7,7 +7,7 @@ interface ShowMoreButtonProps {
   onClick: () => void;
 }
 
-export const ShowMoreButton = ({ onClick }: ShowMoreButtonProps) => {
+export const ShowMoreCommentButton = ({ onClick }: ShowMoreButtonProps) => {
   return (
     <Box borderTop={`1px solid ${openColors.gray[3]}`} position="relative">
       <Button

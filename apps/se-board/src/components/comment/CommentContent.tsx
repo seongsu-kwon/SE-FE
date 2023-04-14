@@ -91,7 +91,6 @@ export const CommentContent = ({
           p={{ base: "16px 16px 16px 16px", md: "16px 16px 16px 16px" }}
           borderTop={`1px solid ${openColors.gray[3]}`}
           bg={openColors.white}
-          onFocus={() => {}}
         >
           <SubCommentInput
             superCommentId={subCommentInfo.superCommentId}
