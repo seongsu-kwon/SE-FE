@@ -1,15 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MainLayout } from "@/components/layouts";
-import { ArchiveWrite, FreeBoardWrite, NoticeWrite } from "@/pages";
+import { ArchiveWrite, FreeBoardWrite, NoticePage, NoticeWrite } from "@/pages";
 
 export const App = () => (
   <BrowserRouter>
     <Routes>
       <Route path="" element={<MainLayout />}>
         <Route path="" element={<div>메인</div>} />
-        <Route path="notice" element={<div>공지사항</div>} />
         <Route path="notice/write" element={<NoticeWrite />} />
+        <Route path="notice" element={<NoticePage />} />
         <Route path="free-board" element={<div>자유게시판</div>} />
         <Route path="free-board/write" element={<FreeBoardWrite />} />
         <Route path="archive" element={<div>아카이브</div>} />
