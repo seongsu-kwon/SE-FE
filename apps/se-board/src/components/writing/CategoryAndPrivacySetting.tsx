@@ -53,16 +53,15 @@ const PasswordInput = ({
         value={password}
         placeholder="비밀번호를 입력해주세요."
       />
-      <InputRightElement width="4.5rem">
+      <InputRightElement>
         <Tooltip
           label={show ? "비밀번호 숨기기" : "비밀번호 보기"}
           closeDelay={2000}
         >
           <IconButton
+            variant="ghost"
             aria-label="비밀번호 보기"
-            h="1.5rem"
-            bgColor="gray.200"
-            _hover={{ bgColor: "gray.300" }}
+            _hover={{ bgColor: "transparent" }}
             size="sm"
             onClick={handleClick}
             icon={show ? <BsEyeSlashFill /> : <BsEyeFill />}
@@ -85,7 +84,7 @@ export const CategoryAndPrivacySetting = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [prevOption, setPrevOption] = useState({
     category: "카테고리",
-    active: "공개범위",
+    active: "전체",
     subscript: "",
     password: "",
   });
