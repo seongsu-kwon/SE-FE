@@ -10,13 +10,13 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
+import { FileUploaderProps } from "@types";
 import { BsPaperclip } from "react-icons/bs";
 
-import { Props } from "@/@types";
 import { useFileInput } from "@/hooks";
 import { openColors } from "@/styles";
 
-export const DesktopFileUploader = ({ onFileDrop }: Props) => {
+export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
   const { files, handleDrop, handleDragOver, handleFileInput, handleRemove } =
     useFileInput(onFileDrop);
 
@@ -102,7 +102,7 @@ export const DesktopFileUploader = ({ onFileDrop }: Props) => {
   );
 };
 
-export const MobileFileUploader = ({ onFileDrop }: Props) => {
+export const MobileFileUploader = ({ onFileDrop }: FileUploaderProps) => {
   const { files, handleFileInput, handleRemove } = useFileInput(onFileDrop);
 
   return (

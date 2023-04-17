@@ -1,3 +1,4 @@
+export * from "./useBookmarked";
 export * from "./useFileInput";
 export * from "./usePagination";
 export * from "./usePasswordInput";
