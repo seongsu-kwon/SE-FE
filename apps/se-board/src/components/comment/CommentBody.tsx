@@ -88,15 +88,15 @@ export const CommentBody = ({
       {isWriteSubComment && (
         <Box
           w="100%"
-          p={{ base: "16px 16px 16px 16px", md: "16px 16px 16px 16px" }}
+          p="16px"
           borderTop={`1px solid ${openColors.gray[3]}`}
           bg={openColors.white}
         >
           <SubCommentInput
             superCommentId={subCommentInfo.superCommentId}
             tagCommentId={subCommentInfo.tagCommentId}
-            tagCommentAuthorName={subCommentInfo.tagCommentAuthorName}
             subCommentInputRef={subCommentInputRef}
+            contents=""
             setIsWriteSubComment={setIsWriteSubComment}
           />
         </Box>

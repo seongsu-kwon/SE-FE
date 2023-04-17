@@ -16,17 +16,15 @@ import { openColors } from "@/styles";
 interface SubCommentInputProps {
   superCommentId: number | null;
   tagCommentId: number | null;
-  tagCommentAuthorName?: string | null;
   subCommentInputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
-  contents?: string;
+  contents: string;
   setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SubCommentInput = ({
   superCommentId,
   tagCommentId,
-  tagCommentAuthorName,
   setIsWriteSubComment,
   subCommentInputRef,
   contents,
@@ -34,22 +32,7 @@ export const SubCommentInput = ({
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
 
-  const initialComment = {
-    tag: "",
-    contents: "",
-  };
-
-  if (tagCommentAuthorName !== undefined) {
-    initialComment.tag = `@${tagCommentAuthorName} `;
-  }
-
-  if (contents !== undefined) {
-    initialComment.contents = contents;
-  }
-
-  const [comment, setComment] = useState<string>(
-    `${initialComment.tag} ` + `${initialComment.contents}`
-  );
+  const [comment, setComment] = useState<string>(contents);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
 
@@ -111,8 +94,10 @@ export const SubCommentInput = ({
         float="right"
       >
         <Button
-          variant="danger"
           size={{ base: "sm", md: "md" }}
+          bgColor="gray.4"
+          _hover={{ bgColor: "gray.5" }}
+          color="white"
           onClick={() => {
             setIsWriteSubComment(false);
             setIsModify && setIsModify(false);

@@ -173,10 +173,10 @@ export const PostReportAlert = () => {
             </AlertDialogHeader>
             <AlertDialogBody> 해당 게시글을 신고하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button variant="danger" ref={reportAlertRef} onClick={onClose}>
+              <Button ref={reportAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button onClick={commentReportClick} ml="8px">
+              <Button variant="danger" onClick={commentReportClick} ml="8px">
                 신고
               </Button>
             </AlertDialogFooter>
@@ -275,7 +275,7 @@ const CommentDeleteAlert = () => {
             </AlertDialogHeader>
             <AlertDialogBody>댓글을 삭제하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button variant="primary" ref={deleteAlertRef} onClick={onClose}>
+              <Button ref={deleteAlertRef} onClick={onClose}>
                 취소
               </Button>
               <Button variant="danger" onClick={commentDeleteClick} ml="8px">

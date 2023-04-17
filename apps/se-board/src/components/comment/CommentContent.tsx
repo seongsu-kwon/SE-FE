@@ -21,12 +21,7 @@ const AuthorInfoMenuList = ({ name }: { name: string }) => {
     <Menu autoSelect={false}>
       <MenuButton>
         <Box display="flex" alignItems="center" w="fit-content">
-          <Icon
-            as={BsPersonCircle}
-            boxSize="32px"
-            color={openColors.gray[4]}
-            my="auto"
-          />
+          <Icon as={BsPersonCircle} boxSize="32px" color="gray.4" my="auto" />
           <Text px="10px" fontSize="lg" fontWeight="600" whiteSpace="nowrap">
             {name}
           </Text>
@@ -92,7 +87,6 @@ export const CommentContent = ({
         <SubCommentInput
           superCommentId={superCommentId}
           tagCommentId={commentId}
-          tagCommentAuthorName={tag}
           setIsWriteSubComment={setIsWriteSubComment}
           contents={contents}
           setIsModify={setIsModify}
@@ -109,8 +103,8 @@ export const CommentContent = ({
                 mr="6px"
                 mb="-2px"
                 p="1px 4px"
-                bgColor={openColors.blue[1]}
-                color={openColors.blue[7]}
+                bgColor="blue.1"
+                color="blue.7"
                 borderRadius="10px"
                 float="left"
               >
@@ -136,7 +130,8 @@ export const CommentContent = ({
             alignItems="center"
             mt="12px"
             w="fit-content"
-            color={openColors.gray[5]}
+            color="gray.6"
+            _hover={{ color: "gray.7" }}
           >
             <Button
               size="sm"

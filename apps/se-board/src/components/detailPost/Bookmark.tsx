@@ -16,6 +16,7 @@ export const Bookmark = ({ boxSize, toggleBookmark }: BookmarkProps) => {
       boxSize={boxSize || "24px"}
       my="auto"
       onClick={toggleBookmark}
+      cursor="pointer"
     />
   );
 };
@@ -29,6 +30,7 @@ export const BookmarkFill = ({ boxSize, toggleBookmark }: BookmarkProps) => {
       my="auto"
       onClick={toggleBookmark}
       color={openColors.blue[5]}
+      cursor="pointer"
     />
   );
 };
