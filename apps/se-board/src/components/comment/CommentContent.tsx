@@ -90,6 +90,7 @@ export const CommentContent = ({
           setIsWriteSubComment={setIsWriteSubComment}
           contents={contents}
           setIsModify={setIsModify}
+          isWritingReply={false} // 수정하기 버튼 클릭 시 false
         />
       ) : (
         <>

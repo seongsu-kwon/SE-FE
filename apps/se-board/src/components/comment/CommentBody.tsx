@@ -98,6 +98,7 @@ export const CommentBody = ({
             subCommentInputRef={subCommentInputRef}
             contents=""
             setIsWriteSubComment={setIsWriteSubComment}
+            isWritingReply={true} // 답글 작성 시 true
           />
         </Box>
       )}

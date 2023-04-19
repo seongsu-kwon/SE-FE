@@ -20,6 +20,7 @@ interface SubCommentInputProps {
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   contents: string;
   setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
+  isWritingReply: boolean;
 }
 
 export const SubCommentInput = ({
@@ -29,6 +30,7 @@ export const SubCommentInput = ({
   subCommentInputRef,
   contents,
   setIsModify,
+  isWritingReply,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
 
@@ -45,7 +47,7 @@ export const SubCommentInput = ({
   const handleSubmitSubComment = () => {
     // TODO: 답글 등록, state 초기화
     //답글 인지 수정 인지 확인 작업 필요 -> contents가 있으면 수정
-    if (contents !== undefined) {
+    if (contents !== "") {
       //수정
     } else {
       //답글
@@ -99,8 +101,11 @@ export const SubCommentInput = ({
           _hover={{ bgColor: "gray.5" }}
           color="white"
           onClick={() => {
-            setIsWriteSubComment(false);
-            setIsModify && setIsModify(false);
+            if (isWritingReply) {
+              setIsWriteSubComment(false);
+            } else {
+              setIsModify && setIsModify(false);
+            }
           }}
         >
           취소
@@ -130,7 +135,7 @@ export const SubCommentInput = ({
           justifyContent="space-between"
         >
           <Box
-            display="flex"
+            display={isWritingReply ? "flex" : "none"}
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
           >
