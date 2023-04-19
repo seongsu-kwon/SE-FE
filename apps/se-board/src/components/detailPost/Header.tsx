@@ -24,15 +24,16 @@ interface HeaderProps {
   HeadingInfo: {
     title: string;
     author: {
-      login_id: string;
+      loginId: string;
       name: string;
     };
     views: number;
     category: {
-      main_category: string;
-      sub_category: string;
+      mainCategory: string;
+      subCategory: string;
     };
-    created_at: string;
+    createdAt: string;
+    modifiedAt: string;
     contents: string;
     bookmarked: boolean;
     isEditable: boolean;
@@ -87,16 +88,16 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
           <Heading
             size="lg"
             w="fit-content"
-          >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
+          >{`[${HeadingInfo.category.subCategory}] ${HeadingInfo.title}`}</Heading>
           <HStack mt="4px" spacing="12px">
             <AuthorInfoMenuList name={HeadingInfo.author.name} />
 
             <Box display="flex">
               <Icon as={BsClock} boxSize="16px" my="auto" />
               <Box ml="6px" fontSize="md">
-                {`${HeadingInfo.created_at.split("-")[0]}.${
-                  HeadingInfo.created_at.split("-")[1]
-                }.${HeadingInfo.created_at.split("-")[2]}`}
+                {`${HeadingInfo.createdAt.split("-")[0]}.${
+                  HeadingInfo.createdAt.split("-")[1]
+                }.${HeadingInfo.createdAt.split("-")[2]}`}
               </Box>
             </Box>
             <Box display="flex">
@@ -129,15 +130,15 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
           as="h2"
           size="lg"
           w="fit-content"
-        >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
+        >{`[${HeadingInfo.category.subCategory}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
           <AuthorInfoMenuList name={HeadingInfo.author.name} />
           <Box display="flex">
             <Icon as={BsClock} boxSize="20px" my="auto" />
             <Box ml="6px" fontSize="lg">
-              {`${HeadingInfo.created_at.split("-")[0]}.${
-                HeadingInfo.created_at.split("-")[1]
-              }.${HeadingInfo.created_at.split("-")[2]}`}
+              {`${HeadingInfo.createdAt.split("-")[0]}.${
+                HeadingInfo.createdAt.split("-")[1]
+              }.${HeadingInfo.createdAt.split("-")[2]}`}
             </Box>
           </Box>
           <Box display="flex">

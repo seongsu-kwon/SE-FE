@@ -73,16 +73,17 @@ export const PostPage = () => {
 
   const headerInfo = {
     title: post.title,
-    author: { login_id: post.author.login_id, name: post.author.name },
+    author: { loginId: post.author.login_id, name: post.author.name },
     views: post.views,
     category: {
-      main_category: post.category.main_category,
-      sub_category:
+      mainCategory: post.category.main_category,
+      subCategory:
         categories.find(
           (category) => category.eng === post.category.sub_category
         )?.kor || "",
     },
-    created_at: post.created_at,
+    createdAt: post.created_at,
+    modifiedAt: post.moified_at,
     contents: post.contents,
     bookmarked: post.bookmarked,
     isEditable: post.isEditable,
