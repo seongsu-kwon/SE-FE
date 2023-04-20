@@ -1,6 +1,9 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
+import ChatIcon from "@/assets/images/chat_icon.png";
+import NoticeIcon from "@/assets/images/notice_icon.png";
+import { PostIllustration } from "@/components";
 import { CommentSection } from "@/components/comment";
 import {
   AttachmentFile,
@@ -41,6 +44,12 @@ const post = {
   isEditable: true, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
   attachment: {}, // file
 };
+
+const mainCategories = [
+  { eng: "notice", kor: "공지사항", icon: NoticeIcon },
+  { eng: "free", kor: "자유게시판", icon: ChatIcon },
+  { eng: "archive", kor: "아카이브", icon: "" },
+];
 
 const categories = [
   { eng: "class", kor: "학사" },
@@ -92,7 +101,21 @@ export const PostPage = () => {
   return (
     <Box>
       <Show above="md">
-        <DesktopHeader HeadingInfo={headerInfo} />
+        <Box maxW="984px" pt="3rem">
+          <PostIllustration
+            title={
+              mainCategories.find(
+                (category) => category.eng === headerInfo.category.mainCategory
+              )?.kor || ""
+            }
+            imgSrc={
+              mainCategories.find(
+                (category) => category.eng === headerInfo.category.mainCategory
+              )?.icon || ""
+            }
+          />
+          <DesktopHeader HeadingInfo={headerInfo} />
+        </Box>
       </Show>
       <Hide above="md">
         <Header HeadingInfo={headerInfo} />
