@@ -1,4 +1,5 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import ChatIcon from "@/assets/images/chat_icon.png";
@@ -12,6 +13,7 @@ import {
   Header,
 } from "@/components/detailPost";
 import { useGetPostQuery } from "@/react-query/hooks";
+import { useMobileHeaderState } from "@/store/mobileHeaderState";
 
 const post = {
   post_id: 2234,
@@ -79,6 +81,7 @@ const files = [
 export const PostPage = () => {
   const { postId } = useParams<{ postId: string }>();
   const { data, isLoading, isError } = useGetPostQuery(postId);
+  const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
   const headerInfo = {
     title: post.title,
@@ -97,6 +100,11 @@ export const PostPage = () => {
     bookmarked: post.bookmarked,
     isEditable: post.isEditable,
   };
+
+  useEffect(() => {
+    mobileHeaderClose();
+    return mobileHeaderOpen;
+  }, []);
 
   return (
     <Box>

@@ -24,8 +24,10 @@ import {
 } from "@chakra-ui/react";
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { Link, NavLink } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
+import { mobileHeaderState } from "@/store/mobileHeaderState";
 import { semanticColors } from "@/styles";
 
 const NAV_ITEMS: readonly NavItemProps[] = [
@@ -125,8 +127,10 @@ const DrawerNavigation = ({
 };
 
 export const HeaderNavigation = () => {
+  const open = useRecoilValue(mobileHeaderState);
+
   return (
-    <>
+    <Box display={open ? "block" : "none"}>
       <Flex
         align="center"
         justify="space-between"
@@ -155,7 +159,7 @@ export const HeaderNavigation = () => {
           ))}
         </Flex>
       </Center>
-    </>
+    </Box>
   );
 };
 
