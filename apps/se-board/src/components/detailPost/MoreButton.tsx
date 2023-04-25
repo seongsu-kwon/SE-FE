@@ -23,6 +23,7 @@ import {
   BsThreeDotsVertical,
   BsTrash3,
 } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 import { openColors } from "@/styles";
 
@@ -68,13 +69,15 @@ export const MoreButton = ({ fontSize, menuItems }: MoreButtonProps) => {
   );
 };
 
-const PostModifyMenuItem = () => {
+const PostModifyMenuItem = ({ postId }: { postId: number }) => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const modifyAlertRef = React.useRef<HTMLButtonElement>(null);
-  const commentModifyClick = () => {
+  const postModifyClick = () => {
     // TODO: 작성글 수정
     onClose();
     // 작성글 수정 페이지로 이동
+    navigate(`/notice/${postId}/modify`);
   };
 
   return (
@@ -90,14 +93,14 @@ const PostModifyMenuItem = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              수정
+              게시글 수정
             </AlertDialogHeader>
             <AlertDialogBody>작성글을 수정하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={modifyAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="primary" onClick={commentModifyClick} ml="8px">
+              <Button variant="primary" onClick={postModifyClick} ml="8px">
                 수정
               </Button>
             </AlertDialogFooter>
@@ -195,7 +198,13 @@ const PostShareMenuItem = ({ onShareClick }: { onShareClick: () => void }) => {
   );
 };
 
-export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
+export const PostMoreButton = ({
+  postId,
+  isEditable,
+}: {
+  postId: number;
+  isEditable: boolean;
+}) => {
   const toast = useToast();
 
   const onShareClick = () => {
@@ -236,7 +245,7 @@ export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
       <MenuList minWidth="120px" shadow="xl">
         {isEditable ? (
           <>
-            <PostModifyMenuItem />
+            <PostModifyMenuItem postId={postId} />
             <PostDeleteAlert />
             <PostShareMenuItem onShareClick={onShareClick} />
           </>

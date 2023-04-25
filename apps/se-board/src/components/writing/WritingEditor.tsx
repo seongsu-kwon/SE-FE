@@ -1,8 +1,14 @@
 import { Box } from "@chakra-ui/react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
 
-export const WritingEditor = () => {
+import { modifyPostState } from "@/store";
+
+export const WritingEditor = ({ contents }: { contents?: string }) => {
+  const [editorData, setEditorData] = useState<string>(contents || "");
+  const [modifyPost, setMofifyPost] = useRecoilState(modifyPostState);
   //   const imgLink = "http://localhost:3000/images";
 
   //   const customUploaadAdapterPlugin = (loader: ) => {
@@ -52,12 +58,22 @@ export const WritingEditor = () => {
               editor.editing.view.document.getRoot()
             );
           });
+
+          editor.setData(editorData);
         }}
-        // onChange={(event: any, editor: any) => {
-        //   console.log(event);
-        //   const data = editor.getData();
-        //   console.log({ data });
-        // }}
+        onChange={(event: any, editor: any) => {
+          const data = editor.getData();
+          const match = data.match(/<h[1-6][^>]*>([^<]+)<\/h[1-6]>/i);
+          const title = match ? match[1] : "";
+          const body = data.replace(match && match[0], "");
+          setEditorData(data);
+
+          setMofifyPost({
+            ...modifyPost,
+            title: title,
+            contents: body,
+          });
+        }}
       />
     </Box>
   );

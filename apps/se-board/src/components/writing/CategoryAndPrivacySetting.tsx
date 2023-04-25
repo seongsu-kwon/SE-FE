@@ -3,8 +3,10 @@ import {
   Button,
   ButtonGroup,
   Center,
+  Checkbox,
   Flex,
   Heading,
+  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -23,12 +25,15 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
 import {
   usePasswordInput,
   useSelectCategory,
   useSelectDisclosure,
 } from "@/hooks";
+import { modifyPostState } from "@/store";
 import { openColors } from "@/styles";
 
 interface PasswordInputProps {
@@ -74,25 +79,36 @@ const PasswordInput = ({
 
 interface CategoryAndPrivacySettingProps {
   categoryOptions: { id: string; value: string }[];
+  beforeCategory?: string;
+  // beforePrivacy?: string;
+  isModified?: boolean;
+  onClickRegistration?: () => void;
 }
 
 const privacyOptions = ["전체", "금오인", "비밀"];
 
 export const CategoryAndPrivacySetting = ({
   categoryOptions,
-}: CategoryAndPrivacySettingProps) => {
+  beforeCategory,
+  isModified,
+  onClickRegistration,
+}: // TODO: 공개 범위 받아와서 설정 필요
+CategoryAndPrivacySettingProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [prevOption, setPrevOption] = useState({
-    category: "카테고리",
+    category: beforeCategory || "카테고리",
     active: "전체",
     subscript: "",
     password: "",
   });
   const { selectedCategory, setSelectedCategory, selectOption } =
-    useSelectCategory();
+    useSelectCategory(beforeCategory);
   const { subscript, setSubscript, active, setActive, onClickDisclosure } =
     useSelectDisclosure();
   const { password, show, handleClick, handleChange } = usePasswordInput();
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isPined, setIsPined] = useState(false);
+  const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
   const settingClick = () => {
     setPrevOption({
@@ -101,6 +117,17 @@ export const CategoryAndPrivacySetting = ({
       subscript,
       password,
     });
+
+    setModifyPost({
+      ...modifyPost,
+      // categoryId: selectedCategory, 카테고리 받아오는 로직 구현 후 선택된 카테고리 id로 수정
+      // pined 여부 추가 필요
+      exposeOption: {
+        name: active,
+        password: password,
+      },
+    });
+
     onClose();
   };
 
@@ -114,7 +141,14 @@ export const CategoryAndPrivacySetting = ({
   return (
     <Center h="60px">
       <ButtonGroup gap="2.5rem">
-        <Button variant="link" color="red.500">
+        <Button
+          onClick={() => {
+            const navigate = useNavigate();
+            navigate(-1);
+          }}
+          variant="link"
+          color="red.500"
+        >
           취소
         </Button>
         <Button variant="link" onClick={onOpen}>
@@ -122,7 +156,7 @@ export const CategoryAndPrivacySetting = ({
           {active === "" ? " 공개범위 " : ` ${active} `}
           설정
         </Button>
-        <Button variant="link" color="blue.500">
+        <Button variant="link" color="blue.500" onClick={onClickRegistration}>
           등록
         </Button>
       </ButtonGroup>
@@ -138,7 +172,7 @@ export const CategoryAndPrivacySetting = ({
                 카테고리
               </Heading>
               <Select
-                placeholder="카테고리"
+                placeholder={prevOption.category}
                 py="4px"
                 onChange={selectOption}
                 _hover={{ borderColor: "blue.500" }}
@@ -186,6 +220,30 @@ export const CategoryAndPrivacySetting = ({
                 ""
               )}
             </Box>
+            <HStack display="flex">
+              {isModified ? (
+                ""
+              ) : (
+                <Checkbox
+                  size="md"
+                  borderRadius="3px"
+                  borderColor="gray.5"
+                  color={openColors.gray[7]}
+                  onChange={() => setIsAnonymous(!isAnonymous)}
+                >
+                  익명 작성
+                </Checkbox>
+              )}
+              <Checkbox
+                size="md"
+                borderRadius="3px"
+                borderColor="gray.5"
+                color={openColors.gray[7]}
+                onChange={() => setIsPined(!isPined)} // 게시글 수정 시 체크되어 있을 수도 있어야 함
+              >
+                게시글 목록 상단 고정
+              </Checkbox>
+            </HStack>
           </ModalBody>
           <ModalFooter>
             <Button variant={"danger"} onClick={cancelClick} mr="8px">
@@ -203,14 +261,16 @@ export const CategoryAndPrivacySetting = ({
 
 export const DesktopCategoryAndPrivacySetting = ({
   categoryOptions,
-}: CategoryAndPrivacySettingProps) => {
-  const { selectOption } = useSelectCategory();
+  beforeCategory,
+}: // ToDo: 공개 범위 값 받아서 미리 세팅 필요, 비밀글일 때는 새로운 비밀번호 입력 필요 Null 값일 때 기존 비밀번호
+CategoryAndPrivacySettingProps) => {
+  const { selectedCategory, selectOption } = useSelectCategory(beforeCategory);
   const { subscript, active, onClickDisclosure } = useSelectDisclosure();
   const { password, show, handleClick, handleChange } = usePasswordInput();
 
   return (
     <Flex
-      maxWidth="full"
+      maxW="100%"
       minHeight="75px"
       margin="60px auto 0 auto"
       borderY={`1px solid ${openColors.gray[3]}`}
@@ -220,7 +280,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           카테고리
         </Heading>
         <Select
-          placeholder="카테고리"
+          placeholder={selectedCategory}
           py="8px"
           w="20rem"
           maxW="260px"

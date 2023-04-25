@@ -1,8 +1,12 @@
 import React, { useCallback, useState } from "react";
+import { useRecoilState } from "recoil";
+
+import { modifyPostState } from "@/store";
 
 export function useSelectDisclosure() {
   const [subscript, setSubscript] = useState<string>("");
   const [active, setActive] = useState<string>("");
+  const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
   const privacyOptions = [
     { id: "전체", value: "모든 사용자가 볼 수 있습니다." },
@@ -27,6 +31,14 @@ export function useSelectDisclosure() {
       }
 
       setActive(innerHTML);
+
+      setModifyPost({
+        ...modifyPost,
+        exposeOption: {
+          name: innerHTML,
+          password: modifyPost.exposeOption.password,
+        },
+      });
     },
     []
   );

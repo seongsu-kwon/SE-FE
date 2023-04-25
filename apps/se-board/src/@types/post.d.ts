@@ -41,4 +41,33 @@ declare module "@types" {
     userId: string;
     name: string;
   }
+
+  interface PostDetail {
+    postId: number;
+    title: string;
+    author: Author;
+    views: number;
+    category: CategoryDTO;
+    createdAt: DateType;
+    modifiedAt: DateType;
+    contents: string;
+    isBookmarked: boolean;
+    isEditable: boolean;
+    // 게시글 공개 범위 추가 필요
+    attachments: any; // 파일 로직 추가 후 수정 필요
+  }
+
+  interface exposeOptionDTO {
+    name: string;
+    password?: string;
+  }
+
+  interface PostPut {
+    title: string;
+    contents: string;
+    categoryId: number;
+    pined: boolean;
+    exposeOption: exposeOptionDTO;
+    attachments: any; // 파일 로직 추가 후 수정 필요
+  }
 }

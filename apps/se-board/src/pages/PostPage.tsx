@@ -16,7 +16,7 @@ import { useGetPostQuery } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 
 const post = {
-  post_id: 2234,
+  postId: 2234,
   title: "hello SE Board", // header
   author: {
     // header
@@ -84,6 +84,7 @@ export const PostPage = () => {
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
   const headerInfo = {
+    postId: post.postId,
     title: post.title,
     author: { loginId: post.author.login_id, name: post.author.name },
     views: post.views,

@@ -22,6 +22,7 @@ import { PostMoreButton } from "./MoreButton";
 
 interface HeaderProps {
   HeadingInfo: {
+    postId: number;
     title: string;
     author: {
       loginId: string;
@@ -81,7 +82,10 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
         ) : (
           <BookmarkFill toggleBookmark={toggleBookmark} />
         )}
-        <PostMoreButton isEditable={HeadingInfo.isEditable} />
+        <PostMoreButton
+          postId={HeadingInfo.postId}
+          isEditable={HeadingInfo.isEditable}
+        />
       </Flex>
       <Box borderBottom={`1px solid ${openColors.gray[3]}`}>
         <Box m="16px 0 16px 16px">
@@ -156,7 +160,10 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
         ) : (
           <BookmarkFill boxSize="32px" toggleBookmark={toggleBookmark} />
         )}
-        <PostMoreButton isEditable={HeadingInfo.isEditable} />
+        <PostMoreButton
+          postId={HeadingInfo.postId}
+          isEditable={HeadingInfo.isEditable}
+        />
       </Box>
     </Box>
   );

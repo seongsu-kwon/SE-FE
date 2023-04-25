@@ -16,13 +16,12 @@ import { BsPaperclip } from "react-icons/bs";
 import { useFileInput } from "@/hooks";
 import { openColors } from "@/styles";
 
-export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
+export const DesktopFileUploader = ({
+  onFileDrop,
+  beforeFiles,
+}: FileUploaderProps) => {
   const { files, handleDrop, handleDragOver, handleFileInput, handleRemove } =
-    useFileInput(onFileDrop);
-
-  const onClick = () => {
-    console.log(files);
-  };
+    useFileInput(onFileDrop, beforeFiles);
 
   return (
     <Box
@@ -102,8 +101,14 @@ export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
   );
 };
 
-export const MobileFileUploader = ({ onFileDrop }: FileUploaderProps) => {
-  const { files, handleFileInput, handleRemove } = useFileInput(onFileDrop);
+export const MobileFileUploader = ({
+  onFileDrop,
+  beforeFiles,
+}: FileUploaderProps) => {
+  const { files, handleFileInput, handleRemove } = useFileInput(
+    onFileDrop,
+    beforeFiles
+  );
 
   return (
     <FormControl borderY={`1px solid ${openColors.gray[3]}`}>
