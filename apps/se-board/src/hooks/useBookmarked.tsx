@@ -1,8 +1,8 @@
 import { useToast } from "@chakra-ui/react";
 import { useState } from "react";
 
-export const useBookmarked = (isLoggined: boolean) => {
-  const [isBookmarked, setIsBookmarked] = useState(isLoggined);
+export const useBookmarked = (isLoggined: boolean, bookmarked: boolean) => {
+  const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const toast = useToast();
 
   const toggleBookmark = () => {

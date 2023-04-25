@@ -15,8 +15,8 @@ const fetchComments = (
 
 export const useGetCommentQuery = (
   postId: string | undefined,
-  page: number,
-  perPage: number
+  page: number = 1,
+  perPage: number = 25
 ) => {
   return useQuery<Comment>(["comments", postId], () =>
     fetchComments(postId, page, perPage)

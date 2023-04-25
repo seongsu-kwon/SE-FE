@@ -69,6 +69,7 @@ const AuthorInfoMenuList = ({ name }: { name: string }) => {
 
 export const Header = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
+    HeadingInfo.isEditable,
     HeadingInfo.bookmarked
   );
 
@@ -119,7 +120,8 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
 
 export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
-    HeadingInfo.isEditable
+    HeadingInfo.isEditable,
+    HeadingInfo.bookmarked
   );
 
   return (

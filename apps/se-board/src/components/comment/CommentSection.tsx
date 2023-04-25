@@ -14,11 +14,11 @@ import { openColors } from "@/styles";
 const comments = {
   comments: {
     totalSize: 100, // 댓글 + 답글
-    pagenation_info: {
-      comment_size: 75, // 댓글 총개수 (답글 제외)
-      per_page: 25, // 한 페이지당 받을 댓글 개수
-      current_page: 1, // 현재 페이지
-      last_page: 3, // 마지막 페이지
+    pagenationInfo: {
+      commentSize: 75, // 댓글 총개수 (답글 제외)
+      perPage: 25, // 한 페이지당 받을 댓글 개수
+      currentPage: 1, // 현재 페이지
+      lastPage: 3, // 마지막 페이지
     },
     data: [
       {
@@ -131,8 +131,8 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
-  const { data, isLoading, isError } = useGetCommentQuery(postId, 1, 25);
-  const [commentssss, setComments] = useState<Comment>();
+  const { data, isLoading, isError } = useGetCommentQuery(postId, 1);
+  const [commentData, setCommentData] = useState<Comment | undefined>(data);
 
   if (isLoading) {
     // 로딩중 화면 렌더링
@@ -144,18 +144,25 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
   const moreCommentsOnClick = () => {
     // 댓글 더보기 버튼 클릭 시
-    if (data) {
+    if (commentData) {
       const newData = useGetCommentQuery(
         postId,
-        data.pagenationInfo.currentPage + 1,
-        25
+        commentData.pagenationInfo.currentPage + 1
       ).data; // comment에 data 추가 후 더보기 버튼 클릭 시 기존 데이터와 새로운 데이터 합치기 필요
+
+      if (newData) {
+        setCommentData({
+          pagenationInfo: newData.pagenationInfo,
+          data: [...commentData.data, ...newData.data],
+        });
+      }
     }
   };
 
+  // TODO: comments -> commentData로 수정 필요
   return (
     <Box
-      maxW="984px"
+      maxW="100%"
       mx="auto"
       borderBottom={`1px solid ${openColors.gray[3]}`}
       mb="100px"
@@ -177,8 +184,8 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           subComments={comment.sub_comments}
         />
       ))}
-      {comments.comments.pagenation_info.current_page <
-        comments.comments.pagenation_info.last_page && (
+      {comments.comments.pagenationInfo.currentPage <
+        comments.comments.pagenationInfo.lastPage && (
         <ShowMoreCommentButton onClick={moreCommentsOnClick} />
       )}
     </Box>
