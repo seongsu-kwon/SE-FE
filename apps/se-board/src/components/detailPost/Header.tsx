@@ -119,13 +119,13 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
 
 export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
-    HeadingInfo.bookmarked
+    HeadingInfo.isEditable
   );
 
   return (
     <Box
       display="flex"
-      maxW="984px"
+      w="100%"
       m="20px auto 0 auto"
       borderY={`1px solid ${openColors.gray[3]}`}
     >

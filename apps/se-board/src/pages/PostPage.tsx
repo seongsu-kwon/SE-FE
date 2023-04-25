@@ -1,5 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { PostDetail } from "@types";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ChatIcon from "@/assets/images/chat_icon.png";
@@ -42,7 +43,7 @@ const post = {
   <p>&nbsp;</p>
   
   <p><span style="font-size:18px;">미니게임&nbsp;</span><span style="font-size:18px;">진행 동안은 DB134 사용이 어려울 예정이니 이점 양해부탁드립니다</span></p></div>`, // contents
-  bookmarked: false, // 익명 사용자이면 항상 false // header
+  bookmarked: true, // 익명 사용자이면 항상 false // header
   isEditable: true, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
   attachment: {}, // file
 };
@@ -79,11 +80,13 @@ const files = [
 ];
 
 export const PostPage = () => {
-  const { postId } = useParams<{ postId: string }>();
+  const { postId } = useParams();
   const { data, isLoading, isError } = useGetPostQuery(postId);
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
+  const [postData, setPostData] = useState<PostDetail | undefined>(data);
 
   const headerInfo = {
+    // post -> postData로 변경
     postId: post.postId,
     title: post.title,
     author: { loginId: post.author.login_id, name: post.author.name },
@@ -108,9 +111,9 @@ export const PostPage = () => {
   }, []);
 
   return (
-    <Box>
+    <Box maxW="984px" w="100%">
       <Show above="md">
-        <Box maxW="984px" pt="3rem">
+        <Box pt="3rem">
           <PostIllustration
             title={
               mainCategories.find(
