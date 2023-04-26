@@ -1,7 +1,7 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { PostDetail } from "@types";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import ChatIcon from "@/assets/images/chat_icon.png";
 import NoticeIcon from "@/assets/images/notice_icon.png";
@@ -12,6 +12,9 @@ import {
   Content,
   DesktopHeader,
   Header,
+  SkeletonDetailPostContent,
+  SkeletonDetailPostDesktopHeader,
+  SkeletonDetailPostHeader,
 } from "@/components/detailPost";
 import { useGetPostQuery } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
@@ -81,59 +84,65 @@ const files = [
 
 export const PostPage = () => {
   const { postId } = useParams();
-  const { data, isLoading, isError } = useGetPostQuery(postId);
+  const mainCategory = useLocation().pathname.split("/")[1];
+  const { data, isLoading, isError, error } = useGetPostQuery(postId);
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
   const [postData, setPostData] = useState<PostDetail | undefined>(data);
 
-  const headerInfo = {
-    // post -> postData로 변경
-    postId: post.postId,
-    title: post.title,
-    author: { loginId: post.author.login_id, name: post.author.name },
-    views: post.views,
-    category: {
-      mainCategory: post.category.main_category,
-      subCategory:
-        categories.find(
-          (category) => category.eng === post.category.sub_category
-        )?.kor || "",
-    },
-    createdAt: post.created_at,
-    modifiedAt: post.moified_at,
-    contents: post.contents,
-    bookmarked: post.bookmarked,
-    isEditable: post.isEditable,
-  };
-
   useEffect(() => {
     mobileHeaderClose();
+    setPostData(data);
+
     return mobileHeaderOpen;
-  }, []);
+  }, [data]);
+
+  const headerInfo = {
+    postId: Number(postId),
+    title: postData?.title || "제목",
+    author: {
+      loginId: postData?.author.loginId || "",
+      name: postData?.author.name || "이름",
+    },
+    views: postData?.views || 0,
+    category: postData?.category.name || "카테고리",
+    createdAt: postData?.createdAt,
+    modifiedAt: postData?.modifiedAt,
+    bookmarked: postData?.bookmarked || false,
+    isEditable: postData?.isEditable || false,
+  };
 
   return (
     <Box maxW="984px" w="100%">
       <Show above="md">
         <Box pt="3rem">
           <PostIllustration
-            title={
-              mainCategories.find(
-                (category) => category.eng === headerInfo.category.mainCategory
-              )?.kor || ""
-            }
+            title={"공지사항"}
             imgSrc={
-              mainCategories.find(
-                (category) => category.eng === headerInfo.category.mainCategory
-              )?.icon || ""
+              mainCategories.find((category) => category.eng === mainCategory)
+                ?.icon || ""
             }
           />
-          <DesktopHeader HeadingInfo={headerInfo} />
+          {isLoading ? (
+            <SkeletonDetailPostDesktopHeader />
+          ) : (
+            <DesktopHeader HeadingInfo={headerInfo} />
+          )}
         </Box>
       </Show>
       <Hide above="md">
-        <Header HeadingInfo={headerInfo} />
+        {isLoading ? (
+          <SkeletonDetailPostHeader />
+        ) : (
+          <Header HeadingInfo={headerInfo} />
+        )}
       </Hide>
       <AttachmentFile files={files} />
-      <Content contents={post.contents} />
+      {isLoading ? (
+        <SkeletonDetailPostContent />
+      ) : (
+        <Content contents={postData?.contents || "<p>내용 무</p>"} />
+      )}
+
       <CommentSection postId={postId} />
     </Box>
   );

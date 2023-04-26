@@ -8,7 +8,7 @@ const fetchComments = (
   perPage: number
 ): Promise<Comment> => {
   const response = axios.get(
-    `/post/${postId}/comments?page=${page}&perPage=${perPage}`
+    `https://4230704f-261a-4d33-9438-f49a652a7f3f.mock.pstmn.io/post/${postId}/comments`
   );
   return response.then((res: AxiosResponse<Comment>) => res.data);
 };
@@ -23,17 +23,17 @@ export const useGetCommentQuery = (
   );
 };
 
-interface postCommentData {
+interface PostCommentData {
   postId: number;
   contents: string;
   isAnonymous: boolean;
 }
 
-interface postResData {
+interface PostResData {
   message?: string;
 }
 
-const postComment = async (postData: postCommentData): Promise<postResData> => {
+const postComment = async (postData: PostCommentData): Promise<PostResData> => {
   const response = axios.post("/comments", postData);
   const res = await response;
   return res.data;
@@ -43,19 +43,19 @@ export const usePostCommentMutation = () => {
   return useMutation(postComment);
 };
 
-interface putCommentData {
+interface PutCommentData {
   contents: string;
 }
 
-interface putResData {
+interface PutResData {
   message: string;
 }
 
 const putComment = async (
   commentId: number,
-  putCommentData: putCommentData
-): Promise<putResData> => {
-  const response = axios.put<putResData>(
+  putCommentData: PutCommentData
+): Promise<PutResData> => {
+  const response = axios.put<PutResData>(
     `/comments/${commentId}`,
     putCommentData
   );
@@ -65,7 +65,7 @@ const putComment = async (
 
 export const usePutCommentMutation = (
   commentId: number,
-  putCommentData: putCommentData
+  putCommentData: PutCommentData
 ) => {
   return useMutation(() => putComment(commentId, putCommentData));
 };

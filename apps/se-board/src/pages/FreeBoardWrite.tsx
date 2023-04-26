@@ -65,7 +65,7 @@ export const FreeBoardWrite = () => {
           categoryOptions={freeCategoryOptions}
           beforeCategory={
             freeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.subCategory
+              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
         />
@@ -79,7 +79,7 @@ export const FreeBoardWrite = () => {
           categoryOptions={freeCategoryOptions}
           beforeCategory={
             freeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.subCategory
+              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
           isModified={isModified.current}

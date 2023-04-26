@@ -20,7 +20,7 @@ declare module "@types" {
   }
 
   interface AuthorDTO {
-    userId: string;
+    loginId: string;
     name: string;
   }
 
@@ -38,7 +38,12 @@ declare module "@types" {
   }
 
   interface Author {
-    userId: string;
+    loginId: string;
+    name: string;
+  }
+
+  interface PostDetatilCategory {
+    categoryId: number;
     name: string;
   }
 
@@ -47,11 +52,11 @@ declare module "@types" {
     title: string;
     author: Author;
     views: number;
-    category: CategoryDTO;
+    category: PostDetatilCategory;
     createdAt: DateType;
     modifiedAt: DateType;
     contents: string;
-    isBookmarked: boolean;
+    bookmarked: boolean;
     isEditable: boolean;
     // 게시글 공개 범위 추가 필요
     attachments: any; // 파일 로직 추가 후 수정 필요

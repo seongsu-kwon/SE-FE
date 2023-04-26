@@ -1,5 +1,5 @@
 declare module "@types" {
-  interface subComment {
+  interface SubComment {
     comment_id: number;
     tag: number;
     author: {
@@ -29,11 +29,11 @@ declare module "@types" {
       modifiedAt: string;
       contents: string;
       isEditable: boolean;
-      subComments: subComment[];
+      subComments: SubComment[];
     }[];
   }
 
-  interface subCommentInfoType {
+  interface SubCommentInfoType {
     superCommentId: number | null;
     tagCommentId: number | null;
     tagCommentAuthorName: string | null;

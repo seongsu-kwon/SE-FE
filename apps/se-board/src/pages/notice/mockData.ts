@@ -7,7 +7,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 13:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -26,7 +26,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 13:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -44,7 +44,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -62,7 +62,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -80,7 +80,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -98,7 +98,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -116,7 +116,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -134,7 +134,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -152,7 +152,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -170,7 +170,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -188,7 +188,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -206,7 +206,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -224,7 +224,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -242,7 +242,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -260,7 +260,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -278,7 +278,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,
@@ -296,7 +296,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "닉넴최대여덟글자",
     },
     views: 12,
@@ -314,7 +314,7 @@ export const MOCK_NOTICE_LIST: PostListItem[] = [
     createdDateTime: "2021-08-01 12:00:00",
     modifiedDateTime: "2021-08-01 12:00:00",
     author: {
-      userId: "anonymous",
+      loginId: "anonymous",
       name: "테크모",
     },
     views: 12,

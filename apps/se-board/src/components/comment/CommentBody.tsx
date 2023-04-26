@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { subComment, subCommentInfoType } from "@types";
+import { SubComment, SubCommentInfoType } from "@types";
 import React, { useRef, useState } from "react";
 
 import { CommentContent, SubCommentInput } from "@/components/comment";
@@ -15,7 +15,7 @@ interface CommentBodyProps {
   modifiedAt: string;
   contents: string;
   isEditable: boolean;
-  subComments?: subComment[];
+  subComments?: SubComment[];
 }
 
 export const CommentBody = ({
@@ -29,7 +29,7 @@ export const CommentBody = ({
 }: CommentBodyProps) => {
   const [isWriteSubComment, setIsWriteSubComment] = useState(false);
   const subCommentInputRef = useRef<HTMLTextAreaElement>(null);
-  const [subCommentInfo, setSubCommentInfo] = useState<subCommentInfoType>({
+  const [subCommentInfo, setSubCommentInfo] = useState<SubCommentInfoType>({
     superCommentId: null,
     tagCommentId: null,
     tagCommentAuthorName: null,
@@ -53,7 +53,7 @@ export const CommentBody = ({
           setSubCommentInfo={setSubCommentInfo}
         />
       </Box>
-      {subComments?.map((subComment: subComment) => {
+      {subComments?.map((subComment: SubComment) => {
         const tagName =
           subComment.tag === commentId
             ? author.name

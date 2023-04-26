@@ -8,7 +8,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { subCommentInfoType } from "@types";
+import { SubCommentInfoType } from "@types";
 import React, { useState } from "react";
 import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
@@ -46,7 +46,7 @@ interface CommentContentProps {
   isEditable: boolean;
   tag?: string;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubCommentInfo: React.Dispatch<React.SetStateAction<subCommentInfoType>>;
+  setSubCommentInfo: React.Dispatch<React.SetStateAction<SubCommentInfoType>>;
 }
 
 export const CommentContent = ({

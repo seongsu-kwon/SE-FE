@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { Comment } from "@types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   CommentBody,
@@ -141,6 +141,10 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   if (isError) {
     // 에러 화면 렌더링
   }
+
+  useEffect(() => {
+    console.log(data);
+  });
 
   const moreCommentsOnClick = () => {
     // 댓글 더보기 버튼 클릭 시

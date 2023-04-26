@@ -68,7 +68,7 @@ export const NoticeWrite = () => {
           categoryOptions={noticeCategoryOptions}
           beforeCategory={
             noticeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.subCategory
+              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
           // beforePrivacy={post?.privacy} 게시글 공개 범위
@@ -83,7 +83,7 @@ export const NoticeWrite = () => {
           categoryOptions={noticeCategoryOptions}
           beforeCategory={
             noticeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.subCategory
+              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
           isModified={isModified.current}
