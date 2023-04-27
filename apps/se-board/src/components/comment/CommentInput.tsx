@@ -13,8 +13,6 @@ import { useParams } from "react-router-dom";
 import { usePostCommentMutation } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
-interface CommentInputProps {}
-
 export const CommentInput = () => {
   const { postId } = useParams();
   const [value, setValue] = useState("");
@@ -103,7 +101,7 @@ export const CommentInput = () => {
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
           >
-            <FormLabel htmlFor="anonymous" mb="0" mr="4px" minW="36px">
+            <FormLabel htmlFor="anonymous" mb="0" mr="0" minW="36px">
               익명
             </FormLabel>
             <Switch
@@ -121,7 +119,7 @@ export const CommentInput = () => {
             closeDelay={1000}
           >
             <Box display="flex" alignItems="center">
-              <FormLabel htmlFor="secret" mb="0" mr="4px" minW="64px">
+              <FormLabel htmlFor="secret" mb="0" mr="2px" minW="64px">
                 비밀댓글
               </FormLabel>
               <Switch

@@ -11,3 +11,7 @@ export const isSameDateTime = (date1: DateType, date2: DateType) => {
 export const toYYYYMMDDHHhhss = (date: DateType = "1970-01-01 12:00:00") => {
   return dayjs(date).format("YYYY.MM.DD HH:mm:ss");
 };
+
+export const toYYYYMMDDHHhh = (date: DateType = "1970-01-01 12:00:00") => {
+  return dayjs(date).format("YYYY.MM.DD HH:mm");
+};

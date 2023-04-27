@@ -19,50 +19,10 @@ import {
 import { useGetPostQuery } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 
-const post = {
-  postId: 2234,
-  title: "hello SE Board", // header
-  author: {
-    // header
-    login_id: "m1234", //익명 사용자면, anonymous
-    name: "min jeong",
-  },
-  views: 10, // header
-  category: {
-    // header
-    main_category: "notice",
-    sub_category: "class",
-  },
-  created_at: "2022-05-05-12:00:02", // header
-  moified_at: "2022-05-06-12:00:01",
-  contents: `<div class="document_91563_19198 xe_content"><p>&nbsp;</p>
-
-  <p><span style="font-size:18px;">안녕하십니까&nbsp;클라우드 학생회입니다&nbsp;</span></p>
-  
-  <p>&nbsp;</p>
-  
-  <p><span style="font-size:18px;">4월 4일 화요일 19:00 ~ 20:00 DB134에서 4월 미니게임&nbsp;피카츄배구를 진행합니다&nbsp;</span></p>
-  
-  <p>&nbsp;</p>
-  
-  <p><span style="font-size:18px;">미니게임&nbsp;</span><span style="font-size:18px;">진행 동안은 DB134 사용이 어려울 예정이니 이점 양해부탁드립니다</span></p></div>`, // contents
-  bookmarked: true, // 익명 사용자이면 항상 false // header
-  isEditable: true, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
-  attachment: {}, // file
-};
-
 const mainCategories = [
   { eng: "notice", kor: "공지사항", icon: NoticeIcon },
   { eng: "free", kor: "자유게시판", icon: ChatIcon },
   { eng: "archive", kor: "아카이브", icon: "" },
-];
-
-const categories = [
-  { eng: "class", kor: "학사" },
-  { eng: "general", kor: "일반" },
-  { eng: "lecture", kor: "강의" },
-  { eng: "event", kor: "행사" },
-  { eng: "council", kor: "학생회" },
 ];
 
 const files = [

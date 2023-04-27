@@ -1,25 +1,25 @@
 declare module "@types" {
   interface SubComment {
-    comment_id: number;
+    commentId: number;
     tag: number;
     author: {
       loginId: string | null;
       name: string;
     };
-    created_at: string;
-    modified_at: string;
+    createdAt: string;
+    modifiedAt: string;
     contents: string;
     isEditable: boolean;
+    isActive: boolean;
   }
 
   interface Comment {
-    pagenationInfo: {
-      contentSize: number;
-      perPage: number;
-      currentPage: number;
-      lastPage: number;
-    };
-    data: {
+    commentData: any;
+    totalSize: number;
+    totalElements: number;
+    last: boolean;
+    number: number;
+    content: {
       commentId: number;
       author: {
         loginId: string;
@@ -29,6 +29,7 @@ declare module "@types" {
       modifiedAt: string;
       contents: string;
       isEditable: boolean;
+      isActive: boolean;
       subComments: SubComment[];
     }[];
   }

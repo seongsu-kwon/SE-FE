@@ -5,7 +5,9 @@ import axios, { AxiosResponse } from "axios";
 const fetchGetPost = async (
   postId: string | undefined
 ): Promise<PostDetail> => {
-  const response = axios.get(`http://192.158.0.67:8080/posts/${postId}`);
+  const response = axios.get(
+    `https://4230704f-261a-4d33-9438-f49a652a7f3f.mock.pstmn.io/post/${postId}`
+  );
   return response.then((res: AxiosResponse<PostDetail>) => res.data);
 };
 
