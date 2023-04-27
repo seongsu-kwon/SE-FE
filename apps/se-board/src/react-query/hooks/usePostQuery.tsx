@@ -45,10 +45,7 @@ const bookmarkDelete = async (postId: number) => {
 };
 
 export const useBookmarkDeleteMutation = (postId: number) => {
-  const { mutate, data, isError, isLoading } = useMutation(() =>
-    bookmarkDelete(postId)
-  );
-  return { mutate, data, isError, isLoading };
+  return useMutation(() => bookmarkDelete(postId));
 };
 
 const deletePost = async (postId: number) => {

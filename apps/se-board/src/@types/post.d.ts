@@ -47,6 +47,13 @@ declare module "@types" {
     name: string;
   }
 
+  interface Attachment {
+    fileMetaDataId: number;
+    originalFileName: string;
+    storedFileName: string;
+    url: string;
+  }
+
   interface PostDetail {
     postId: number;
     title: string;
@@ -58,8 +65,8 @@ declare module "@types" {
     contents: string;
     bookmarked: boolean;
     isEditable: boolean;
-    // 게시글 공개 범위 추가 필요
-    attachments: any; // 파일 로직 추가 후 수정 필요
+    exposeType: string;
+    attachments: Attachment[] | any; // 파일 로직 추가 후 수정 필요
   }
 
   interface exposeOptionDTO {

@@ -13,15 +13,15 @@ export const useBookmarked = (
 ) => {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const {
-    data: deleteData,
+    isSuccess: deleteIsSuccess,
     isLoading: deleteIsLoading,
     isError: deleteIsError,
     mutate: bookmarkDeleteMutate,
   } = useBookmarkDeleteMutation(postId);
   const {
-    data: postData,
-    isLoading: postIsLoading,
-    isError: postIsError,
+    isSuccess: enrollIsSuccess,
+    isLoading: enrollIsLoading,
+    isError: enrollIsError,
     mutate: bookmarkPostMutate,
   } = useBookmarkPostMutation(postId);
 
@@ -38,21 +38,45 @@ export const useBookmarked = (
       return;
     }
 
-    setIsBookmarked(!isBookmarked);
-    toast({
-      title: isBookmarked ? "북마크가 해제되었습니다." : "북마크 되었습니다.",
-      status: "info",
-      duration: 5000,
-      isClosable: true,
-    }); // TODO: 성공 후 로직으로 들어가야 함
-
     if (isBookmarked) {
       // 북마크 해제
       bookmarkDeleteMutate();
-      console.log("deleted!");
+
+      deleteIsSuccess &&
+        toast({
+          title: "북마크가 해제되었습니다.",
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        }) &&
+        setIsBookmarked(!isBookmarked);
+
+      deleteIsError &&
+        toast({
+          title: "북마크 해제에 실패했습니다.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
     } else {
       bookmarkPostMutate();
-      console.log("posted!");
+
+      enrollIsSuccess &&
+        toast({
+          title: "북마크 되었습니다.",
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        }) &&
+        setIsBookmarked(!isBookmarked);
+
+      enrollIsError &&
+        toast({
+          title: "북마크에 실패했습니다.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
     }
   };
 

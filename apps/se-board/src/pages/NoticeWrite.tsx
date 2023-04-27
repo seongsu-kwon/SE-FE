@@ -37,14 +37,14 @@ export const NoticeWrite = () => {
   const isModified = useRef(false);
 
   const postId = pathName.split("/")[2];
-  let beforPost: PostDetail | undefined = undefined;
+  let beforePost: PostDetail | undefined = undefined;
 
   if (pathName.includes("modify")) {
     isModified.current = true;
 
     const { data, isLoading, isError } = useGetPostQuery(postId);
 
-    beforPost = data;
+    beforePost = data;
   }
 
   useEffect(() => {
@@ -68,14 +68,14 @@ export const NoticeWrite = () => {
           categoryOptions={noticeCategoryOptions}
           beforeCategory={
             noticeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
+              (value) => value.id === beforePost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
           // beforePrivacy={post?.privacy} 게시글 공개 범위
         />
         <DesktopFileUploader
           onFileDrop={(file) => console.log(file)}
-          beforeFiles={beforPost?.attachments}
+          beforeFiles={beforePost?.attachments}
         />
       </Show>
       <Hide above="md">
@@ -83,7 +83,7 @@ export const NoticeWrite = () => {
           categoryOptions={noticeCategoryOptions}
           beforeCategory={
             noticeCategoryOptions.find(
-              (value) => value.id === beforPost?.category.name // 카테고리 이름 수정 필요
+              (value) => value.id === beforePost?.category.name // 카테고리 이름 수정 필요
             )?.value
           }
           isModified={isModified.current}
@@ -95,10 +95,10 @@ export const NoticeWrite = () => {
         />
         <MobileFileUploader
           onFileDrop={(file) => console.log(file)}
-          beforeFiles={beforPost?.attachments}
+          beforeFiles={beforePost?.attachments}
         />
       </Hide>
-      <WritingEditor contents={beforPost?.contents} />
+      <WritingEditor contents={beforePost?.contents} />
       <Show above="md">
         <DesktopAnonymousRegister
           isModified={isModified.current}
