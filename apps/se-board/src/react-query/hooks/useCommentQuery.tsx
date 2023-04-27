@@ -69,3 +69,16 @@ export const usePutCommentMutation = (
 ) => {
   return useMutation(() => putComment(commentId, putCommentData));
 };
+
+const deleteComment = async (commentId: number) => {
+  const response = axios.delete(`/comments/${commentId}`);
+  const res = await response;
+  return res.data;
+};
+
+export const useDeleteCommentMutation = (commentId: number) => {
+  const { mutate, isLoading, isError } = useMutation(() =>
+    deleteComment(commentId)
+  );
+  return { mutate, isLoading, isError };
+};

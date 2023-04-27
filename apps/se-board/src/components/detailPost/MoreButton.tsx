@@ -25,6 +25,8 @@ import {
 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
+import { useDeletePostMutation } from "@/react-query/hooks";
+import { useDeleteCommentMutation } from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 interface MoreButtonProps {
@@ -111,13 +113,22 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
   );
 };
 
-const PostDeleteAlert = () => {
+const PostDeleteAlert = ({ postId }: { postId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
-  const commentDeleteClick = () => {
-    // TODO: 작성글 삭제
+  const {
+    mutate: deleteMutate,
+    isLoading,
+    isError,
+  } = useDeletePostMutation(postId);
 
-    onClose();
+  const postDeleteClick = () => {
+    // TODO: 작성글 삭제
+    deleteMutate();
+
+    if (!isLoading) {
+      onClose();
+    }
   };
 
   return (
@@ -140,7 +151,12 @@ const PostDeleteAlert = () => {
               <Button ref={deleteAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentDeleteClick} ml="8px">
+              <Button
+                isLoading={isLoading}
+                variant="danger"
+                onClick={postDeleteClick}
+                ml="8px"
+              >
                 삭제
               </Button>
             </AlertDialogFooter>
@@ -161,7 +177,7 @@ export const PostReportAlert = () => {
 
   return (
     <>
-      <MenuItem icon={<BsExclamationCircle />} onClick={() => {}} maxW="120px">
+      <MenuItem icon={<BsExclamationCircle />} onClick={onOpen} maxW="120px">
         신고
       </MenuItem>
       <AlertDialog
@@ -246,7 +262,7 @@ export const PostMoreButton = ({
         {isEditable ? (
           <>
             <PostModifyMenuItem postId={postId} />
-            <PostDeleteAlert />
+            <PostDeleteAlert postId={postId} />
             <PostShareMenuItem onShareClick={onShareClick} />
           </>
         ) : (
@@ -263,15 +279,25 @@ export const PostMoreButton = ({
 interface CommentMoreButtonProps {
   isEditable: boolean;
   setIsModify: React.Dispatch<React.SetStateAction<boolean>>;
+  commentId: number;
 }
 
-const CommentDeleteAlert = () => {
+const CommentDeleteAlert = ({ commentId }: { commentId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
+  const {
+    mutate: deleteMutate,
+    isLoading,
+    isError,
+  } = useDeleteCommentMutation(commentId);
+
   const commentDeleteClick = () => {
     // TODO: 댓글 삭제
+    deleteMutate();
 
-    onClose();
+    if (!isLoading) {
+      onClose();
+    }
   };
 
   return (
@@ -294,7 +320,12 @@ const CommentDeleteAlert = () => {
               <Button ref={deleteAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentDeleteClick} ml="8px">
+              <Button
+                isLoading={isLoading}
+                variant="danger"
+                onClick={commentDeleteClick}
+                ml="8px"
+              >
                 삭제
               </Button>
             </AlertDialogFooter>
@@ -347,6 +378,7 @@ const CommentReportAlert = () => {
 export const CommentMoreButton = ({
   isEditable,
   setIsModify,
+  commentId,
 }: CommentMoreButtonProps) => {
   const commentModifyClick = () => {
     setIsModify(true);
@@ -374,7 +406,7 @@ export const CommentMoreButton = ({
             >
               수정
             </MenuItem>
-            <CommentDeleteAlert />
+            <CommentDeleteAlert commentId={commentId} />
           </>
         ) : (
           <>

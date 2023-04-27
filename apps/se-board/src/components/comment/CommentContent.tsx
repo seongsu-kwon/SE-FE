@@ -92,6 +92,7 @@ export const CommentContent = ({
             <CommentMoreButton
               isEditable={isEditable}
               setIsModify={setIsModify}
+              commentId={commentId}
             />
           )}
         </Box>

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { PostDetail, PostPut } from "@types";
 import axios, { AxiosResponse } from "axios";
 
@@ -45,9 +45,21 @@ const bookmarkDelete = async (postId: number) => {
 };
 
 export const useBookmarkDeleteMutation = (postId: number) => {
-  const queryClient = useQueryClient();
   const { mutate, data, isError, isLoading } = useMutation(() =>
     bookmarkDelete(postId)
   );
   return { mutate, data, isError, isLoading };
+};
+
+const deletePost = async (postId: number) => {
+  const url = `/posts/${postId}`;
+  const response = axios.delete(url);
+
+  return response.then((res: AxiosResponse) => res.data);
+};
+
+export const useDeletePostMutation = (postId: number) => {
+  const { mutate, isError, isLoading } = useMutation(() => deletePost(postId));
+
+  return { mutate, isError, isLoading };
 };
