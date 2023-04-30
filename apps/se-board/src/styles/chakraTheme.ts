@@ -27,6 +27,11 @@ const buttonStyle: ComponentStyleConfig = {
         color: semanticColors["primary-content"],
       },
     },
+    "primary-inActive": {
+      backgroundColor: semanticColors["primary-inActive"],
+      color: semanticColors["primary-content"],
+      cursor: "not-allowed",
+    },
     danger: {
       backgroundColor: semanticColors.error,
       color: semanticColors["error-content"],
@@ -47,6 +52,11 @@ const buttonStyle: ComponentStyleConfig = {
         backgroundColor: semanticColors.error,
         color: semanticColors["error-content"],
       },
+    },
+    "danger-inActive": {
+      backgroundColor: semanticColors["error-inActive"],
+      color: semanticColors["error-content"],
+      cursor: "not-allowed",
     },
   },
 };

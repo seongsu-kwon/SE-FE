@@ -93,6 +93,7 @@ export const CommentContent = ({
               isEditable={isEditable}
               setIsModify={setIsModify}
               commentId={commentId}
+              isReply={superCommentId !== commentId}
             />
           )}
         </Box>
@@ -100,11 +101,13 @@ export const CommentContent = ({
       {isModify ? (
         <SubCommentInput
           superCommentId={superCommentId}
+          commentId={commentId}
           tagCommentId={commentId}
           setIsWriteSubComment={setIsWriteSubComment}
           contents={contents}
           setIsModify={setIsModify}
           isWritingReply={false} // 수정하기 버튼 클릭 시 false
+          isReply={superCommentId !== commentId}
         />
       ) : (
         <>

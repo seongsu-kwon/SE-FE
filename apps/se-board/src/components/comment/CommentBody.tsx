@@ -97,11 +97,13 @@ export const CommentBody = ({
         >
           <SubCommentInput
             superCommentId={subCommentInfo.superCommentId}
+            commentId={undefined}
             tagCommentId={subCommentInfo.tagCommentId}
             subCommentInputRef={subCommentInputRef}
             contents=""
             setIsWriteSubComment={setIsWriteSubComment}
             isWritingReply={true} // 답글 작성 시 true
+            isReply={true}
           />
         </Box>
       )}

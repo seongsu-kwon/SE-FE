@@ -1,13 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PostDetail, PostPut } from "@types";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+
+import { customAxios } from "@/api/CustomAxios";
 
 const fetchGetPost = async (
   postId: string | undefined
 ): Promise<PostDetail> => {
-  const response = axios.get(
-    `https://4230704f-261a-4d33-9438-f49a652a7f3f.mock.pstmn.io/post/${postId}`
-  );
+  const response = customAxios.get(`/posts/1234879892103`);
   return response.then((res: AxiosResponse<PostDetail>) => res.data);
 };
 
@@ -17,7 +17,7 @@ export const useGetPostQuery = (postId: string | undefined) => {
 
 const putPost = async (postId: number, data: PostPut) => {
   const url = `/posts/${postId}`;
-  const response = axios.put(url, data);
+  const response = customAxios.put(url, data);
 
   return response.then((res: AxiosResponse) => res.data);
 };
@@ -28,7 +28,7 @@ export const usePutPostMutation = (postId: number, data: PostPut) => {
 
 const bookmarkPost = async (postId: number) => {
   const url = `/posts/${postId}/bookmark`;
-  const response = axios.post(url);
+  const response = customAxios.post(url);
 
   return response.then((res: AxiosResponse) => res.data);
 };
@@ -39,7 +39,7 @@ export const useBookmarkPostMutation = (postId: number) => {
 
 const bookmarkDelete = async (postId: number) => {
   const url = `/posts/${postId}/bookmark`;
-  const response = axios.delete(url);
+  const response = customAxios.delete(url);
 
   return response.then((res: AxiosResponse) => res.data);
 };
@@ -50,7 +50,7 @@ export const useBookmarkDeleteMutation = (postId: number) => {
 
 const deletePost = async (postId: number) => {
   const url = `/posts/${postId}`;
-  const response = axios.delete(url);
+  const response = customAxios.delete(url);
 
   return response.then((res: AxiosResponse) => res.data);
 };

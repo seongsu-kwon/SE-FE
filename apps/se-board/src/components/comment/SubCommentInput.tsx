@@ -10,26 +10,35 @@ import {
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-// import { usePutCommentMutation } from "@/react-query/hooks";
+import {
+  usePostReplyMutation,
+  usePutCommentMutation,
+  usePutReplyMutation,
+} from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 interface SubCommentInputProps {
   superCommentId: number | null;
+  commentId: number | undefined;
   tagCommentId: number | null;
   subCommentInputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   contents: string;
   setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
-  isWritingReply: boolean;
+  isReply: boolean; // true: 답글, false: 댓글
+  isWritingReply: boolean; // true: 답글 작성 중, false: 댓글, 답글 수정 중
+  // ToDo: 비밀 댓글인지 알려주는 state 추가 필요
 }
 
 export const SubCommentInput = ({
   superCommentId,
+  commentId,
   tagCommentId,
   setIsWriteSubComment,
   subCommentInputRef,
   contents,
   setIsModify,
+  isReply,
   isWritingReply,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
@@ -37,6 +46,24 @@ export const SubCommentInput = ({
   const [comment, setComment] = useState<string>(contents);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
+  const {
+    mutate: putCommentMutate,
+    isLoading: isPutLoading,
+    isError: isPutError,
+    isSuccess: isPutSuccess,
+  } = usePutCommentMutation();
+  const {
+    mutate: putReplyMutate,
+    isLoading: isPutReplyLoading,
+    isError: isPutReplyError,
+    isSuccess: isPutReplySuccess,
+  } = usePutReplyMutation();
+  const {
+    mutate: postReplyMutate,
+    isLoading: isPostReplyLoading,
+    isError: isPostReplyError,
+    isSuccess: isPostReplySuccess,
+  } = usePostReplyMutation();
 
   useEffect(() => {
     if (subCommentInputRef?.current) {
@@ -46,11 +73,49 @@ export const SubCommentInput = ({
 
   const handleSubmitSubComment = () => {
     // TODO: 답글 등록, state 초기화
-    //답글 인지 수정 인지 확인 작업 필요 -> contents가 있으면 수정
-    if (contents !== "") {
+    if (!isWritingReply) {
       //수정
+      if (!isReply) {
+        // 댓글 수정
+        if (commentId) {
+          putCommentMutate({
+            commentId,
+            putCommentData: {
+              contents: comment,
+              readOnlyAuthor: isSecret,
+            },
+          });
+        }
+      } else {
+        // 답글 수정
+        if (commentId) {
+          putReplyMutate({
+            replyId: commentId,
+            putReplyData: {
+              contents: comment,
+              readOnlyAuthor: isSecret,
+            },
+          });
+        }
+      }
     } else {
-      //답글
+      //답글 작성
+      if (superCommentId && tagCommentId) {
+        postReplyMutate({
+          postId: Number(postId),
+          superCommentId: superCommentId,
+          tagCommentId: tagCommentId,
+          contents: comment,
+          anonymous: isAnonymous,
+          readOnlyAuthor: isSecret,
+        });
+      }
+    }
+
+    if (isPostReplySuccess || isPutReplySuccess || isPutSuccess) {
+      setComment("");
+      setIsAnonymous(false);
+      setIsSecret(false);
     }
   };
 
@@ -111,7 +176,7 @@ export const SubCommentInput = ({
           취소
         </Button>
         <Button
-          variant="primary"
+          variant={comment !== "" ? "primary" : "primary-inActive"}
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmitSubComment}
         >

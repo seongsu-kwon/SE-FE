@@ -25,12 +25,17 @@ export const CommentInput = () => {
     postCommentMutation.mutate({
       postId: Number(postId),
       contents: value,
-      isAnonymous,
+      isAnonymous: isAnonymous,
+      readOnlyAuthor: isSecret,
     });
 
-    setIsAnonymous(false);
-    setValue("");
-    setIsSecret(false);
+    if (postCommentMutation.isSuccess) {
+      setIsAnonymous(false);
+      setValue("");
+      setIsSecret(false);
+    } else {
+      // TODO: error handling
+    }
   };
 
   return (
@@ -73,7 +78,7 @@ export const CommentInput = () => {
         float="right"
       >
         <Button
-          variant="primary"
+          variant={value !== "" ? "primary" : "primary-inActive"}
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmit}
         >

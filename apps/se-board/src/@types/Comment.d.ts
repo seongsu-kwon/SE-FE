@@ -13,8 +13,15 @@ declare module "@types" {
     isActive: boolean;
   }
 
+  interface PaginationInfo {
+    totalAllSize: number;
+    totalCommentSize: number;
+    last: boolean;
+    pageNum: number;
+  }
+
   interface Comment {
-    commentData: any;
+    paginationInfo: PaginationInfo;
     totalSize: number;
     totalElements: number;
     last: boolean;

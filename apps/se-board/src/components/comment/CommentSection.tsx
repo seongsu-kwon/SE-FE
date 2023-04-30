@@ -36,7 +36,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       if (newData) {
         setCommentData({
           ...newData,
-          content: [...commentData.content, ...newData.content],
+          content: commentData.content.concat(newData.content),
         });
       }
     }
@@ -50,7 +50,9 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       mb="100px"
       textAlign="center"
     >
-      <CommentHeader commentTotalSize={commentData?.totalSize || 0} />
+      <CommentHeader
+        commentTotalSize={commentData?.paginationInfo.totalAllSize || 0}
+      />
       <CommentInput />
       {isLoading ? (
         <SkeletonComment />
@@ -71,7 +73,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           />
         ))
       )}
-      {commentData && !commentData.last && (
+      {commentData && !commentData.paginationInfo.last && (
         <ShowMoreCommentButton onClick={moreCommentsOnClick} />
       )}
     </Box>

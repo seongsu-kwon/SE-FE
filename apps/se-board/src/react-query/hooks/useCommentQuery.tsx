@@ -1,15 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Comment } from "@types";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+
+import { customAxios } from "@/api/CustomAxios";
 
 const fetchComments = (
   postId: string | undefined,
   page: number,
   perPage: number
 ): Promise<Comment> => {
-  const response = axios.get(
-    `https://4230704f-261a-4d33-9438-f49a652a7f3f.mock.pstmn.io/post/${postId}/comments`
-  );
+  const response = customAxios.get(`/posts/${postId}/comments`);
   return response.then((res: AxiosResponse<Comment>) => res.data);
 };
 
@@ -27,6 +27,7 @@ interface PostCommentData {
   postId: number;
   contents: string;
   isAnonymous: boolean;
+  readOnlyAuthor: boolean;
 }
 
 interface PostResData {
@@ -34,9 +35,8 @@ interface PostResData {
 }
 
 const postComment = async (postData: PostCommentData): Promise<PostResData> => {
-  const response = axios.post("/comments", postData);
-  const res = await response;
-  return res.data;
+  const response = customAxios.post("/comments", postData);
+  return response.then((res: AxiosResponse<PostResData>) => res.data);
 };
 
 export const usePostCommentMutation = () => {
@@ -45,40 +45,76 @@ export const usePostCommentMutation = () => {
 
 interface PutCommentData {
   contents: string;
+  readOnlyAuthor: boolean;
 }
 
-interface PutResData {
-  message: string;
-}
-
-const putComment = async (
-  commentId: number,
-  putCommentData: PutCommentData
-): Promise<PutResData> => {
-  const response = axios.put<PutResData>(
-    `/comments/${commentId}`,
-    putCommentData
-  );
-  const res = await response;
-  return res.data;
+// 댓글 수정
+const putComment = async (param: {
+  commentId: number;
+  putCommentData: PutCommentData;
+}) => {
+  return customAxios.put(`/comments/${param.commentId}`, param.putCommentData);
 };
 
-export const usePutCommentMutation = (
-  commentId: number,
-  putCommentData: PutCommentData
-) => {
-  return useMutation(() => putComment(commentId, putCommentData));
+export const usePutCommentMutation = () => {
+  return useMutation(
+    (param: { commentId: number; putCommentData: PutCommentData }) =>
+      putComment(param)
+  );
 };
 
 const deleteComment = async (commentId: number) => {
-  const response = axios.delete(`/comments/${commentId}`);
-  const res = await response;
-  return res.data;
+  const response = customAxios.delete(`/comments/${commentId}`);
+  return response.then((res: AxiosResponse) => res.data);
 };
 
-export const useDeleteCommentMutation = (commentId: number) => {
-  const { mutate, isLoading, isError } = useMutation(() =>
-    deleteComment(commentId)
+export const useDeleteCommentMutation = () => {
+  return useMutation((commentId: number) => deleteComment(commentId));
+};
+
+interface PostReplyData {
+  postId: number;
+  superCommentId: number;
+  tagCommentId: number;
+  contents: string;
+  anonymous: boolean;
+  readOnlyAuthor: boolean;
+}
+
+const postReply = async (postReplyData: PostReplyData) => {
+  // 답글 작성
+  const response = customAxios.post("/reply", postReplyData);
+  return response.then((res: AxiosResponse) => res.data);
+};
+
+export const usePostReplyMutation = () => {
+  return useMutation(postReply);
+};
+
+const putReply = async (param: {
+  replyId: number;
+  putReplyData: PutCommentData;
+}) => {
+  // 답글 수정
+  const response = customAxios.put(
+    `/reply/${param.replyId}`,
+    param.putReplyData
   );
-  return { mutate, isLoading, isError };
+  return response.then((res: AxiosResponse) => res.data);
+};
+
+export const usePutReplyMutation = () => {
+  return useMutation(
+    (param: { replyId: number; putReplyData: PutCommentData }) =>
+      putReply(param)
+  );
+};
+
+const deleteReply = async (replyId: number) => {
+  const response = customAxios.delete(`/reply/${replyId}`);
+  return response.then((res: AxiosResponse) => res.data);
+};
+
+export const useDeleteReplyMutation = () => {
+  return useMutation((replyId: number) => deleteReply(replyId));
 };

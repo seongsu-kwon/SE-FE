@@ -26,7 +26,10 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import { useDeletePostMutation } from "@/react-query/hooks";
-import { useDeleteCommentMutation } from "@/react-query/hooks";
+import {
+  useDeleteCommentMutation,
+  useDeleteReplyMutation,
+} from "@/react-query/hooks";
 import { openColors } from "@/styles";
 
 interface MoreButtonProps {
@@ -76,7 +79,6 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const modifyAlertRef = React.useRef<HTMLButtonElement>(null);
   const postModifyClick = () => {
-    // TODO: 작성글 수정
     onClose();
     // 작성글 수정 페이지로 이동
     navigate(`/notice/${postId}/modify`);
@@ -123,7 +125,6 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
   } = useDeletePostMutation(postId);
 
   const postDeleteClick = () => {
-    // TODO: 작성글 삭제
     deleteMutate();
 
     if (!isLoading) {
@@ -153,6 +154,7 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
               </Button>
               <Button
                 isLoading={isLoading}
+                loadingText="삭제 중"
                 variant="danger"
                 onClick={postDeleteClick}
                 ml="8px"
@@ -280,22 +282,39 @@ interface CommentMoreButtonProps {
   isEditable: boolean;
   setIsModify: React.Dispatch<React.SetStateAction<boolean>>;
   commentId: number;
+  isReply: boolean;
 }
 
-const CommentDeleteAlert = ({ commentId }: { commentId: number }) => {
+const CommentDeleteAlert = ({
+  commentId,
+  isReply,
+}: {
+  commentId: number;
+  isReply: boolean;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
   const {
     mutate: deleteMutate,
-    isLoading,
-    isError,
-  } = useDeleteCommentMutation(commentId);
+    isLoading: commentDeleteIsLoading,
+    isError: commentDeleteIsError,
+    isSuccess: commentDeleteIsSuccess,
+  } = useDeleteCommentMutation();
+  const {
+    mutate: deleteReplyMutate,
+    isError: deleteReplyIsError,
+    isLoading: deleteReplyIsLoading,
+    isSuccess: deleteReplyIsSuccess,
+  } = useDeleteReplyMutation();
 
   const commentDeleteClick = () => {
-    // TODO: 댓글 삭제
-    deleteMutate();
+    if (!isReply) {
+      deleteMutate(commentId);
+    } else {
+      deleteReplyMutate(commentId);
+    }
 
-    if (!isLoading) {
+    if (commentDeleteIsSuccess || deleteReplyIsSuccess) {
       onClose();
     }
   };
@@ -321,7 +340,8 @@ const CommentDeleteAlert = ({ commentId }: { commentId: number }) => {
                 취소
               </Button>
               <Button
-                isLoading={isLoading}
+                isLoading={commentDeleteIsLoading || deleteReplyIsLoading}
+                loadingText="삭제 중"
                 variant="danger"
                 onClick={commentDeleteClick}
                 ml="8px"
@@ -379,6 +399,7 @@ export const CommentMoreButton = ({
   isEditable,
   setIsModify,
   commentId,
+  isReply,
 }: CommentMoreButtonProps) => {
   const commentModifyClick = () => {
     setIsModify(true);
@@ -406,7 +427,7 @@ export const CommentMoreButton = ({
             >
               수정
             </MenuItem>
-            <CommentDeleteAlert commentId={commentId} />
+            <CommentDeleteAlert commentId={commentId} isReply={isReply} />
           </>
         ) : (
           <>
