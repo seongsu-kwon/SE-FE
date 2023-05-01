@@ -12,7 +12,9 @@ const fetchGetPost = async (
 };
 
 export const useGetPostQuery = (postId: string | undefined) => {
-  return useQuery<PostDetail>(["post", postId], () => fetchGetPost(postId));
+  return useQuery<PostDetail>(["post", postId], () => fetchGetPost(postId), {
+    staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
+  });
 };
 
 const putPost = async (postId: number, data: PostPut) => {
@@ -22,8 +24,10 @@ const putPost = async (postId: number, data: PostPut) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const usePutPostMutation = (postId: number, data: PostPut) => {
-  return useMutation(() => putPost(postId, data));
+export const usePutPostMutation = () => {
+  return useMutation((param: { postId: number; data: PostPut }) =>
+    putPost(param.postId, param.data)
+  );
 };
 
 const bookmarkPost = async (postId: number) => {

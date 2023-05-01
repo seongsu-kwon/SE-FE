@@ -1,5 +1,4 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
-import { PostDetail } from "@types";
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useResetRecoilState } from "recoil";
@@ -13,48 +12,67 @@ import {
   WritingEditor,
 } from "@/components/writing";
 import { useGetPostQuery, usePutPostMutation } from "@/react-query/hooks";
-import { modifyPostState } from "@/store";
+import { beforePostState, modifyPostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
-
-interface CategoryOption {
-  id: string;
-  value: string;
-}
-
-const noticeCategoryOptions: CategoryOption[] = [
-  { id: "general", value: "일반" },
-  { id: "lecture", value: "강의" },
-  { id: "bachelor", value: "학사" },
-  { id: "event", value: "행사" },
-  { id: "studentCouncil", value: "학생회" },
-];
 
 export const NoticeWrite = () => {
   const pathName = useLocation().pathname;
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
   const resetModifyPost = useResetRecoilState(modifyPostState);
+  const [beforePost, setBeforePost] = useRecoilState(beforePostState);
   const isModified = useRef(false);
-
-  const postId = pathName.split("/")[2];
-  let beforePost: PostDetail | undefined = undefined;
-
-  if (pathName.includes("modify")) {
-    isModified.current = true;
-
-    const { data, isLoading, isError } = useGetPostQuery(postId);
-
-    beforePost = data;
-  }
+  const {
+    mutate,
+    isError: putPostIsError,
+    isLoading: putPostIsLoading,
+    isSuccess: putPostIsSuccess,
+  } = usePutPostMutation();
+  const {
+    data,
+    isLoading: getPostIsLoading,
+    isError: getPostIsError,
+  } = useGetPostQuery(pathName.split("/")[2]);
 
   useEffect(() => {
     mobileHeaderClose();
+
+    if (pathName.includes("modify")) {
+      isModified.current = true;
+
+      setModifyPost({
+        title: data?.title || "",
+        contents: data?.contents || "",
+        categoryId: data?.category?.categoryId || -1,
+        pined: data?.pined || false,
+        exposeOption: {
+          name: data?.exposeType || "",
+          password: "",
+        },
+        attachmentIds:
+          data?.attachments.fileMetaDataList.map(
+            (attachment) => attachment.fileMetaDataId
+          ) || [],
+      });
+
+      setBeforePost({
+        postId: data?.postId || Number(pathName.split("/")[2]),
+        title: data?.title || "",
+        contents: data?.contents || "",
+        category: data?.category || { categoryId: -1, name: "" },
+        exposeType: data?.exposeType || "",
+        attachments: {
+          fileMetaDataList: data?.attachments.fileMetaDataList || [],
+        },
+        isPined: data?.pined || false,
+      });
+    }
+
     return mobileHeaderOpen;
-  }, []);
+  }, [data]);
 
   const onClickRegistrationInModify = () => {
-    console.log(modifyPost);
-    const { data } = usePutPostMutation(Number(postId), modifyPost);
+    mutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
 
     resetModifyPost();
   };
@@ -64,28 +82,14 @@ export const NoticeWrite = () => {
   return (
     <Box maxW="984px" w="100%" mx="auto">
       <Show above="md">
-        <DesktopCategoryAndPrivacySetting
-          categoryOptions={noticeCategoryOptions}
-          beforeCategory={
-            noticeCategoryOptions.find(
-              (value) => value.id === beforePost?.category.name // 카테고리 이름 수정 필요
-            )?.value
-          }
-          // beforePrivacy={post?.privacy} 게시글 공개 범위
-        />
+        <DesktopCategoryAndPrivacySetting isModified={isModified.current} />
         <DesktopFileUploader
           onFileDrop={(file) => console.log(file)}
-          beforeFiles={beforePost?.attachments}
+          beforeFiles={beforePost?.attachments.fileMetaDataList}
         />
       </Show>
       <Hide above="md">
         <CategoryAndPrivacySetting
-          categoryOptions={noticeCategoryOptions}
-          beforeCategory={
-            noticeCategoryOptions.find(
-              (value) => value.id === beforePost?.category.name // 카테고리 이름 수정 필요
-            )?.value
-          }
           isModified={isModified.current}
           onClickRegistration={
             isModified
@@ -95,10 +99,13 @@ export const NoticeWrite = () => {
         />
         <MobileFileUploader
           onFileDrop={(file) => console.log(file)}
-          beforeFiles={beforePost?.attachments}
+          beforeFiles={beforePost?.attachments.fileMetaDataList}
         />
       </Hide>
-      <WritingEditor contents={beforePost?.contents} />
+      <WritingEditor
+        title={beforePost?.title}
+        contents={beforePost?.contents}
+      />
       <Show above="md">
         <DesktopAnonymousRegister
           isModified={isModified.current}

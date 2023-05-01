@@ -1,18 +1,29 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
-import { modifyPostState } from "@/store";
+import { modifyPostState, writePostState } from "@/store";
 
-export function useSelectDisclosure() {
+const privacyOptions = [
+  { id: "전체", value: "모든 사용자가 볼 수 있습니다.", eng: "PUBLIC" },
+  { id: "금오인", value: "인증된 금오인만 볼 수 있습니다.", eng: "KUMOH" },
+  { id: "비밀", value: "비밀글입니다.", eng: "PRIVACY" },
+];
+
+export function useSelectDisclosure(
+  beforePrivacy: string,
+  isModified: boolean
+) {
   const [subscript, setSubscript] = useState<string>("");
   const [active, setActive] = useState<string>("");
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
+  const [writePost, setWritePost] = useRecoilState(writePostState);
 
-  const privacyOptions = [
-    { id: "전체", value: "모든 사용자가 볼 수 있습니다." },
-    { id: "금오인", value: "인증된 금오인만 볼 수 있습니다." },
-    { id: "비밀", value: "비밀글입니다." },
-  ];
+  useEffect(() => {
+    setActive(beforePrivacy);
+    setSubscript(
+      privacyOptions.find((option) => option.id === beforePrivacy)?.value || ""
+    );
+  }, [beforePrivacy]);
 
   const onClickDisclosure = useCallback(
     (
@@ -22,25 +33,34 @@ export function useSelectDisclosure() {
     ) => {
       const { innerHTML } = e.currentTarget;
 
-      if (innerHTML === "전체") {
-        setSubscript("모든 사용자가 볼 수 있습니다.");
-      } else if (innerHTML === "금오인") {
-        setSubscript("인증된 금오인만 볼 수 있습니다.");
-      } else if (innerHTML === "비밀") {
-        setSubscript("비밀글입니다.");
-      }
+      setSubscript(
+        privacyOptions.find((option) => option.id === innerHTML)?.value || "123"
+      );
 
       setActive(innerHTML);
 
-      setModifyPost({
-        ...modifyPost,
-        exposeOption: {
-          name: innerHTML,
-          password: modifyPost.exposeOption.password,
-        },
-      });
+      const exposeOptionName =
+        privacyOptions.find((option) => option.id === innerHTML)?.eng || "";
+
+      if (!isModified) {
+        setWritePost({
+          ...writePost,
+          exposeOption: {
+            name: exposeOptionName, // 영어? 한글?
+            password: writePost.exposeOption.password,
+          },
+        });
+      } else {
+        setModifyPost({
+          ...modifyPost,
+          exposeOption: {
+            name: exposeOptionName,
+            password: modifyPost.exposeOption.password,
+          },
+        });
+      }
     },
-    []
+    [modifyPost, writePost]
   );
 
   return { subscript, setSubscript, active, setActive, onClickDisclosure };

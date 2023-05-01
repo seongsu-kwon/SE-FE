@@ -66,7 +66,8 @@ declare module "@types" {
     bookmarked: boolean;
     isEditable: boolean;
     exposeType: string;
-    attachments: Attachment[] | any; // 파일 로직 추가 후 수정 필요
+    attachments: { fileMetaDataList: Attachment[] }; // 파일 로직 추가 후 수정 필요
+    pined: boolean;
   }
 
   interface exposeOptionDTO {
@@ -80,6 +81,6 @@ declare module "@types" {
     categoryId: number;
     pined: boolean;
     exposeOption: exposeOptionDTO;
-    attachments: any; // 파일 로직 추가 후 수정 필요
+    attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
   }
 }

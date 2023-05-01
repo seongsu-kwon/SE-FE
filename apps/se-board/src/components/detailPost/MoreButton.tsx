@@ -77,10 +77,11 @@ export const MoreButton = ({ fontSize, menuItems }: MoreButtonProps) => {
 const PostModifyMenuItem = ({ postId }: { postId: number }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const modifyAlertRef = React.useRef<HTMLButtonElement>(null);
+  const modifyCancelRef = React.useRef<HTMLButtonElement>(null);
+
   const postModifyClick = () => {
     onClose();
-    // 작성글 수정 페이지로 이동
+
     navigate(`/notice/${postId}/modify`);
   };
 
@@ -91,7 +92,7 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
       </MenuItem>
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={modifyAlertRef}
+        leastDestructiveRef={modifyCancelRef}
         onClose={onClose}
       >
         <AlertDialogOverlay>
@@ -101,7 +102,7 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
             </AlertDialogHeader>
             <AlertDialogBody>작성글을 수정하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button ref={modifyAlertRef} onClick={onClose}>
+              <Button ref={modifyCancelRef} onClick={onClose}>
                 취소
               </Button>
               <Button variant="primary" onClick={postModifyClick} ml="8px">
