@@ -13,7 +13,7 @@ export const writePostState = atom({
       password: "",
     },
     attachmentIds: Array<number>(),
-    annonymous: false,
+    anonymous: false,
   },
 });
 

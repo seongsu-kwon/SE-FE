@@ -83,4 +83,14 @@ declare module "@types" {
     exposeOption: exposeOptionDTO;
     attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
   }
+
+  interface PostCreate {
+    title: string;
+    contents: string;
+    categoryId: number;
+    pined: boolean;
+    exposeOption: exposeOptionDTO;
+    attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
+    anonymous: boolean;
+  }
 }

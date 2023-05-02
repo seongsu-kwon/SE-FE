@@ -46,7 +46,7 @@ export function useSelectDisclosure(
         setWritePost({
           ...writePost,
           exposeOption: {
-            name: exposeOptionName, // 영어? 한글?
+            name: exposeOptionName,
             password: writePost.exposeOption.password,
           },
         });

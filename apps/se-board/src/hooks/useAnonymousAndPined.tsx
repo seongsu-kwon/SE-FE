@@ -23,7 +23,7 @@ export const useAnonymousAndPined = (
     if (!isModified) {
       setWritePost({
         ...writePost,
-        annonymous: !isAnonymous,
+        anonymous: !isAnonymous,
       });
     }
   }, [writePost]);

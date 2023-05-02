@@ -11,8 +11,12 @@ import {
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
-import { useGetPostQuery, usePutPostMutation } from "@/react-query/hooks";
-import { beforePostState, modifyPostState } from "@/store";
+import {
+  useGetPostQuery,
+  usePostPostMutation,
+  usePutPostMutation,
+} from "@/react-query/hooks";
+import { beforePostState, modifyPostState, writePostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 
 export const NoticeWrite = () => {
@@ -20,10 +24,12 @@ export const NoticeWrite = () => {
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
   const resetModifyPost = useResetRecoilState(modifyPostState);
+  const [writePost, setWritePost] = useRecoilState(writePostState);
+  const resetWritePost = useResetRecoilState(writePostState);
   const [beforePost, setBeforePost] = useRecoilState(beforePostState);
   const isModified = useRef(false);
   const {
-    mutate,
+    mutate: putPostMutate,
     isError: putPostIsError,
     isLoading: putPostIsLoading,
     isSuccess: putPostIsSuccess,
@@ -33,6 +39,12 @@ export const NoticeWrite = () => {
     isLoading: getPostIsLoading,
     isError: getPostIsError,
   } = useGetPostQuery(pathName.split("/")[2]);
+  const {
+    mutate: writePostMutate,
+    isError: writePostIsError,
+    isLoading: writePostIsLoading,
+    isSuccess: writePostIsSuccess,
+  } = usePostPostMutation();
 
   useEffect(() => {
     mobileHeaderClose();
@@ -72,12 +84,16 @@ export const NoticeWrite = () => {
   }, [data]);
 
   const onClickRegistrationInModify = () => {
-    mutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
+    putPostMutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
 
     resetModifyPost();
   };
 
-  const onClickRegistrationInWrite = () => {};
+  const onClickRegistrationInWrite = () => {
+    writePostMutate(writePost);
+
+    resetWritePost();
+  };
 
   return (
     <Box maxW="984px" w="100%" mx="auto">
@@ -92,7 +108,7 @@ export const NoticeWrite = () => {
         <CategoryAndPrivacySetting
           isModified={isModified.current}
           onClickRegistration={
-            isModified
+            isModified.current
               ? onClickRegistrationInModify
               : onClickRegistrationInWrite
           }
@@ -105,12 +121,13 @@ export const NoticeWrite = () => {
       <WritingEditor
         title={beforePost?.title}
         contents={beforePost?.contents}
+        isModified={isModified.current}
       />
       <Show above="md">
         <DesktopAnonymousRegister
           isModified={isModified.current}
           onClickRegistration={
-            isModified
+            isModified.current
               ? onClickRegistrationInModify
               : onClickRegistrationInWrite
           }

@@ -277,9 +277,10 @@ CategoryAndPrivacySettingProps) => {
                   borderRadius="3px"
                   borderColor="gray.5"
                   color={openColors.gray[7]}
+                  isChecked={isAnonymous}
                   onChange={onClickAnonymous}
                 >
-                  익명 작성
+                  익명글 작성
                 </Checkbox>
               )}
               <Checkbox
@@ -288,7 +289,7 @@ CategoryAndPrivacySettingProps) => {
                 borderColor="gray.5"
                 color={openColors.gray[7]}
                 isChecked={isPined}
-                onChange={onClickPined} // 게시글 수정 시 체크되어 있을 수도 있어야 함
+                onChange={onClickPined}
               >
                 게시글 목록 상단 고정
               </Checkbox>
@@ -326,6 +327,14 @@ export const DesktopCategoryAndPrivacySetting = ({
   );
   const { password, show, handleClick, handleChange } =
     usePasswordInput(isModified);
+  const {
+    isAnonymous,
+    setIsAnonymous,
+    isPined,
+    setIsPined,
+    onClickAnonymous,
+    onClickPined,
+  } = useAnonymousAndPined(isModified, beforePost.isPined);
 
   const [categoryOptions, setCategoryOptions] = useState<Category[]>([]);
 
@@ -343,8 +352,9 @@ export const DesktopCategoryAndPrivacySetting = ({
       minHeight="75px"
       margin="60px auto 0 auto"
       borderY={`1px solid ${openColors.gray[3]}`}
+      justifyContent="space-between"
     >
-      <Box my="10px" mr="80px">
+      <Box my="10px">
         <Heading as="h4" size="md" pb="4px">
           카테고리
         </Heading>
@@ -363,7 +373,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           ))}
         </Select>
       </Box>
-      <Box my="10px" ml="50px" maxW="344px">
+      <Box my="10px" maxW="344px">
         <Box display="flex">
           <Heading as="h4" size="md" pb="4px" pr="4px">
             공개범위
@@ -397,6 +407,32 @@ export const DesktopCategoryAndPrivacySetting = ({
         ) : (
           ""
         )}
+      </Box>
+      <Box my="auto" mr="32px">
+        <Heading as="h4" size="md" pb="8px">
+          추가 설정
+        </Heading>
+        <Box py={isModified ? "8px" : "0"}>
+          <Checkbox
+            display={isModified ? "none" : "block"}
+            size="md"
+            borderRadius="3px"
+            borderColor="gray.5"
+            color={openColors.gray[7]}
+            onChange={onClickAnonymous}
+          >
+            익명글 작성
+          </Checkbox>
+          <Checkbox
+            size="md"
+            borderRadius="3px"
+            borderColor="gray.5"
+            color={openColors.gray[7]}
+            onChange={onClickPined} // 게시글 수정 시 체크되어 있을 수도 있어야 함
+          >
+            리스트 상단 고정
+          </Checkbox>
+        </Box>
       </Box>
     </Flex>
   );

@@ -11,9 +11,11 @@ let num = 0;
 export const WritingEditor = ({
   title,
   contents,
+  isModified,
 }: {
   title: string;
   contents: string;
+  isModified: boolean;
 }) => {
   const [editorData, setEditorData] = useState<string>("");
   const [writePost, setWritePost] = useRecoilState(writePostState);
@@ -82,11 +84,19 @@ export const WritingEditor = ({
 
           setEditorData(data);
 
-          setModifyPost({
-            ...modifyPost,
-            title: title,
-            contents: body,
-          });
+          if (!isModified) {
+            setWritePost({
+              ...writePost,
+              title: title,
+              contents: body,
+            });
+          } else {
+            setModifyPost({
+              ...modifyPost,
+              title: title,
+              contents: body,
+            });
+          }
         }}
       />
     </Box>

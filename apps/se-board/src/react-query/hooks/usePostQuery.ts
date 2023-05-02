@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PostDetail, PostPut } from "@types";
+import { PostCreate, PostDetail, PostPut } from "@types";
 import { AxiosResponse } from "axios";
 
 import { customAxios } from "@/api/CustomAxios";
@@ -15,6 +15,14 @@ export const useGetPostQuery = (postId: string | undefined) => {
   return useQuery<PostDetail>(["post", postId], () => fetchGetPost(postId), {
     staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
   });
+};
+
+const postPost = async (reqBody: PostCreate) => {
+  return customAxios.post("/posts", reqBody);
+};
+
+export const usePostPostMutation = () => {
+  return useMutation((reqBody: PostCreate) => postPost(reqBody));
 };
 
 const putPost = async (postId: number, data: PostPut) => {
