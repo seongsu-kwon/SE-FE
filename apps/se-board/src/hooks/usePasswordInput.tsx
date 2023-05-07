@@ -19,7 +19,7 @@ export const usePasswordInput = (isModified: boolean) => {
         setWritePost({
           ...writePost,
           exposeOption: {
-            name: "비밀",
+            name: writePost.exposeOption.name,
             password: e.target.value,
           },
         });
@@ -27,7 +27,7 @@ export const usePasswordInput = (isModified: boolean) => {
         setModifyPost({
           ...modifyPost,
           exposeOption: {
-            name: "비밀",
+            name: modifyPost.exposeOption.name,
             password: e.target.value,
           },
         });

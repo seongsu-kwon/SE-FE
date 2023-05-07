@@ -11,6 +11,7 @@ declare module "@types" {
     contents: string;
     isEditable: boolean;
     isActive: boolean;
+    isReadOnlyAuthor: boolean;
   }
 
   interface PaginationInfo {
@@ -20,25 +21,24 @@ declare module "@types" {
     pageNum: number;
   }
 
+  interface Content {
+    commentId: number;
+    author: {
+      loginId: string;
+      name: string;
+    };
+    createdAt: string;
+    modifiedAt: string;
+    contents: string;
+    isEditable: boolean;
+    isActive: boolean;
+    isReadOnlyAuthor: boolean;
+    subComments: SubComment[];
+  }
+
   interface Comment {
     paginationInfo: PaginationInfo;
-    totalSize: number;
-    totalElements: number;
-    last: boolean;
-    number: number;
-    content: {
-      commentId: number;
-      author: {
-        loginId: string;
-        name: string;
-      };
-      createdAt: string;
-      modifiedAt: string;
-      contents: string;
-      isEditable: boolean;
-      isActive: boolean;
-      subComments: SubComment[];
-    }[];
+    content: Content[];
   }
 
   interface SubCommentInfoType {

@@ -94,8 +94,7 @@ const privacyOptions = [
 export const CategoryAndPrivacySetting = ({
   isModified,
   onClickRegistration,
-}: // TODO: 공개 범위 받아와서 설정 필요
-CategoryAndPrivacySettingProps) => {
+}: CategoryAndPrivacySettingProps) => {
   const mainCategoryId = Number(useLocation().pathname.split("/")[1]);
 
   const [beforePost, setBeforePost] = useRecoilState(beforePostState);
@@ -130,17 +129,16 @@ CategoryAndPrivacySettingProps) => {
     onClickPined,
   } = useAnonymousAndPined(isModified, beforePost.isPined);
 
-  const [categoryOptions, setCategoryOptions] = useState<
-    Category[] | undefined
-  >(undefined);
-
   // 카테고리 조회
   const { data, error, isLoading, isSuccess } =
     useGetCategoryQuery(mainCategoryId);
 
-  // TODO: 카테고리 조회 후 카테고리 설정
+  const [categoryOptions, setCategoryOptions] = useState<
+    Category[] | undefined
+  >(data?.subMenu);
+
   useEffect(() => {
-    setCategoryOptions(data);
+    setCategoryOptions(data?.subMenu);
   }, []);
 
   const settingClick = () => {
@@ -228,7 +226,7 @@ CategoryAndPrivacySettingProps) => {
                 _hover={{ borderColor: "blue.500" }}
               >
                 {categoryOptions?.map((option) => (
-                  <option key={option.categoryId} value={option.name} />
+                  <option id={String(option.menuId)} value={option.name} />
                 ))}
               </Select>
             </Box>
@@ -336,14 +334,16 @@ export const DesktopCategoryAndPrivacySetting = ({
     onClickPined,
   } = useAnonymousAndPined(isModified, beforePost.isPined);
 
-  const [categoryOptions, setCategoryOptions] = useState<Category[]>([]);
-
   // 카테고리 조회
   const { data, error, isLoading, isSuccess } =
     useGetCategoryQuery(mainCategoryId);
 
+  const [categoryOptions, setCategoryOptions] = useState<
+    Category[] | undefined
+  >(data?.subMenu);
+
   useEffect(() => {
-    setCategoryOptions(data);
+    setCategoryOptions(data?.subMenu);
   }, [data]);
 
   return (
@@ -369,7 +369,9 @@ export const DesktopCategoryAndPrivacySetting = ({
           _hover={{ borderColor: openColors.blue[5] }}
         >
           {categoryOptions?.map((option) => (
-            <option key={option.categoryId} value={option.name} />
+            <option id={String(option.menuId)} value={option.name}>
+              {option.name}
+            </option>
           ))}
         </Select>
       </Box>
@@ -419,6 +421,7 @@ export const DesktopCategoryAndPrivacySetting = ({
             borderRadius="3px"
             borderColor="gray.5"
             color={openColors.gray[7]}
+            isChecked={isAnonymous}
             onChange={onClickAnonymous}
           >
             익명글 작성
@@ -428,6 +431,7 @@ export const DesktopCategoryAndPrivacySetting = ({
             borderRadius="3px"
             borderColor="gray.5"
             color={openColors.gray[7]}
+            isChecked={isPined}
             onChange={onClickPined} // 게시글 수정 시 체크되어 있을 수도 있어야 함
           >
             리스트 상단 고정

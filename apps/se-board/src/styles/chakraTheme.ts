@@ -67,6 +67,33 @@ export const theme = extendTheme({
       "html, body": {
         color: openColors.gray[7],
       },
+      h1: {
+        display: "block",
+        fontSize: "2em",
+        marginTop: "0.67em",
+        marginBottom: "0.67em",
+        marginLeft: 0,
+        marginRight: 0,
+        fontWeight: "bold",
+      },
+      h2: {
+        display: "block",
+        fontSize: "1.5em",
+        marginTop: "0.83em",
+        marginBottom: "0.83em",
+        marginLeft: 0,
+        marginRight: 0,
+        fontWeight: "bold",
+      },
+      h3: {
+        display: "block",
+        fontSize: "1.17em",
+        marginTop: "1em",
+        marginBottom: "1em",
+        marginLeft: 0,
+        marginRight: 0,
+        fontWeight: "bold",
+      },
     },
   },
   fonts: {

@@ -39,7 +39,7 @@ interface HeaderProps {
   };
 }
 
-const AuthorInfoMenuList = ({ name }: { name: string }) => {
+const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
   return (
     <Menu autoSelect={false}>
       <MenuButton>
@@ -58,9 +58,11 @@ const AuthorInfoMenuList = ({ name }: { name: string }) => {
           </Text>
         </Box>
       </MenuButton>
-      <MenuList maxW={{ base: "100px" }}>
-        <MenuItem w="100%">작성글 보기</MenuItem>
-      </MenuList>
+      {id !== null && (
+        <MenuList maxW={{ base: "100px" }}>
+          <MenuItem w="100%">작성글 보기</MenuItem>
+        </MenuList>
+      )}
     </Menu>
   );
 };
@@ -94,7 +96,10 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
             w="fit-content"
           >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
           <HStack mt="4px" spacing="12px">
-            <AuthorInfoMenuList name={HeadingInfo.author.name} />
+            <AuthorInfoMenuList
+              id={HeadingInfo.author.loginId}
+              name={HeadingInfo.author.name}
+            />
 
             <Box display="flex">
               <Icon as={BsClock} boxSize="16px" my="auto" />
@@ -136,7 +141,10 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
           w="fit-content"
         >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
-          <AuthorInfoMenuList name={HeadingInfo.author.name} />
+          <AuthorInfoMenuList
+            id={HeadingInfo.author.loginId}
+            name={HeadingInfo.author.name}
+          />
           <Box display="flex">
             <Icon as={BsClock} boxSize="20px" my="auto" />
             <Box ml="6px" fontSize="lg">

@@ -63,11 +63,11 @@ declare module "@types" {
     createdAt: DateType;
     modifiedAt: DateType;
     contents: string;
-    bookmarked: boolean;
+    isBookmarked: boolean;
     isEditable: boolean;
     exposeType: string;
     attachments: { fileMetaDataList: Attachment[] }; // 파일 로직 추가 후 수정 필요
-    pined: boolean;
+    isPined: boolean;
   }
 
   interface exposeOptionDTO {

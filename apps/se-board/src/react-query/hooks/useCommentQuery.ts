@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Comment } from "@types";
 import { AxiosResponse } from "axios";
 
@@ -6,20 +6,35 @@ import { customAxios } from "@/api/CustomAxios";
 
 const fetchComments = (
   postId: string | undefined,
-  page: number,
-  perPage: number
+  pageParam: number
 ): Promise<Comment> => {
-  const response = customAxios.get(`/posts/${postId}/comments`);
+  const response = customAxios.get(
+    `/posts/${postId}/comments?page=${pageParam}&perPage=25`
+  );
   return response.then((res: AxiosResponse<Comment>) => res.data);
 };
 
-export const useGetCommentQuery = (
-  postId: string | undefined,
-  page: number,
-  perPage: number = 25
-) => {
-  return useQuery<Comment>(["comments", postId], () =>
-    fetchComments(postId, page, perPage)
+// export const useGetCommentQuery = (
+//   postId: string | undefined,
+//   page: number = 0,
+//   perPage: number = 25
+// ) => {
+//   return useQuery<Comment>(["comments", postId], () =>
+//     fetchComments(postId, page, perPage)
+//   );
+// };
+
+export const useGetCommentQuery = (postId?: string) => {
+  return useInfiniteQuery<Comment>(
+    ["comments", postId],
+    ({ pageParam = 0 }) => fetchComments(postId, pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.paginationInfo.last
+          ? undefined
+          : lastPage.paginationInfo.pageNum + 1;
+      },
+    }
   );
 };
 
@@ -27,7 +42,7 @@ interface PostCommentData {
   postId: number;
   contents: string;
   isAnonymous: boolean;
-  readOnlyAuthor: boolean;
+  isReadOnlyAuthor: boolean;
 }
 
 interface PostResData {
@@ -45,7 +60,7 @@ export const usePostCommentMutation = () => {
 
 interface PutCommentData {
   contents: string;
-  readOnlyAuthor: boolean;
+  isReadOnlyAuthor: boolean;
 }
 
 // 댓글 수정

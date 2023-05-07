@@ -26,7 +26,7 @@ export const CommentInput = () => {
       postId: Number(postId),
       contents: value,
       isAnonymous: isAnonymous,
-      readOnlyAuthor: isSecret,
+      isReadOnlyAuthor: isSecret,
     });
 
     if (postCommentMutation.isSuccess) {

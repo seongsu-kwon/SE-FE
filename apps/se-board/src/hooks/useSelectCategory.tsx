@@ -25,8 +25,7 @@ export function useSelectCategory(
 
   const selectOption = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const { value, id } = e.target;
-      console.log(value, id);
+      const { value, id } = e.target.selectedOptions[0];
 
       setSelectedCategory({ categoryId: Number(id), name: value });
 

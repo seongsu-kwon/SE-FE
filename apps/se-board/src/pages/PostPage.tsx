@@ -67,10 +67,8 @@ export const PostPage = () => {
     category: postData?.category.name || "카테고리",
     createdAt: postData?.createdAt,
     modifiedAt: postData?.modifiedAt,
-    bookmarked:
-      postData?.bookmarked !== undefined ? postData?.bookmarked : false,
-    isEditable:
-      postData?.isEditable !== undefined ? postData?.isEditable : false,
+    bookmarked: postData?.isBookmarked || false,
+    isEditable: postData?.isEditable || false,
   };
 
   return (
@@ -98,7 +96,7 @@ export const PostPage = () => {
           <Header HeadingInfo={headerInfo} />
         )}
       </Hide>
-      <AttachmentFile files={files} />
+      <AttachmentFile files={postData?.attachments.fileMetaDataList || []} />
       {isLoading ? (
         <SkeletonDetailPostContent />
       ) : (

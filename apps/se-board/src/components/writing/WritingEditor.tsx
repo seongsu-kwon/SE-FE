@@ -4,9 +4,8 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
+import { usePostFileQuery } from "@/react-query/hooks/useFileQuery";
 import { modifyPostState, writePostState } from "@/store";
-
-let num = 0;
 
 export const WritingEditor = ({
   title,
@@ -21,37 +20,44 @@ export const WritingEditor = ({
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
+  const { mutate, data: resData, error } = usePostFileQuery();
+
   useEffect(() => {
     setEditorData(`<h1>${title}</h1>` + contents);
   }, [title, contents]);
 
-  //   const imgLink = "http://localhost:3000/images";
+  const customUploadAdapter = (loader: any) => {
+    return {
+      upload: () => {
+        return new Promise((resolve, reject) => {
+          const data = new FormData();
 
-  //   const customUploaadAdapterPlugin = (loader: ) => {
-  //     return {
-  //       upload() {
-  //         return new Promise((resolve, reject) => {
-  //           const data = new FormData();
-  //           loader.file.then((file: File) => {
-  //             data.append("file", file);
-  //             data.append("name", file.name);
+          loader.file.then((file: File) => {
+            data.append("files", file);
 
-  //             console.log({ file });
+            mutate(data, {
+              onSuccess: (data) => {
+                resolve({
+                  default: `http://192.168.0.13/${data?.fileMetaDataList[0].url}`,
+                });
+              },
+              onError: (error) => {
+                reject(error);
+              },
+            });
+          });
+        });
+      },
+    };
+  };
 
-  //             resolve({
-  //               default: `${imgLink}/${file.name}`,
-  //             });
-  //           });
-  //         });
-  //       },
-  //     };
-  //   };
-
-  //   function uploadPlugin(editor) {
-  //     editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-  //       return customUploaadAdapterPlugin(loader);
-  //     };
-  //   }
+  const uploadPlugin = function (editor: any) {
+    editor.plugins.get("FileRepository").createUploadAdapter = (
+      loader: any
+    ) => {
+      return customUploadAdapter(loader);
+    };
+  };
 
   const editorConfiguration = {
     fontSize: {
@@ -59,6 +65,7 @@ export const WritingEditor = ({
         6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 30, 32,
       ],
     },
+    extraPlugins: [uploadPlugin],
   };
 
   return (
@@ -83,6 +90,8 @@ export const WritingEditor = ({
           const body = data.replace(match && match[0], "");
 
           setEditorData(data);
+
+          console.log(data);
 
           if (!isModified) {
             setWritePost({

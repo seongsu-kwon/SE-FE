@@ -7,13 +7,17 @@ import { customAxios } from "@/api/CustomAxios";
 const fetchGetPost = async (
   postId: string | undefined
 ): Promise<PostDetail> => {
-  const response = customAxios.get(`/posts/1234879892103`);
+  const response = customAxios.get(`/posts/${postId}`);
   return response.then((res: AxiosResponse<PostDetail>) => res.data);
 };
 
-export const useGetPostQuery = (postId: string | undefined) => {
+export const useGetPostQuery = (
+  postId: string | undefined,
+  enabledOption: boolean = true
+) => {
   return useQuery<PostDetail>(["post", postId], () => fetchGetPost(postId), {
     staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
+    enabled: enabledOption,
   });
 };
 
@@ -45,8 +49,8 @@ const bookmarkPost = async (postId: number) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const useBookmarkPostMutation = (postId: number) => {
-  return useMutation(() => bookmarkPost(postId));
+export const useBookmarkPostMutation = () => {
+  return useMutation((postId: number) => bookmarkPost(postId));
 };
 
 const bookmarkDelete = async (postId: number) => {
@@ -56,8 +60,8 @@ const bookmarkDelete = async (postId: number) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const useBookmarkDeleteMutation = (postId: number) => {
-  return useMutation(() => bookmarkDelete(postId));
+export const useBookmarkDeleteMutation = () => {
+  return useMutation((postId: number) => bookmarkDelete(postId));
 };
 
 const deletePost = async (postId: number) => {

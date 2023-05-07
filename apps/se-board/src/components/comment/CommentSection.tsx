@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { Comment } from "@types";
+import { Comment, Content } from "@types";
 import { useEffect, useState } from "react";
 
 import {
@@ -17,29 +17,37 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
-  const { data, isLoading, isError } = useGetCommentQuery(postId, 0);
-  const [commentData, setCommentData] = useState<Comment | undefined>(data);
+  const [pageInfo, setPageInfo] = useState({
+    page: 0,
+    perPage: 25,
+  });
+  const { data, isLoading, isError, fetchNextPage } =
+    useGetCommentQuery(postId);
+  const [commentData, setCommentData] = useState<Comment | undefined>(
+    undefined
+  );
 
   if (isError) {
     // 에러 화면 렌더링
   }
 
   useEffect(() => {
-    setCommentData(data);
+    if (!data) return;
+
+    const newContents: Content[] = [];
+
+    data.pages.map((page) => {
+      newContents.push(...page.content);
+    });
+
+    setCommentData({
+      paginationInfo: data.pages[data.pages.length - 1].paginationInfo,
+      content: newContents,
+    });
   }, [data]);
 
   const moreCommentsOnClick = () => {
-    // 댓글 더보기 버튼 클릭 시
-    if (commentData) {
-      const newData = useGetCommentQuery(postId, commentData.number + 1).data; // comment에 data 추가 후 더보기 버튼 클릭 시 기존 데이터와 새로운 데이터 합치기 필요
-
-      if (newData) {
-        setCommentData({
-          ...newData,
-          content: commentData.content.concat(newData.content),
-        });
-      }
-    }
+    fetchNextPage();
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   useBookmarkDeleteMutation,
@@ -17,15 +17,19 @@ export const useBookmarked = (
     isLoading: deleteIsLoading,
     isError: deleteIsError,
     mutate: bookmarkDeleteMutate,
-  } = useBookmarkDeleteMutation(postId);
+  } = useBookmarkDeleteMutation();
   const {
     isSuccess: enrollIsSuccess,
     isLoading: enrollIsLoading,
     isError: enrollIsError,
     mutate: bookmarkPostMutate,
-  } = useBookmarkPostMutation(postId);
+  } = useBookmarkPostMutation();
 
   const toast = useToast();
+
+  useEffect(() => {
+    setIsBookmarked(bookmarked);
+  }, [bookmarked]);
 
   const toggleBookmark = () => {
     if (!isLoggined) {
@@ -40,43 +44,43 @@ export const useBookmarked = (
 
     if (isBookmarked) {
       // 북마크 해제
-      bookmarkDeleteMutate();
-
-      deleteIsSuccess &&
-        toast({
-          title: "북마크가 해제되었습니다.",
-          status: "info",
-          duration: 5000,
-          isClosable: true,
-        }) &&
-        setIsBookmarked(!isBookmarked);
-
-      deleteIsError &&
-        toast({
-          title: "북마크 해제에 실패했습니다.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+      bookmarkDeleteMutate(postId, {
+        onSuccess: () => {
+          toast({
+            title: "북마크가 해제되었습니다.",
+            status: "info",
+            duration: 5000,
+            isClosable: true,
+          }) && setIsBookmarked(!isBookmarked);
+        },
+        onError: () => {
+          toast({
+            title: "북마크 해제에 실패했습니다.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+      });
     } else {
-      bookmarkPostMutate();
-
-      enrollIsSuccess &&
-        toast({
-          title: "북마크 되었습니다.",
-          status: "info",
-          duration: 5000,
-          isClosable: true,
-        }) &&
-        setIsBookmarked(!isBookmarked);
-
-      enrollIsError &&
-        toast({
-          title: "북마크에 실패했습니다.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+      bookmarkPostMutate(postId, {
+        onSuccess: () => {
+          toast({
+            title: "북마크 되었습니다.",
+            status: "info",
+            duration: 5000,
+            isClosable: true,
+          }) && setIsBookmarked(!isBookmarked);
+        },
+        onError: () => {
+          toast({
+            title: "북마크에 실패했습니다.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+      });
     }
   };
 

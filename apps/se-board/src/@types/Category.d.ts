@@ -1,6 +1,10 @@
 declare module "@types" {
   interface Category {
-    categoryId: number;
+    menuId: number;
     name: string;
+    urlId: string;
+    externalUrl: string;
+    type: string;
+    subMenu: Category[];
   }
 }

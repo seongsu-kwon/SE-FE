@@ -22,12 +22,15 @@ import { useMobileHeaderState } from "@/store/mobileHeaderState";
 export const NoticeWrite = () => {
   const pathName = useLocation().pathname;
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
+
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
   const resetModifyPost = useResetRecoilState(modifyPostState);
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const resetWritePost = useResetRecoilState(writePostState);
   const [beforePost, setBeforePost] = useRecoilState(beforePostState);
+
   const isModified = useRef(false);
+
   const {
     mutate: putPostMutate,
     isError: putPostIsError,
@@ -38,7 +41,7 @@ export const NoticeWrite = () => {
     data,
     isLoading: getPostIsLoading,
     isError: getPostIsError,
-  } = useGetPostQuery(pathName.split("/")[2]);
+  } = useGetPostQuery(pathName.split("/")[2], isModified.current);
   const {
     mutate: writePostMutate,
     isError: writePostIsError,
@@ -56,7 +59,7 @@ export const NoticeWrite = () => {
         title: data?.title || "",
         contents: data?.contents || "",
         categoryId: data?.category?.categoryId || -1,
-        pined: data?.pined || false,
+        pined: data?.isPined || false,
         exposeOption: {
           name: data?.exposeType || "",
           password: "",
@@ -76,7 +79,7 @@ export const NoticeWrite = () => {
         attachments: {
           fileMetaDataList: data?.attachments.fileMetaDataList || [],
         },
-        isPined: data?.pined || false,
+        isPined: data?.isPined || false,
       });
     }
 
@@ -100,7 +103,7 @@ export const NoticeWrite = () => {
       <Show above="md">
         <DesktopCategoryAndPrivacySetting isModified={isModified.current} />
         <DesktopFileUploader
-          onFileDrop={(file) => console.log(file)}
+          isModified={isModified.current}
           beforeFiles={beforePost?.attachments.fileMetaDataList}
         />
       </Show>
@@ -114,7 +117,7 @@ export const NoticeWrite = () => {
           }
         />
         <MobileFileUploader
-          onFileDrop={(file) => console.log(file)}
+          isModified={isModified.current}
           beforeFiles={beforePost?.attachments.fileMetaDataList}
         />
       </Hide>

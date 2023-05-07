@@ -82,7 +82,7 @@ export const SubCommentInput = ({
             commentId,
             putCommentData: {
               contents: comment,
-              readOnlyAuthor: isSecret,
+              isReadOnlyAuthor: isSecret,
             },
           });
         }
@@ -93,7 +93,7 @@ export const SubCommentInput = ({
             replyId: commentId,
             putReplyData: {
               contents: comment,
-              readOnlyAuthor: isSecret,
+              isReadOnlyAuthor: isSecret,
             },
           });
         }

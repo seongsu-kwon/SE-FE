@@ -6,7 +6,7 @@ export const writePostState = atom({
   default: {
     title: "",
     contents: "",
-    categoryId: -1,
+    categoryId: 43214233,
     pined: false,
     exposeOption: {
       name: "",

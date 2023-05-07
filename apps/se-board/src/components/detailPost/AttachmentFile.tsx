@@ -5,20 +5,16 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Link,
   Tooltip,
 } from "@chakra-ui/react";
+import { Attachment } from "@types";
 import { BsPaperclip } from "react-icons/bs";
 
 import { openColors } from "@/styles";
 
 interface AttachmentFileProps {
-  files: {
-    file_id: number;
-    file_name: string;
-    file_size: number;
-    file_type: string;
-    file_url: string;
-  }[];
+  files: Attachment[];
 }
 
 export const AttachmentFile = ({ files }: AttachmentFileProps) => {
@@ -38,14 +34,15 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
                 aria-label="다운로드"
                 placement="right-end"
               >
-                <Box
+                <Link
                   w="fit-content"
-                  key={file.file_id}
+                  href={`http://192.158.0.67/${file.url}`}
+                  key={file.fileMetaDataId}
                   color={openColors.gray[6]}
                   _hover={{ color: openColors.gray[7] }}
                 >
-                  {file.file_name}
-                </Box>
+                  {file.originalFileName}
+                </Link>
               </Tooltip>
             ))}
           </AccordionPanel>
