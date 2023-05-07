@@ -7,6 +7,7 @@ const buttonStyle: ComponentStyleConfig = {
   variants: {
     primary: {
       backgroundColor: semanticColors.primary,
+      color: semanticColors["primary-content"],
       _hover: {
         bg: semanticColors["primary-focus"],
         backgroundColor: semanticColors["primary-focus"],
@@ -28,6 +29,7 @@ const buttonStyle: ComponentStyleConfig = {
     },
     danger: {
       backgroundColor: semanticColors.error,
+      color: semanticColors["error-content"],
       _hover: {
         backgroundColor: semanticColors["error-focus"],
         _disabled: {

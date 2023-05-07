@@ -28,21 +28,27 @@ importers:
     specifiers:
       '@chakra-ui/cli': ^2.3.0
       '@chakra-ui/react': ^2.5.1
+      '@ckeditor/ckeditor5-react': ^6.0.0
       '@craco/craco': ^7.1.0
       '@emotion/react': ^11.10.6
       '@emotion/styled': ^11.10.6
       '@fontsource/noto-sans-kr': ^4.5.12
       '@tanstack/react-query': ^4.26.1
       '@tanstack/react-query-devtools': ^4.26.1
+      '@tanstack/react-table': ^8.7.9
       '@testing-library/jest-dom': ^5.16.5
       '@testing-library/react': ^13.4.0
       '@testing-library/user-event': ^14.4.3
+      '@types/dompurify': ^3.0.0
       '@types/jest': ^28.1.8
       '@types/node': ^12.20.55
       '@types/react': ^18.0.28
       '@types/react-dom': ^18.0.11
       '@types/react-transition-group': ^4.4.5
       axios: ^1.3.4
+      ckeditor5-custom-build: file:libs\ckeditor
+      dayjs: ^1.11.7
+      dompurify: ^3.0.1
       framer-motion: ^6.5.1
       react: ^18.2.0
       react-app-alias: ^2.2.2
@@ -64,6 +70,7 @@ importers:
       '@fontsource/noto-sans-kr': 4.5.12
       '@tanstack/react-query': 4.26.1_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-query-devtools': 4.26.1_brdhmlf72zuns3lsk66phyptty
+      '@tanstack/react-table': 8.7.9_biqbaboplfbrettd7655fr4n2y
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
       '@testing-library/user-event': 14.4.3
@@ -73,6 +80,8 @@ importers:
       '@types/react-dom': 18.0.11
       '@types/react-transition-group': 4.4.5
       axios: 1.3.4
+      ckeditor5-custom-build: file:apps/se-board/libs/ckeditor
+      dompurify: 3.0.1
       framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -87,7 +96,10 @@ importers:
       web-vitals: 2.1.4
     devDependencies:
       '@chakra-ui/cli': 2.3.0_prfxyxghnskheluimpb6dvby4q
+      '@ckeditor/ckeditor5-react': 6.0.0_react@18.2.0
       '@craco/craco': 7.1.0_eljnr3qa26g7wetej4uof5kqa4
+      '@types/dompurify': 3.0.0
+      dayjs: 1.11.7
       react-app-alias: 2.2.2
       react-app-alias-ex: 2.1.0
 
@@ -2443,6 +2455,21 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@ckeditor/ckeditor5-react/6.0.0_react@18.2.0:
+    resolution: {integrity: sha512-Yw0MlWfUXelGJ7qcFCYlaRlDEsEr0Lh7Wa2NGDT4+kscwcck9x8F1qm7xmjwJZ9bj79GC9rnCxsIqmq2etmZFA==}
+    engines: {node: '>=16.0.0', npm: '>=5.7.1'}
+    requiresBuild: true
+    peerDependencies:
+      '@ckeditor/ckeditor5-core': '>=37.0.0'
+      '@ckeditor/ckeditor5-engine': '>=37.0.0'
+      '@ckeditor/ckeditor5-utils': '>=37.0.0'
+      '@ckeditor/ckeditor5-watchdog': '>=37.0.0'
+      react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: true
+
   /@craco/craco/7.1.0_eljnr3qa26g7wetej4uof5kqa4:
     resolution: {integrity: sha512-oRAcPIKYrfPXp9rSzlsDNeOaVtDiKhoyqSXUoqiK24jCkHr4T8m/a2f74yXIzCbIheoUWDOIfWZyRgFgT+cpqA==}
     engines: {node: '>=6'}
@@ -3535,6 +3562,23 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
+  /@tanstack/react-table/8.7.9_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-6MbbQn5AupSOkek1+6IYu+1yZNthAKTRZw9tW92Vi6++iRrD1GbI3lKTjJalf8lEEKOqapPzQPE20nywu0PjCA==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@tanstack/table-core': 8.7.9
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@tanstack/table-core/8.7.9:
+    resolution: {integrity: sha512-4RkayPMV1oS2SKDXfQbFoct1w5k+pvGpmX18tCXMofK/VDRdA2hhxfsQlMvsJ4oTX8b0CI4Y3GDKn5T425jBCw==}
+    engines: {node: '>=12'}
+    dev: false
+
   /@testing-library/dom/8.20.0:
     resolution: {integrity: sha512-d9ULIT+a4EXLX3UU8FBjauG9NnsZHkHztXoIcTsOKoOw030fyjheN9svkTULjJxtYag9DZz5Jz5qkWZDPxTFwA==}
     engines: {node: '>=12'}
@@ -3659,6 +3703,12 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 12.20.55
+
+  /@types/dompurify/3.0.0:
+    resolution: {integrity: sha512-EcSqmgm/xJwH8CcJPy9AHNypp/j58CYga3nWdl93/wLxX6OH+rSD3aAj75NQazcZd1YKHJ/pjNZ9qmgVajggwQ==}
+    dependencies:
+      '@types/trusted-types': 2.0.3
+    dev: true
 
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
@@ -5416,6 +5466,10 @@ packages:
       whatwg-mimetype: 2.3.0
       whatwg-url: 8.7.0
 
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: true
+
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -5662,6 +5716,10 @@ packages:
     engines: {node: '>= 4'}
     dependencies:
       domelementtype: 2.3.0
+
+  /dompurify/3.0.1:
+    resolution: {integrity: sha512-60tsgvPKwItxZZdfLmamp0MTcecCta3avOhsLgPZ0qcWt96OasFfhkeIRbJ6br5i0fQawT1/RBGB5L58/Jpwuw==}
+    dev: false
 
   /domutils/1.7.0:
     resolution: {integrity: sha512-Lgd2XcJ/NjEw+7tFvfKxOzCYKZsdct5lczQ2ZaQY8Djz7pfAD3Gbp8ySJWtreII/vDlMVmxwa6pHmdxIYgttDg==}
@@ -11946,3 +12004,9 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  file:apps/se-board/libs/ckeditor:
+    resolution: {directory: apps/se-board/libs/ckeditor, type: directory}
+    name: ckeditor5-custom-build
+    version: 0.0.1
+    dev: false
