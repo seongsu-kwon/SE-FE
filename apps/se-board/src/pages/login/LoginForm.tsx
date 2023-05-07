@@ -7,23 +7,26 @@ import {
   Text,
   useBoolean,
 } from "@chakra-ui/react";
+import { LoginFormFileds } from "@types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BsCheckCircle, BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-type LoginFormFileds = {
-  id: string;
-  password: string;
-};
+import { useLogin } from "@/react-query/hooks/auth";
 
 export const LoginForm = () => {
   const [maintainLogin, setMaintainLogin] = useBoolean();
+
+  const { mutate: login, isLoading, error } = useLogin();
+
   const {
     register,
     handleSubmit,
     formState: { isValid, isSubmitting },
   } = useForm<LoginFormFileds>();
-  const onSubmit: SubmitHandler<LoginFormFileds> = (data) => console.log(data);
+
+  const onSubmit: SubmitHandler<LoginFormFileds> = (data) => login(data);
+
   return (
     <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
       <Flex direction="column" gap="0.5rem">
@@ -33,9 +36,15 @@ export const LoginForm = () => {
           type="password"
           {...register("password", { required: true })}
         />
+        {error && (
+          <Text color="red.500" ml="0.5rem">
+            {error.message}
+          </Text>
+        )}
         <Button
           type="submit"
           isDisabled={!isValid}
+          isLoading={isLoading}
           variant="primary"
           w="full"
           mt="0.5rem"

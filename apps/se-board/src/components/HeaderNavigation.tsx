@@ -26,6 +26,8 @@ import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
 import { useNavigatePage } from "@/hooks";
+import { useLogout } from "@/react-query/hooks/auth";
+import { user } from "@/store/user";
 
 import { Logo } from "./Logo";
 
@@ -56,6 +58,7 @@ const DESKTOP_NAV_ITEMS: readonly NavItemProps[] = [
 export const DesktopHeaderNavigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { goToLoginPage } = useNavigatePage();
+  const { refetch: logout } = useLogout();
 
   return (
     <Center as="header" shadow="base">
@@ -76,13 +79,23 @@ export const DesktopHeaderNavigation = () => {
             </Wrap>
           </Box>
           <ButtonGroup>
-            <Button
-              onClick={goToLoginPage}
-              variant="primary-outline"
-              rounded="full"
-            >
-              로그인
-            </Button>
+            {user.hasAuth() ? (
+              <Button
+                onClick={() => logout()}
+                variant="primary-outline"
+                rounded="full"
+              >
+                로그아웃
+              </Button>
+            ) : (
+              <Button
+                onClick={goToLoginPage}
+                variant="primary-outline"
+                rounded="full"
+              >
+                로그인
+              </Button>
+            )}
           </ButtonGroup>
         </Show>
         {/* tablet 사이즈에서 노출 desktop 사이즈에서 노출X */}
@@ -103,6 +116,7 @@ const DrawerNavigation = ({
   ...props
 }: Omit<DrawerProps, "children">) => {
   const { goToLoginPage } = useNavigatePage();
+  const { refetch: logout } = useLogout();
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
@@ -118,15 +132,21 @@ const DrawerNavigation = ({
         </DrawerHeader>
         <DrawerBody>
           <Wrap>
-            {DESKTOP_NAV_ITEMS.map((item) => (
-              <DrawerNavItem {...item} onClick={onClose} />
+            {DESKTOP_NAV_ITEMS.map((item, i) => (
+              <DrawerNavItem key={i} {...item} onClick={onClose} />
             ))}
           </Wrap>
         </DrawerBody>
         <DrawerFooter borderTopWidth="1px">
-          <Button onClick={goToLoginPage} variant="primary" w="full">
-            로그인
-          </Button>
+          {user.hasAuth() ? (
+            <Button onClick={() => logout()} variant="primary" w="full">
+              로그아웃
+            </Button>
+          ) : (
+            <Button onClick={goToLoginPage} variant="primary" w="full">
+              로그인
+            </Button>
+          )}
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
@@ -135,6 +155,7 @@ const DrawerNavigation = ({
 
 export const HeaderNavigation = () => {
   const { goToLoginPage } = useNavigatePage();
+  const { refetch: logout } = useLogout();
   return (
     <>
       <Flex
@@ -144,13 +165,23 @@ export const HeaderNavigation = () => {
         py="0.5rem"
       >
         <Logo size="3rem" />
-        <Button
-          onClick={goToLoginPage}
-          variant="primary-outline"
-          rounded="full"
-        >
-          로그인
-        </Button>
+        {user.hasAuth() ? (
+          <Button
+            onClick={() => logout()}
+            variant="primary-outline"
+            rounded="full"
+          >
+            로그아웃
+          </Button>
+        ) : (
+          <Button
+            onClick={goToLoginPage}
+            variant="primary-outline"
+            rounded="full"
+          >
+            로그인
+          </Button>
+        )}
       </Flex>
       <Center as="nav" w="full" position="sticky" top="0">
         <Flex
