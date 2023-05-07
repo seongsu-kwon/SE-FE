@@ -1,5 +1,6 @@
 import { DateType } from "@types";
 import dayjs from "dayjs";
+
 export const toYYMMDD_DOT = (date: DateType) => {
   return dayjs(date).format("YY.MM.DD");
 };
