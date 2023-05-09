@@ -1,16 +1,19 @@
 import { Button, HStack } from "@chakra-ui/react";
+import { Menu } from "@types";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const categoryList = ["일반", "강의", "학사", "행사", "학생회"];
-
-export const CategoryNavigation = () => {
+export const CategoryNavigation = ({
+  categoryList,
+}: {
+  categoryList: Menu[];
+}) => {
   const [searchPrams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const category = searchPrams.get("category");
     if (!category) return;
-    if (!categoryList.includes(category)) {
+    if (!categoryList.some((v) => v.urlId === category)) {
       searchPrams.delete("category");
       setSearchParams(searchPrams);
     }
@@ -20,6 +23,7 @@ export const CategoryNavigation = () => {
       <Button
         onClick={() => {
           searchPrams.delete("category");
+          searchPrams.delete("page");
           setSearchParams(searchPrams);
         }}
         variant="ghost"
@@ -30,12 +34,18 @@ export const CategoryNavigation = () => {
 
       {categoryList.map((category) => (
         <Button
-          key={category}
-          onClick={() => setSearchParams([["category", category]])}
+          key={category.menuId}
+          onClick={() => {
+            searchPrams.set("category", category.urlId);
+            searchPrams.delete("page");
+            setSearchParams(searchPrams);
+          }}
           variant="ghost"
-          color={searchPrams.get("category") === category ? "primary" : ""}
+          color={
+            searchPrams.get("category") === category.urlId ? "primary" : ""
+          }
         >
-          {category}
+          {category.name}
         </Button>
       ))}
     </HStack>

@@ -1,4 +1,4 @@
-import { DateType } from "@types";
+import { DateType, Pageable } from "@types";
 
 declare module "@types" {
   interface PostListItemDTO {
@@ -10,17 +10,17 @@ declare module "@types" {
     createdAt: DateType;
     modifiedAt: DateType;
     hasAttachment: boolean;
-    commentsSize: number;
+    commentSize: number;
     pined: boolean;
   }
 
   interface CategoryDTO {
-    mainCategory: string;
-    subCategory: string;
+    categoryId: number;
+    name: string;
   }
 
   interface AuthorDTO {
-    userId: string;
+    loginId: string | null;
     name: string;
   }
 
@@ -33,12 +33,36 @@ declare module "@types" {
     createdDateTime: DateType;
     modifiedDateTime: DateType;
     hasAttachment: boolean;
-    commentsSize: number;
+    commentSize: number;
     pined: boolean;
   }
 
   interface Author {
-    userId: string;
+    loginId: string | null;
     name: string;
+  }
+
+  interface FetchPostListResponse {
+    content: PostListItemDTO[];
+    pageable: Pageable;
+    totalPages: number;
+    totalElements: number;
+    last: boolean;
+    numberOfElements: number;
+    size: number;
+    number: number;
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    };
+    first: boolean;
+    empty: boolean;
+  }
+
+  interface FetchPostListParams {
+    categoryId: number;
+    page?: number;
+    perPage?: number;
   }
 }
