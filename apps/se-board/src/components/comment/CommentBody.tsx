@@ -17,6 +17,7 @@ interface CommentBodyProps {
   contents: string;
   isEditable: boolean;
   isActive: boolean;
+  isReadOnlyAuthor: boolean;
   subComments?: SubComment[];
 }
 
@@ -28,6 +29,7 @@ export const CommentBody = ({
   contents,
   isEditable,
   isActive,
+  isReadOnlyAuthor,
   subComments,
 }: CommentBodyProps) => {
   const [isWriteSubComment, setIsWriteSubComment] = useState(false);
@@ -52,6 +54,7 @@ export const CommentBody = ({
           createdAt={createdAt}
           isEditable={isEditable}
           isActive={isActive}
+          isReadOnlyAuthor={isReadOnlyAuthor}
           setIsWriteSubComment={setIsWriteSubComment}
           setSubCommentInfo={setSubCommentInfo}
         />
@@ -82,6 +85,7 @@ export const CommentBody = ({
               isEditable={subComment.isEditable}
               isActive={subComment.isActive}
               tag={tagName}
+              isReadOnlyAuthor={subComment.isReadOnlyAuthor}
               setIsWriteSubComment={setIsWriteSubComment}
               setSubCommentInfo={setSubCommentInfo}
             />

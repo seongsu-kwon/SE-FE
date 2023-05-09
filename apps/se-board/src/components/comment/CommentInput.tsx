@@ -11,15 +11,18 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { usePostCommentMutation } from "@/react-query/hooks";
+import { useWriteCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const CommentInput = () => {
   const { postId } = useParams();
   const [value, setValue] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
+  const { writeCommentTrue } = useWriteCommentState();
 
-  const postCommentMutation = usePostCommentMutation();
+  const postCommentMutation = usePostCommentMutation(postId);
 
   const handleSubmit = () => {
     postCommentMutation.mutate({
@@ -33,8 +36,11 @@ export const CommentInput = () => {
       setIsAnonymous(false);
       setValue("");
       setIsSecret(false);
-    } else {
-      // TODO: error handling
+      writeCommentTrue();
+    }
+
+    if (postCommentMutation.isError) {
+      return errorHandle(postCommentMutation.error);
     }
   };
 
@@ -112,6 +118,7 @@ export const CommentInput = () => {
             <Switch
               id="anonymous"
               mt="3px"
+              isChecked={isAnonymous}
               onChange={() => {
                 setIsAnonymous(!isAnonymous);
               }}
@@ -130,6 +137,7 @@ export const CommentInput = () => {
               <Switch
                 id="secret"
                 mt="3px"
+                isChecked={isSecret}
                 onChange={() => {
                   setIsSecret(!isSecret);
                 }}

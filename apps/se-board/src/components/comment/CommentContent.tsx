@@ -55,6 +55,7 @@ interface CommentContentProps {
   isEditable: boolean;
   isActive: boolean;
   tag?: string;
+  isReadOnlyAuthor: boolean;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   setSubCommentInfo: React.Dispatch<React.SetStateAction<SubCommentInfoType>>;
 }
@@ -68,6 +69,7 @@ export const CommentContent = ({
   isEditable,
   isActive,
   tag,
+  isReadOnlyAuthor,
   setIsWriteSubComment,
   setSubCommentInfo,
 }: CommentContentProps) => {
@@ -108,6 +110,7 @@ export const CommentContent = ({
           setIsModify={setIsModify}
           isWritingReply={false} // 수정하기 버튼 클릭 시 false
           isReply={superCommentId !== commentId}
+          isSecreted={isReadOnlyAuthor}
         />
       ) : (
         <>

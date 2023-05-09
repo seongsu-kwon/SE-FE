@@ -9,12 +9,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
 import {
   usePostReplyMutation,
   usePutCommentMutation,
   usePutReplyMutation,
 } from "@/react-query/hooks";
+import { refetchCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
 
 interface SubCommentInputProps {
@@ -27,7 +29,7 @@ interface SubCommentInputProps {
   setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
   isReply: boolean; // true: 답글, false: 댓글
   isWritingReply: boolean; // true: 답글 작성 중, false: 댓글, 답글 수정 중
-  // ToDo: 비밀 댓글인지 알려주는 state 추가 필요
+  isSecreted?: boolean;
 }
 
 export const SubCommentInput = ({
@@ -40,30 +42,35 @@ export const SubCommentInput = ({
   setIsModify,
   isReply,
   isWritingReply,
+  isSecreted,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
 
   const [comment, setComment] = useState<string>(contents);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [isSecret, setIsSecret] = useState(false);
+  const [isSecret, setIsSecret] = useState(isSecreted || false);
+
+  const [refetchComment, setRefetchComment] =
+    useRecoilState(refetchCommentState);
+
   const {
     mutate: putCommentMutate,
     isLoading: isPutLoading,
     isError: isPutError,
     isSuccess: isPutSuccess,
-  } = usePutCommentMutation();
+  } = usePutCommentMutation(postId);
   const {
     mutate: putReplyMutate,
     isLoading: isPutReplyLoading,
     isError: isPutReplyError,
     isSuccess: isPutReplySuccess,
-  } = usePutReplyMutation();
+  } = usePutReplyMutation(postId);
   const {
     mutate: postReplyMutate,
     isLoading: isPostReplyLoading,
     isError: isPostReplyError,
     isSuccess: isPostReplySuccess,
-  } = usePostReplyMutation();
+  } = usePostReplyMutation(postId);
 
   useEffect(() => {
     if (subCommentInputRef?.current) {
@@ -116,6 +123,8 @@ export const SubCommentInput = ({
       setComment("");
       setIsAnonymous(false);
       setIsSecret(false);
+
+      setRefetchComment(true);
     }
   };
 
@@ -210,6 +219,7 @@ export const SubCommentInput = ({
             <Switch
               id="anonymous"
               mt="3px"
+              isChecked={isAnonymous}
               onChange={() => {
                 setIsAnonymous(!isAnonymous);
               }}
@@ -228,6 +238,7 @@ export const SubCommentInput = ({
               <Switch
                 id="secret"
                 mt="3px"
+                isChecked={isSecret}
                 onChange={() => {
                   setIsSecret(!isSecret);
                 }}

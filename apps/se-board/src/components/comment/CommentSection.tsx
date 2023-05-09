@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { Comment, Content } from "@types";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
 import {
   CommentBody,
@@ -10,26 +11,47 @@ import {
   SkeletonComment,
 } from "@/components/comment";
 import { useGetCommentQuery } from "@/react-query/hooks";
+import { refetchCommentState, writeCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
+import { errorHandle } from "@/utils/errorHandling";
 
 interface CommentSectionProps {
   postId: string | undefined;
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
-  const [pageInfo, setPageInfo] = useState({
-    page: 0,
-    perPage: 25,
-  });
-  const { data, isLoading, isError, fetchNextPage } =
-    useGetCommentQuery(postId);
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  } = useGetCommentQuery(postId);
   const [commentData, setCommentData] = useState<Comment | undefined>(
     undefined
   );
+  const [isWriteState, setIsWriteState] = useRecoilState(writeCommentState);
+  const [refetchComment, setRefetchComment] =
+    useRecoilState(refetchCommentState);
 
   if (isError) {
-    // 에러 화면 렌더링
+    return errorHandle(error);
   }
+
+  useEffect(() => {
+    refetch();
+    setRefetchComment(false);
+  }, [refetchComment]);
+
+  useEffect(() => {
+    while (hasNextPage) {
+      fetchNextPage();
+    }
+
+    setIsWriteState(false);
+  }, [isWriteState]);
 
   useEffect(() => {
     if (!data) return;
@@ -77,6 +99,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
             contents={comment.contents}
             isEditable={comment.isEditable}
             isActive={comment.isActive}
+            isReadOnlyAuthor={comment.isReadOnlyAuthor}
             subComments={comment.subComments}
           />
         ))

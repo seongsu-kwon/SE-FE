@@ -18,6 +18,7 @@ import {
 } from "@/components/detailPost";
 import { useGetPostQuery } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
+import { errorHandle } from "@/utils/errorHandling";
 
 const mainCategories = [
   { eng: "notice", kor: "공지사항", icon: NoticeIcon },
@@ -25,24 +26,7 @@ const mainCategories = [
   { eng: "archive", kor: "아카이브", icon: "" },
 ];
 
-const files = [
-  {
-    file_id: 1,
-    file_name: "hello.pdf",
-    file_size: 100,
-    file_type: "pdf",
-    file_url: "https://www.google.com",
-  },
-  {
-    file_id: 2,
-    file_name: "hello.pdf",
-    file_size: 100,
-    file_type: "pdf",
-    file_url: "https://www.google.com",
-  },
-];
-
-export const PostPage = () => {
+export const PostPage = (secretData: { secretData?: PostDetail }) => {
   const { postId } = useParams();
   const mainCategory = useLocation().pathname.split("/")[1];
   const { data, isLoading, isError, error } = useGetPostQuery(postId);
@@ -52,6 +36,10 @@ export const PostPage = () => {
   useEffect(() => {
     mobileHeaderClose();
     setPostData(data);
+
+    if (isError) {
+      return errorHandle(error);
+    }
 
     return mobileHeaderOpen;
   }, [data]);

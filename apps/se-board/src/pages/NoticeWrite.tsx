@@ -1,6 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useResetRecoilState } from "recoil";
 
 import {
@@ -18,9 +18,11 @@ import {
 } from "@/react-query/hooks";
 import { beforePostState, modifyPostState, writePostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const NoticeWrite = () => {
   const pathName = useLocation().pathname;
+  const navigate = useNavigate();
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
@@ -36,21 +38,38 @@ export const NoticeWrite = () => {
     isError: putPostIsError,
     isLoading: putPostIsLoading,
     isSuccess: putPostIsSuccess,
+    error: putPostError,
+    data: putPostData,
   } = usePutPostMutation();
   const {
     data,
     isLoading: getPostIsLoading,
     isError: getPostIsError,
+    error: getPostError,
   } = useGetPostQuery(pathName.split("/")[2], isModified.current);
   const {
     mutate: writePostMutate,
     isError: writePostIsError,
     isLoading: writePostIsLoading,
     isSuccess: writePostIsSuccess,
+    error: writePostError,
+    data: writePostData,
   } = usePostPostMutation();
 
   useEffect(() => {
     mobileHeaderClose();
+
+    if (getPostIsError) {
+      return errorHandle(getPostError);
+    }
+
+    if (putPostIsError) {
+      return errorHandle(putPostError);
+    }
+
+    if (writePostIsError) {
+      return errorHandle(writePostError);
+    }
 
     if (pathName.includes("modify")) {
       isModified.current = true;
@@ -89,13 +108,19 @@ export const NoticeWrite = () => {
   const onClickRegistrationInModify = () => {
     putPostMutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
 
-    resetModifyPost();
+    if (putPostIsSuccess) {
+      navigate(`/post/${putPostData.id}`, { replace: true });
+      resetModifyPost();
+    }
   };
 
   const onClickRegistrationInWrite = () => {
     writePostMutate(writePost);
 
-    resetWritePost();
+    if (writePostIsSuccess) {
+      navigate(`/post/${writePostData.id}`, { replace: true });
+      resetWritePost();
+    }
   };
 
   return (

@@ -12,7 +12,7 @@ export const Content = ({ contents }: { contents: string }) => {
       borderBottom={`1px solid ${openColors.gray[3]}`}
     >
       <Box
-        mx="16px"
+        m="16px"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(contents) }}
       />
     </Box>

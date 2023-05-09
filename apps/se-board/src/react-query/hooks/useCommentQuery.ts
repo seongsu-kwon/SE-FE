@@ -14,16 +14,6 @@ const fetchComments = (
   return response.then((res: AxiosResponse<Comment>) => res.data);
 };
 
-// export const useGetCommentQuery = (
-//   postId: string | undefined,
-//   page: number = 0,
-//   perPage: number = 25
-// ) => {
-//   return useQuery<Comment>(["comments", postId], () =>
-//     fetchComments(postId, page, perPage)
-//   );
-// };
-
 export const useGetCommentQuery = (postId?: string) => {
   return useInfiniteQuery<Comment>(
     ["comments", postId],
@@ -54,7 +44,7 @@ const postComment = async (postData: PostCommentData): Promise<PostResData> => {
   return response.then((res: AxiosResponse<PostResData>) => res.data);
 };
 
-export const usePostCommentMutation = () => {
+export const usePostCommentMutation = (postId?: string) => {
   return useMutation(postComment);
 };
 
@@ -71,7 +61,7 @@ const putComment = async (param: {
   return customAxios.put(`/comments/${param.commentId}`, param.putCommentData);
 };
 
-export const usePutCommentMutation = () => {
+export const usePutCommentMutation = (postId?: string) => {
   return useMutation(
     (param: { commentId: number; putCommentData: PutCommentData }) =>
       putComment(param)
@@ -83,7 +73,7 @@ const deleteComment = async (commentId: number) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const useDeleteCommentMutation = () => {
+export const useDeleteCommentMutation = (postId?: string) => {
   return useMutation((commentId: number) => deleteComment(commentId));
 };
 
@@ -102,7 +92,7 @@ const postReply = async (postReplyData: PostReplyData) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const usePostReplyMutation = () => {
+export const usePostReplyMutation = (postId?: string) => {
   return useMutation(postReply);
 };
 
@@ -118,7 +108,7 @@ const putReply = async (param: {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const usePutReplyMutation = () => {
+export const usePutReplyMutation = (postId?: string) => {
   return useMutation(
     (param: { replyId: number; putReplyData: PutCommentData }) =>
       putReply(param)
@@ -130,6 +120,6 @@ const deleteReply = async (replyId: number) => {
   return response.then((res: AxiosResponse) => res.data);
 };
 
-export const useDeleteReplyMutation = () => {
+export const useDeleteReplyMutation = (postId?: string) => {
   return useMutation((replyId: number) => deleteReply(replyId));
 };

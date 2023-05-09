@@ -21,7 +21,12 @@ export const useGetPostQuery = (
   });
 };
 
-const postPost = async (reqBody: PostCreate) => {
+interface PostResData {
+  id: number;
+  message: string;
+}
+
+const postPost = async (reqBody: PostCreate): Promise<PostResData> => {
   return customAxios.post("/posts", reqBody);
 };
 
@@ -29,7 +34,7 @@ export const usePostPostMutation = () => {
   return useMutation((reqBody: PostCreate) => postPost(reqBody));
 };
 
-const putPost = async (postId: number, data: PostPut) => {
+const putPost = async (postId: number, data: PostPut): Promise<PostResData> => {
   const url = `/posts/${postId}`;
   const response = customAxios.put(url, data);
 
@@ -72,7 +77,19 @@ const deletePost = async (postId: number) => {
 };
 
 export const useDeletePostMutation = (postId: number) => {
-  const { mutate, isError, isLoading } = useMutation(() => deletePost(postId));
+  return useMutation(() => deletePost(postId));
+};
 
-  return { mutate, isError, isLoading };
+const secretPost = async (postId: number, password: string) => {
+  const response = customAxios.post(`/posts/${postId}/auth`, {
+    password: password,
+  });
+
+  return response.then((res: AxiosResponse) => res.data);
+};
+
+export const useSecretPostMutation = () => {
+  return useMutation((param: { postId: number; password: string }) =>
+    secretPost(param.postId, param.password)
+  );
 };

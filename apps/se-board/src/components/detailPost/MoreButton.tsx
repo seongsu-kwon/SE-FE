@@ -23,13 +23,15 @@ import {
   BsThreeDotsVertical,
   BsTrash3,
 } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 import { useDeletePostMutation } from "@/react-query/hooks";
 import {
   useDeleteCommentMutation,
   useDeleteReplyMutation,
 } from "@/react-query/hooks";
+import { refetchCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
 
 interface MoreButtonProps {
@@ -117,19 +119,28 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
 };
 
 const PostDeleteAlert = ({ postId }: { postId: number }) => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
   const {
     mutate: deleteMutate,
     isLoading,
+    error,
     isError,
+    isSuccess,
   } = useDeletePostMutation(postId);
 
   const postDeleteClick = () => {
     deleteMutate();
 
-    if (!isLoading) {
+    if (isSuccess) {
       onClose();
+
+      if (window.history.length === 1) {
+        navigate("/");
+      } else {
+        navigate(-1);
+      }
     }
   };
 
@@ -289,24 +300,30 @@ interface CommentMoreButtonProps {
 const CommentDeleteAlert = ({
   commentId,
   isReply,
+  postId,
 }: {
   commentId: number;
   isReply: boolean;
+  postId?: string;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const setRefetchCommentState = useSetRecoilState(refetchCommentState);
+
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
+
   const {
     mutate: deleteMutate,
     isLoading: commentDeleteIsLoading,
     isError: commentDeleteIsError,
     isSuccess: commentDeleteIsSuccess,
-  } = useDeleteCommentMutation();
+  } = useDeleteCommentMutation(postId);
   const {
     mutate: deleteReplyMutate,
     isError: deleteReplyIsError,
     isLoading: deleteReplyIsLoading,
     isSuccess: deleteReplyIsSuccess,
-  } = useDeleteReplyMutation();
+  } = useDeleteReplyMutation(postId);
 
   const commentDeleteClick = () => {
     if (!isReply) {
@@ -317,6 +334,8 @@ const CommentDeleteAlert = ({
 
     if (commentDeleteIsSuccess || deleteReplyIsSuccess) {
       onClose();
+
+      setRefetchCommentState(true);
     }
   };
 
@@ -405,6 +424,7 @@ export const CommentMoreButton = ({
   const commentModifyClick = () => {
     setIsModify(true);
   };
+  const { postId } = useParams();
 
   return (
     <Menu>
@@ -428,7 +448,11 @@ export const CommentMoreButton = ({
             >
               수정
             </MenuItem>
-            <CommentDeleteAlert commentId={commentId} isReply={isReply} />
+            <CommentDeleteAlert
+              commentId={commentId}
+              isReply={isReply}
+              postId={postId}
+            />
           </>
         ) : (
           <>
