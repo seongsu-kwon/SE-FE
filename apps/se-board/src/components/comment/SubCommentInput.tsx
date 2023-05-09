@@ -79,7 +79,6 @@ export const SubCommentInput = ({
   }, [subCommentInputRef]);
 
   const handleSubmitSubComment = () => {
-    // TODO: 답글 등록, state 초기화
     if (!isWritingReply) {
       //수정
       if (!isReply) {
@@ -123,6 +122,12 @@ export const SubCommentInput = ({
       setComment("");
       setIsAnonymous(false);
       setIsSecret(false);
+
+      if (isWritingReply) {
+        setIsWriteSubComment(false);
+      } else {
+        setIsModify && setIsModify(false);
+      }
 
       setRefetchComment(true);
     }
