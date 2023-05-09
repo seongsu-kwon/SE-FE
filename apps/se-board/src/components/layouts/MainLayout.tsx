@@ -1,17 +1,17 @@
-import { Flex, Hide, Show } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
-import { DesktopHeaderNavigation, HeaderNavigation } from "@/components";
+import { DesktopHeaderNavigation } from "@/components";
+import { menuListState } from "@/store/menu";
 
 export const MainLayout = () => {
+  const MenuList = useRecoilValue(menuListState);
+
   return (
     <>
-      <Show above="md">
-        <DesktopHeaderNavigation />
-      </Show>
-      <Hide above="md">
-        <HeaderNavigation />
-      </Hide>
+      <DesktopHeaderNavigation menuList={MenuList} />
+
       <Flex justifyContent="center">
         <Outlet />
       </Flex>

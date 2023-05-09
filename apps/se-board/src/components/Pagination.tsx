@@ -1,11 +1,14 @@
 import { Button, HStack, Icon } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BsChevronDoubleLeft,
   BsChevronDoubleRight,
   BsChevronLeft,
   BsChevronRight,
 } from "react-icons/bs";
+import { useRecoilValue } from "recoil";
+
+import { postPaginationState } from "@/store/post";
 
 const getPages = (
   currentGroup: number,
@@ -33,11 +36,11 @@ interface PaignationProps {
 }
 
 export const Pagination = ({
-  currentPage,
   totalPage,
   viewPage = 10,
   onChangePage,
 }: PaignationProps) => {
+  const { currentPage } = useRecoilValue(postPaginationState);
   const [pageGroup, setPageGroup] = useState<{
     currentGroup: number;
     lastGroup: number;
@@ -88,6 +91,21 @@ export const Pagination = ({
     onChangePage((pageGroup.currentGroup + 1) * viewPage);
   };
 
+  useEffect(() => {
+    if (totalPage && currentPage > totalPage) {
+      setPageGroup((prev) => ({
+        ...prev,
+        currentGroup: prev.lastGroup,
+        pages: getPages(prev.lastGroup, totalPage, viewPage),
+      }));
+    }
+    setPageGroup({
+      currentGroup: Math.floor(currentPage / viewPage),
+      lastGroup: Math.ceil(totalPage / viewPage) - 1,
+      pages: getPages(Math.floor(currentPage / viewPage), totalPage, viewPage),
+    });
+  }, [totalPage, viewPage, currentPage]);
+
   return (
     <HStack>
       <Button
@@ -96,6 +114,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
+        size={{ base: "sm", lg: "md" }}
       >
         <Icon as={BsChevronDoubleLeft} boxSize="0.875rem" />
       </Button>
@@ -105,6 +124,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
+        size={{ base: "sm", lg: "md" }}
       >
         <Icon as={BsChevronLeft} boxSize="0.875rem" />
       </Button>
@@ -116,7 +136,8 @@ export const Pagination = ({
           }}
           variant={page === currentPage ? "primary" : "outline"}
           rounded="none"
-          fontSize="0.875rem"
+          fontSize={{ base: "0.5rem", lg: "0.875rem" }}
+          size={{ base: "sm", lg: "md" }}
         >
           {page + 1}
         </Button>
@@ -127,6 +148,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
+        size={{ base: "sm", lg: "md" }}
       >
         <Icon as={BsChevronRight} boxSize="0.875rem" />
       </Button>
@@ -136,6 +158,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
+        size={{ base: "sm", lg: "md" }}
       >
         <Icon as={BsChevronDoubleRight} boxSize="0.875rem" />
       </Button>

@@ -42,11 +42,11 @@ const columns: ColumnDef<PostListItem, any>[] = [
     header: "제목",
     cell: (info) => {
       const {
-        commentsSize,
+        commentSize,
         hasAttachment,
         pined,
         postId,
-        category: { subCategory },
+        category: { name },
       } = info.row.original;
       return (
         <Flex alignItems="center">
@@ -59,10 +59,10 @@ const columns: ColumnDef<PostListItem, any>[] = [
               }}
               fontWeight={pined ? "bold" : "normal"}
             >
-              [{subCategory}] {info.getValue()}
+              [{name}] {info.getValue()}
             </Text>
           </Link>
-          <Text color="orange.5">[{commentsSize}]</Text>
+          <Text color="orange.5">[{commentSize}]</Text>
           {hasAttachment && <Icon as={BsLink45Deg} ml="0.25rem" />}
         </Flex>
       );
@@ -106,7 +106,6 @@ export const PostTable = ({ data }: PostTableProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  table.getRowModel().rows.map((row) => console.log(row));
   return (
     <ChakraTable>
       <Thead>
