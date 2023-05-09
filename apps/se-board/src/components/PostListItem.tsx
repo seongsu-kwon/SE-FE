@@ -19,7 +19,7 @@ export const PostListItem = ({
   createdDateTime,
   modifiedDateTime,
   hasAttachment,
-  commentsSize,
+  commentSize,
   pined,
   ellipsisLine = 0,
 }: PostListItemProps) => {
@@ -41,7 +41,7 @@ export const PostListItem = ({
           fontWeight={pined ? "black" : "bold"}
           color={pined ? "primary" : "gray.7"}
         >
-          [{category.subCategory}] {title}
+          [{category.name}] {title}
         </Heading>
         <Flex
           alignItems="center"
@@ -78,7 +78,7 @@ export const PostListItem = ({
         fontWeight="bold"
       >
         <Text>댓글</Text>
-        <Text>{commentsSizeFormat(commentsSize)}</Text>
+        <Text>{commentsSizeFormat(commentSize)}</Text>
       </Center>
     </Flex>
   );

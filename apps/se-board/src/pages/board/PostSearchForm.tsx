@@ -27,7 +27,7 @@ export const PostSearchForm = () => {
       searchPrams.delete(field);
       setSearchParams(searchPrams);
     } else {
-      searchPrams.append(field, query);
+      searchPrams.set(field, query);
       setSearchParams(searchPrams);
     }
   };

@@ -18,13 +18,16 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Menu as MenuType } from "@types";
 import React from "react";
 import { BsFunnel, BsPencil, BsSearch } from "react-icons/bs";
 import { Link, useSearchParams } from "react-router-dom";
 
-const categoryList = ["일반", "강의", "학사", "행사", "학생회"];
-
-export const MobilePostPageBottonMenu = () => {
+export const MobilePostPageBottonMenu = ({
+  categoryList,
+}: {
+  categoryList: MenuType[];
+}) => {
   const [searchPrams, setSearchParams] = useSearchParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -75,11 +78,16 @@ export const MobilePostPageBottonMenu = () => {
           </MenuItem>
           {categoryList.map((category) => (
             <MenuItem
-              key={category}
-              onClick={() => setSearchParams([["category", category]])}
-              bgColor={searchPrams.get("category") === category ? "gray.1" : ""}
+              key={category.menuId}
+              onClick={() => {
+                searchPrams.set("category", category.urlId);
+                setSearchParams(searchPrams);
+              }}
+              bgColor={
+                searchPrams.get("category") === category.urlId ? "gray.1" : ""
+              }
             >
-              {category}
+              {category.name}
             </MenuItem>
           ))}
         </MenuList>

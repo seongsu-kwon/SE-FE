@@ -1,4 +1,4 @@
-import { DateType } from "@types";
+import { DateType, Pageable } from "@types";
 
 declare module "@types" {
   interface PostListItemDTO {
@@ -10,17 +10,17 @@ declare module "@types" {
     createdAt: DateType;
     modifiedAt: DateType;
     hasAttachment: boolean;
-    commentsSize: number;
+    commentSize: number;
     pined: boolean;
   }
 
   interface CategoryDTO {
-    mainCategory: string;
-    subCategory: string;
+    categoryId: number;
+    name: string;
   }
 
   interface AuthorDTO {
-    loginId: string;
+    loginId: string | null;
     name: string;
   }
 
@@ -33,18 +33,42 @@ declare module "@types" {
     createdDateTime: DateType;
     modifiedDateTime: DateType;
     hasAttachment: boolean;
-    commentsSize: number;
+    commentSize: number;
     pined: boolean;
   }
 
   interface Author {
-    loginId: string;
+    loginId: string | null;
     name: string;
   }
 
   interface PostDetatilCategory {
     categoryId: number;
     name: string;
+  }
+
+  interface FetchPostListResponse {
+    content: PostListItemDTO[];
+    pageable: Pageable;
+    totalPages: number;
+    totalElements: number;
+    last: boolean;
+    numberOfElements: number;
+    size: number;
+    number: number;
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    };
+    first: boolean;
+    empty: boolean;
+  }
+
+  interface FetchPostListParams {
+    categoryId: number;
+    page?: number;
+    perPage?: number;
   }
 
   interface Attachment {
@@ -66,7 +90,7 @@ declare module "@types" {
     isBookmarked: boolean;
     isEditable: boolean;
     exposeType: string;
-    attachments: { fileMetaDataList: Attachment[] }; // 파일 로직 추가 후 수정 필요
+    attachments: { fileMetaDataList: Attachment[] };
     isPined: boolean;
   }
 
@@ -81,7 +105,7 @@ declare module "@types" {
     categoryId: number;
     pined: boolean;
     exposeOption: exposeOptionDTO;
-    attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
+    attachmentIds: number[];
   }
 
   interface PostCreate {
@@ -90,7 +114,7 @@ declare module "@types" {
     categoryId: number;
     pined: boolean;
     exposeOption: exposeOptionDTO;
-    attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
+    attachmentIds: number[];
     anonymous: boolean;
   }
 

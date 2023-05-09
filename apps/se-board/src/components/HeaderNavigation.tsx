@@ -22,6 +22,7 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
+import { Menu } from "@types";
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -57,7 +58,11 @@ const DESKTOP_NAV_ITEMS: readonly NavItemProps[] = [
   },
 ] as const;
 
-export const DesktopHeaderNavigation = () => {
+export const DesktopHeaderNavigation = ({
+  menuList = [],
+}: {
+  menuList: Menu[];
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { goToLoginPage } = useNavigatePage();
   const { refetch: logout } = useLogout();
@@ -75,8 +80,8 @@ export const DesktopHeaderNavigation = () => {
         <Show above="lg">
           <Box as="nav">
             <Wrap spacingX="2rem" spacingY="0px">
-              {DESKTOP_NAV_ITEMS.map((item) => (
-                <DesktopNavItem key={item.name} {...item} />
+              {menuList.map((menu) => (
+                <DesktopNavItem key={menu.name} {...menu} />
               ))}
             </Wrap>
           </Box>
@@ -105,18 +110,27 @@ export const DesktopHeaderNavigation = () => {
           <Button onClick={onOpen} variant="ghost" p="0">
             <Icon as={BsList} color="gray.7" boxSize="2rem" />
           </Button>
-          <DrawerNavigation isOpen={isOpen} onClose={onClose} />
+          <DrawerNavigation
+            isOpen={isOpen}
+            onClose={onClose}
+            menuList={menuList}
+          />
         </Hide>
       </Flex>
     </Center>
   );
 };
 
+interface DrawerNavigationProps extends Omit<DrawerProps, "children"> {
+  menuList: Menu[];
+}
+
 const DrawerNavigation = ({
   onClose,
   isOpen,
+  menuList,
   ...props
-}: Omit<DrawerProps, "children">) => {
+}: DrawerNavigationProps) => {
   const { goToLoginPage } = useNavigatePage();
   const { refetch: logout } = useLogout();
 
@@ -129,12 +143,12 @@ const DrawerNavigation = ({
         <DrawerHeader borderBottomWidth="1px">
           <Flex alignItems="center" gap="1rem">
             <Avatar />
-            <Text>박형준</Text>
+            <Text>홍길동</Text>
           </Flex>
         </DrawerHeader>
         <DrawerBody>
           <Wrap>
-            {DESKTOP_NAV_ITEMS.map((item, i) => (
+            {menuList.map((item, i) => (
               <DrawerNavItem key={i} {...item} onClick={onClose} />
             ))}
           </Wrap>
@@ -215,61 +229,118 @@ interface NavItemProps {
   onClick?: () => void;
 }
 
-const DesktopNavItem = ({ name, path, isExternalSite }: NavItemProps) => {
-  return (
-    <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
-      {isExternalSite ? (
-        <ExternalLink
-          href={path}
-          target="_blank"
-          display="flex"
-          alignItems="center"
-          columnGap="0.25rem"
-          isExternal
-          _hover={{ textDecoration: "none" }}
-        >
-          <Text py="1rem">{name}</Text>
-          <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
-        </ExternalLink>
-      ) : (
-        <NavLink to={path}>
-          {({ isActive }) => (
-            <Text
-              fontWeight="bold"
-              color={isActive ? "primary" : "gray.7"}
-              position="relative"
-              py="1rem"
-              _before={
-                isActive
-                  ? {
-                      content: `""`,
-                      position: "absolute",
-                      display: "block",
-                      w: "full",
-                      h: "0.25rem",
-                      roundedTopLeft: "0.25rem",
-                      roundedTopRight: "0.25rem",
-                      bgColor: "primary",
-                      bottom: 0,
-                    }
-                  : {}
-              }
-            >
-              {name}
-            </Text>
-          )}
-        </NavLink>
-      )}
-    </WrapItem>
-  );
+const DesktopNavItem = ({ type, name, externalUrl, urlId }: Menu) => {
+  switch (type) {
+    case "MENU":
+      return <div>menu</div>;
+    case "BOARD":
+      return (
+        <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
+          <NavLink to={urlId}>
+            {({ isActive }) => (
+              <Text
+                fontWeight="bold"
+                color={isActive ? "primary" : "gray.7"}
+                position="relative"
+                py="1rem"
+                _before={
+                  isActive
+                    ? {
+                        content: `""`,
+                        position: "absolute",
+                        display: "block",
+                        w: "full",
+                        h: "0.25rem",
+                        roundedTopLeft: "0.25rem",
+                        roundedTopRight: "0.25rem",
+                        bgColor: "primary",
+                        bottom: 0,
+                      }
+                    : {}
+                }
+              >
+                {name}
+              </Text>
+            )}
+          </NavLink>
+        </WrapItem>
+      );
+    case "EXTERNAL":
+      return (
+        <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
+          <ExternalLink
+            href={externalUrl}
+            target="_blank"
+            display="flex"
+            alignItems="center"
+            columnGap="0.25rem"
+            isExternal
+            _hover={{ textDecoration: "none" }}
+          >
+            <Text py="1rem">{name}</Text>
+            <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
+          </ExternalLink>
+        </WrapItem>
+      );
+    default:
+      return <></>;
+  }
+
+  // return (
+  //   <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
+  //     {isExternalSite ? (
+  //       <ExternalLink
+  //         href={path}
+  //         target="_blank"
+  //         display="flex"
+  //         alignItems="center"
+  //         columnGap="0.25rem"
+  //         isExternal
+  //         _hover={{ textDecoration: "none" }}
+  //       >
+  //         <Text py="1rem">{name}</Text>
+  //         <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
+  //       </ExternalLink>
+  //     ) : (
+  //       <NavLink to={path}>
+  //         {({ isActive }) => (
+  //           <Text
+  //             fontWeight="bold"
+  //             color={isActive ? "primary" : "gray.7"}
+  //             position="relative"
+  //             py="1rem"
+  //             _before={
+  //               isActive
+  //                 ? {
+  //                     content: `""`,
+  //                     position: "absolute",
+  //                     display: "block",
+  //                     w: "full",
+  //                     h: "0.25rem",
+  //                     roundedTopLeft: "0.25rem",
+  //                     roundedTopRight: "0.25rem",
+  //                     bgColor: "primary",
+  //                     bottom: 0,
+  //                   }
+  //                 : {}
+  //             }
+  //           >
+  //             {name}
+  //           </Text>
+  //         )}
+  //       </NavLink>
+  //     )}
+  //   </WrapItem>
+  // );
 };
 
 const DrawerNavItem = ({
   name,
-  path,
-  isExternalSite,
+  type,
+  externalUrl,
+  urlId,
   onClick,
-}: NavItemProps) => {
+}: Menu & { onClick?: () => void }) => {
   return (
     <WrapItem
       onClick={onClick}
@@ -278,10 +349,10 @@ const DrawerNavItem = ({
       fontSize="1.125rem"
       fontWeight="bold"
     >
-      {isExternalSite ? (
+      {type === "EXTERNAL" ? (
         <ExternalLink
           isExternal
-          href={path}
+          href={externalUrl}
           target="_blank"
           w="full"
           _hover={{ textDecoration: "none" }}
@@ -301,7 +372,7 @@ const DrawerNavItem = ({
           </Box>
         </ExternalLink>
       ) : (
-        <NavLink to={path} style={{ width: "100%" }}>
+        <NavLink to={urlId} style={{ width: "100%" }}>
           {({ isActive }) => (
             <Box
               w="full"
