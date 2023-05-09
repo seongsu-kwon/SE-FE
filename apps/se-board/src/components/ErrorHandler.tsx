@@ -44,7 +44,7 @@ export const SecretPostPWInputModal = () => {
     if (isSuccess) {
       setPassword("");
 
-      return PostPage(data);
+      return PostPage({ secretData: data });
     }
 
     if (isError) {
@@ -337,6 +337,44 @@ export const NoneCommentAlert = () => {
             </Button>
             <Button colorScheme="primary" onClick={onClose} ml={3}>
               확인
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
+    </AlertDialog>
+  );
+};
+
+export const GotoLoginAlert = () => {
+  const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: true });
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleGoToLogin = () => {
+    onClose();
+    navigate("/login");
+  };
+
+  return (
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+    >
+      <AlertDialogOverlay>
+        <AlertDialogContent>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            로그인
+          </AlertDialogHeader>
+
+          <AlertDialogBody>로그인 후 이용해 주세요.</AlertDialogBody>
+
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              취소
+            </Button>
+            <Button colorScheme="primary" onClick={handleGoToLogin} ml={3}>
+              로그인 페이지로 이동
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

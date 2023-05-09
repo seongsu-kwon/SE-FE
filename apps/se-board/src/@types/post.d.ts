@@ -93,4 +93,9 @@ declare module "@types" {
     attachmentIds: number[]; // 파일 로직 추가 후 수정 필요
     anonymous: boolean;
   }
+
+  interface PostCreateRes {
+    id: number;
+    message: string;
+  }
 }

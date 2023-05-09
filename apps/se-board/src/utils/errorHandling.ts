@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import {
   ErrorFieldAlert,
   ExceededNumberAlert,
+  GotoLoginAlert,
   NoneAttachmentAlert,
   NoneCategoryAlert,
   NoneCommentAlert,
@@ -41,7 +42,8 @@ export const errorHandle = (error: unknown) => {
       case 401:
         switch (data.code) {
           case 102:
-          // 로그인 필요
+            console.log("로그인 필요");
+            return GotoLoginAlert;
         }
         break;
       case 403:
@@ -73,9 +75,6 @@ export const errorHandle = (error: unknown) => {
       case 500:
         // 서버 에러
         alert("서버 에러입니다. 관리자에게 문의해주세요.");
-        break;
-      default:
-        alert("에러가 발생했습니다. 관리자에게 문의해주세요.");
         break;
     }
   }

@@ -40,7 +40,7 @@ export const App = () => {
           />
           <Route path="server-rental" element={<div>서버 대여</div>} />
 
-          <Route path="notice/:id" element={<PostPage />} />
+          <Route path="notice/:postId" element={<PostPage />} />
           <Route path="notice/:postId/modify" element={<NoticeWrite />} />
         </Route>
         <Route />

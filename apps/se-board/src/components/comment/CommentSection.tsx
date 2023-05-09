@@ -37,7 +37,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     useRecoilState(refetchCommentState);
 
   if (isError) {
-    return errorHandle(error);
+    errorHandle(error);
   }
 
   useEffect(() => {

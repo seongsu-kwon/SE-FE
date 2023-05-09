@@ -38,7 +38,7 @@ export const WritingEditor = ({
             mutate(data, {
               onSuccess: (data) => {
                 resolve({
-                  default: `http://192.168.0.13/${data?.fileMetaDataList[0].url}`,
+                  default: `${process.env.REACT_APP_API_ENDPOINT}${data?.fileMetaDataList[0].url}`,
                 });
               },
               onError: (error) => {

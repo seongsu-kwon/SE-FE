@@ -26,23 +26,39 @@ const mainCategories = [
   { eng: "archive", kor: "아카이브", icon: "" },
 ];
 
-export const PostPage = (secretData: { secretData?: PostDetail }) => {
+interface PostPageProps {
+  secretData?: PostDetail;
+}
+
+export const PostPage = ({ secretData }: PostPageProps) => {
   const { postId } = useParams();
   const mainCategory = useLocation().pathname.split("/")[1];
-  const { data, isLoading, isError, error } = useGetPostQuery(postId);
+
+  const [enabledOption, setEnabledOption] = useState<boolean>(false);
+  const { data, isLoading, isError, error } = useGetPostQuery(
+    postId,
+    enabledOption
+  );
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
   const [postData, setPostData] = useState<PostDetail | undefined>(data);
 
   useEffect(() => {
     mobileHeaderClose();
-    setPostData(data);
+
+    if (secretData) {
+      setPostData(secretData);
+      setEnabledOption(false);
+    } else {
+      setPostData(data);
+      setEnabledOption(true);
+    }
 
     if (isError) {
       return errorHandle(error);
     }
 
     return mobileHeaderOpen;
-  }, [data]);
+  }, [data, secretData]);
 
   const headerInfo = {
     postId: Number(postId),

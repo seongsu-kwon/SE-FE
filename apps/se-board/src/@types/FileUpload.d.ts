@@ -5,4 +5,8 @@ declare module "@types" {
     isModified: boolean;
     beforeFiles: Attachment[];
   }
+
+  interface FileUploadRes {
+    fileMetaDataList: Attachment[];
+  }
 }

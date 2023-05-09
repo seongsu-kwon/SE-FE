@@ -46,4 +46,25 @@ declare module "@types" {
     tagCommentId: number | null;
     tagCommentAuthorName: string | null;
   }
+
+  interface PostCommentData {
+    postId: number;
+    contents: string;
+    isAnonymous: boolean;
+    isReadOnlyAuthor: boolean;
+  }
+
+  interface PutCommentData {
+    contents: string;
+    isReadOnlyAuthor: boolean;
+  }
+
+  interface PostReplyData {
+    postId: number;
+    superCommentId: number;
+    tagCommentId: number;
+    contents: string;
+    anonymous: boolean;
+    readOnlyAuthor: boolean;
+  }
 }

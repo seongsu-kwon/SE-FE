@@ -6,11 +6,7 @@ import {
   useBookmarkPostMutation,
 } from "@/react-query/hooks";
 
-export const useBookmarked = (
-  postId: number,
-  isLoggined: boolean,
-  bookmarked: boolean
-) => {
+export const useBookmarked = (postId: number, bookmarked: boolean) => {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const {
     isSuccess: deleteIsSuccess,
@@ -32,16 +28,6 @@ export const useBookmarked = (
   }, [bookmarked]);
 
   const toggleBookmark = () => {
-    if (!isLoggined) {
-      toast({
-        title: "로그인 후 이용해 주세요.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
-    }
-
     if (isBookmarked) {
       // 북마크 해제
       bookmarkDeleteMutate(postId, {
@@ -53,7 +39,7 @@ export const useBookmarked = (
             isClosable: true,
           }) && setIsBookmarked(!isBookmarked);
         },
-        onError: () => {
+        onError: (error) => {
           toast({
             title: "북마크 해제에 실패했습니다.",
             status: "error",
@@ -72,7 +58,7 @@ export const useBookmarked = (
             isClosable: true,
           }) && setIsBookmarked(!isBookmarked);
         },
-        onError: () => {
+        onError: (error) => {
           toast({
             title: "북마크에 실패했습니다.",
             status: "error",
