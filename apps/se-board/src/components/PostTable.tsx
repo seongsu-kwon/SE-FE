@@ -95,6 +95,8 @@ const columns: ColumnDef<PostListItem, any>[] = [
   }),
 ];
 
+const columnWidth = ["10%", "60%", "10%", "10%", "10%"];
+
 interface PostTableProps {
   data: PostListItem[];
 }
@@ -111,9 +113,10 @@ export const PostTable = ({ data }: PostTableProps) => {
       <Thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
+            {headerGroup.headers.map((header, i) => (
               <Th
                 key={header.id}
+                w={columnWidth[i]}
                 fontSize="md"
                 textAlign="center"
                 borderColor="gray.3"
@@ -137,8 +140,13 @@ export const PostTable = ({ data }: PostTableProps) => {
             bgColor={row.original.pined ? "gray.1" : "transparent"}
             fontSize="sm"
           >
-            {row.getVisibleCells().map((cell) => (
-              <Td key={cell.id} textAlign="center" borderColor="gray.3">
+            {row.getVisibleCells().map((cell, i) => (
+              <Td
+                key={cell.id}
+                w={columnWidth[i]}
+                textAlign="center"
+                borderColor="gray.3"
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </Td>
             ))}
