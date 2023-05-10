@@ -12,6 +12,7 @@ import {
   SignupPage,
 } from "./pages";
 import { BoardPage } from "./pages/board/BoardPage";
+import { PageNotFound } from "./pages/PageNotFound";
 import { useReissueToken } from "./react-query/hooks/auth";
 import { useFetchMenuList } from "./react-query/hooks/useMenu";
 import { menuListState } from "./store/menu";
@@ -61,7 +62,13 @@ const MenuRouter = () => {
     {
       path: "",
       element: <MainLayout />,
-      children: [...dynamicRoutes],
+      children: [
+        ...dynamicRoutes,
+        {
+          path: "*",
+          element: <PageNotFound />,
+        },
+      ],
     },
     {
       children: [

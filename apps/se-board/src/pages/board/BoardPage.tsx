@@ -116,7 +116,7 @@ export const BoardPage = () => {
       </Show>
       <Hide above="md">
         {isLoading ? (
-          <Stack w="full" py="1rem">
+          <Stack w="full" py="1rem" mt="56px">
             {[...new Array(20)].map((_, i) => (
               <Skeleton
                 key={i}
@@ -126,8 +126,24 @@ export const BoardPage = () => {
               />
             ))}
           </Stack>
+        ) : postList.length === 0 ? (
+          <Flex
+            h="calc(100vh - 56px)"
+            alignItems="center"
+            fontSize="1.25rem"
+            fontWeight="bold"
+            color="gray.5"
+          >
+            게시물이 없습니다
+          </Flex>
         ) : (
-          <PostList data={[...pinedPostList, ...postList]} />
+          <PostList
+            data={[...pinedPostList, ...postList]}
+            totalItems={totalItems}
+            perPage={40}
+            onChange={onChangePage}
+            page={currentPage}
+          />
         )}
         <MobilePostPageBottonMenu categoryList={getCurrentMenu()?.subMenu!} />
       </Hide>
