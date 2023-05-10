@@ -114,7 +114,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
-        size={{ base: "sm", lg: "md" }}
+        size={{ base: "xs", sm: "sm", lg: "md" }}
       >
         <Icon as={BsChevronDoubleLeft} boxSize="0.875rem" />
       </Button>
@@ -124,7 +124,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
-        size={{ base: "sm", lg: "md" }}
+        size={{ base: "xs", sm: "sm", lg: "md" }}
       >
         <Icon as={BsChevronLeft} boxSize="0.875rem" />
       </Button>
@@ -137,7 +137,7 @@ export const Pagination = ({
           variant={page === currentPage ? "primary" : "outline"}
           rounded="none"
           fontSize={{ base: "0.5rem", lg: "0.875rem" }}
-          size={{ base: "sm", lg: "md" }}
+          size={{ base: "xs", sm: "sm", lg: "md" }}
         >
           {page + 1}
         </Button>
@@ -148,7 +148,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
-        size={{ base: "sm", lg: "md" }}
+        size={{ base: "xs", sm: "sm", lg: "md" }}
       >
         <Icon as={BsChevronRight} boxSize="0.875rem" />
       </Button>
@@ -158,7 +158,7 @@ export const Pagination = ({
         _disabled={{ cursor: "not-allowed" }}
         variant="outline"
         rounded="none"
-        size={{ base: "sm", lg: "md" }}
+        size={{ base: "xs", sm: "sm", lg: "md" }}
       >
         <Icon as={BsChevronDoubleRight} boxSize="0.875rem" />
       </Button>

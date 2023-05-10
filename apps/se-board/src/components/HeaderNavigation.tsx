@@ -68,7 +68,13 @@ export const DesktopHeaderNavigation = ({
   const { refetch: logout } = useLogout();
 
   return (
-    <Center as="header" shadow="base">
+    <Center
+      as="header"
+      position={{ base: "fixed", md: "static" }}
+      w="full"
+      bgColor="white"
+      shadow="base"
+    >
       <Flex
         maxW="container.xl"
         w="full"
