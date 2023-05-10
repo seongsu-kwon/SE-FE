@@ -18,6 +18,7 @@ import {
 } from "@/react-query/hooks";
 import { refetchCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
+import { errorHandle } from "@/utils/errorHandling";
 
 interface SubCommentInputProps {
   superCommentId: number | null;
@@ -78,60 +79,114 @@ export const SubCommentInput = ({
     }
   }, [subCommentInputRef]);
 
+  if (isPostReplySuccess || isPutReplySuccess || isPutSuccess) {
+    // setComment("");
+    // setIsAnonymous(false);
+    // setIsSecret(false);
+    // if (isWritingReply) {
+    //   // 답글 작성
+    //   setIsWriteSubComment(false);
+    // } else {
+    //   // 댓글, 답글 수정
+    //   setIsModify && setIsModify(false);
+    // }
+    // setRefetchComment(true);
+  }
+
   const handleSubmitSubComment = () => {
     if (!isWritingReply) {
       //수정
       if (!isReply) {
         // 댓글 수정
         if (commentId) {
-          putCommentMutate({
-            commentId,
-            putCommentData: {
-              contents: comment,
-              isReadOnlyAuthor: isSecret,
+          putCommentMutate(
+            {
+              commentId,
+              putCommentData: {
+                contents: comment,
+                isReadOnlyAuthor: isSecret,
+              },
             },
-          });
+            {
+              onSuccess: () => {
+                setComment("");
+                setIsAnonymous(false);
+                setIsSecret(false);
+                setIsModify && setIsModify(false);
+                setRefetchComment(true);
+              },
+              onError: (error) => {
+                errorHandle(error);
+              },
+            }
+          );
         }
       } else {
         // 답글 수정
         if (commentId) {
-          putReplyMutate({
-            replyId: commentId,
-            putReplyData: {
-              contents: comment,
-              isReadOnlyAuthor: isSecret,
+          putReplyMutate(
+            {
+              replyId: commentId,
+              putReplyData: {
+                contents: comment,
+                isReadOnlyAuthor: isSecret,
+              },
             },
-          });
+            {
+              onSuccess: () => {
+                setComment("");
+                setIsAnonymous(false);
+                setIsSecret(false);
+                setIsModify && setIsModify(false);
+                setRefetchComment(true);
+              },
+              onError: (error) => {
+                errorHandle(error);
+              },
+            }
+          );
         }
       }
     } else {
       //답글 작성
       if (superCommentId && tagCommentId) {
-        postReplyMutate({
-          postId: Number(postId),
-          superCommentId: superCommentId,
-          tagCommentId: tagCommentId,
-          contents: comment,
-          anonymous: isAnonymous,
-          readOnlyAuthor: isSecret,
-        });
+        postReplyMutate(
+          {
+            postId: Number(postId),
+            superCommentId: superCommentId,
+            tagCommentId: tagCommentId,
+            contents: comment,
+            anonymous: isAnonymous,
+            readOnlyAuthor: isSecret,
+          },
+          {
+            onSuccess: () => {
+              setComment("");
+              setIsAnonymous(false);
+              setIsSecret(false);
+              setIsWriteSubComment(false);
+              setRefetchComment(true);
+            },
+            onError: (error) => {
+              errorHandle(error);
+            },
+          }
+        );
       }
-    }
-
-    if (isPostReplySuccess || isPutReplySuccess || isPutSuccess) {
-      setComment("");
-      setIsAnonymous(false);
-      setIsSecret(false);
-
-      if (isWritingReply) {
-        setIsWriteSubComment(false);
-      } else {
-        setIsModify && setIsModify(false);
-      }
-
-      setRefetchComment(true);
     }
   };
+
+  if (isPutError) {
+    errorHandle(isPutError);
+  }
+
+  if (isPutReplyError) {
+    errorHandle(isPutReplyError);
+  }
+
+  if (isPostReplyError) {
+    errorHandle(isPostReplyError);
+  }
 
   return (
     <Box

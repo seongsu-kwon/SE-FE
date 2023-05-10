@@ -1,6 +1,7 @@
 import { DateType, Pageable } from "@types";
 
 declare module "@types" {
+  type PostMutate = PostPut | PostCreate;
   interface PostListItemDTO {
     postId: number;
     title: string;

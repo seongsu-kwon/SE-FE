@@ -11,6 +11,8 @@ import {
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
+import { useMenu } from "@/hooks/useMenu";
+import { queryClient } from "@/react-query";
 import {
   useGetPostQuery,
   usePostPostMutation,
@@ -19,9 +21,11 @@ import {
 import { beforePostState, modifyPostState, writePostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 import { errorHandle } from "@/utils/errorHandling";
+import { isWritePostActive } from "@/utils/postUtils";
 
 export const NoticeWrite = () => {
   const pathName = useLocation().pathname;
+  const menu = useMenu().getCurrentMenu();
   const navigate = useNavigate();
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
@@ -30,6 +34,7 @@ export const NoticeWrite = () => {
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const resetWritePost = useResetRecoilState(writePostState);
   const [beforePost, setBeforePost] = useRecoilState(beforePostState);
+  const resetBeforePost = useResetRecoilState(beforePostState);
 
   const isModified = useRef(false);
 
@@ -56,21 +61,29 @@ export const NoticeWrite = () => {
     data: writePostData,
   } = usePostPostMutation();
 
+  getPostIsError && errorHandle(getPostError);
+
+  putPostIsError && errorHandle(putPostError);
+
+  writePostIsError && errorHandle(writePostError);
+
+  if (putPostIsSuccess) {
+    navigate(`/${menu?.urlId}/${putPostData.id}`, {
+      replace: true,
+    });
+
+    queryClient.invalidateQueries(["post", pathName.split("/")[2]]);
+    resetModifyPost();
+  }
+
+  if (writePostIsSuccess) {
+    navigate(`/${menu?.urlId}/${writePostData.id}`, {
+      replace: true,
+    });
+    resetWritePost();
+  }
+
   useEffect(() => {
-    mobileHeaderClose();
-
-    if (getPostIsError) {
-      return errorHandle(getPostError);
-    }
-
-    if (putPostIsError) {
-      return errorHandle(putPostError);
-    }
-
-    if (writePostIsError) {
-      return errorHandle(writePostError);
-    }
-
     if (pathName.includes("modify")) {
       isModified.current = true;
 
@@ -101,26 +114,36 @@ export const NoticeWrite = () => {
         isPined: data?.isPined || false,
       });
     }
-
-    return mobileHeaderOpen;
   }, [data]);
 
-  const onClickRegistrationInModify = () => {
-    putPostMutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
+  useEffect(() => {
+    mobileHeaderClose();
 
-    if (putPostIsSuccess) {
-      navigate(`/post/${putPostData.id}`, { replace: true });
-      resetModifyPost();
+    return () => {
+      mobileHeaderOpen();
+      resetBeforePost();
+    };
+  }, []);
+
+  const onClickRegistrationInModify = () => {
+    const correctPost = isWritePostActive(modifyPost, isModified.current);
+
+    if (!correctPost) {
+      alert("제목, 본문, 카테고리, 공개범위는 필수 입력 요소입니다!");
+      return;
     }
+
+    putPostMutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
   };
 
   const onClickRegistrationInWrite = () => {
-    writePostMutate(writePost);
+    const correctPost = isWritePostActive(writePost, isModified.current);
 
-    if (writePostIsSuccess) {
-      navigate(`/post/${writePostData.id}`, { replace: true });
-      resetWritePost();
+    if (!correctPost) {
+      alert("제목, 본문, 카테고리, 공개범위는 필수 입력 요소입니다!");
+      return;
     }
+    writePostMutate(writePost);
   };
 
   return (

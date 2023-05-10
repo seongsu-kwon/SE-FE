@@ -7,7 +7,7 @@ import {
 import { PostCreate, PostCreateRes, PostDetail, PostPut } from "@types";
 
 import { HTTP_METHODS } from ".";
-import { _axios } from "./axiosInstance";
+import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const fetchPostList = ({
   categoryId,
@@ -55,6 +55,9 @@ export const convertPostListItemDTOToPostListItem = (
 
 export const fetchGetPost = async (postId: string | undefined) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}`,
     method: HTTP_METHODS.GET,
   }).then((res) => res.data as PostDetail);
@@ -62,6 +65,9 @@ export const fetchGetPost = async (postId: string | undefined) => {
 
 export const postPost = async (reqBody: PostCreate) => {
   return _axios<PostCreateRes>({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: "/posts",
     method: HTTP_METHODS.POST,
     data: reqBody,
@@ -70,6 +76,9 @@ export const postPost = async (reqBody: PostCreate) => {
 
 export const putPost = async (postId: number, data: PostPut) => {
   return _axios<PostCreateRes>({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}`,
     method: HTTP_METHODS.PUT,
     data: data,
@@ -78,6 +87,9 @@ export const putPost = async (postId: number, data: PostPut) => {
 
 export const bookmarkPost = async (postId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}/bookmark`,
     method: HTTP_METHODS.POST,
   });
@@ -85,6 +97,9 @@ export const bookmarkPost = async (postId: number) => {
 
 export const bookmarkDelete = async (postId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}/bookmark`,
     method: HTTP_METHODS.DELETE,
   });
@@ -92,6 +107,9 @@ export const bookmarkDelete = async (postId: number) => {
 
 export const deletePost = async (postId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}`,
     method: HTTP_METHODS.DELETE,
   });
@@ -99,6 +117,9 @@ export const deletePost = async (postId: number) => {
 
 export const secretPost = async (postId: number, password: string) => {
   return _axios<PostDetail>({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}/auth`,
     method: HTTP_METHODS.POST,
     data: {

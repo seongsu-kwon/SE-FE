@@ -91,8 +91,6 @@ export const WritingEditor = ({
 
           setEditorData(data);
 
-          console.log(data);
-
           if (!isModified) {
             setWritePost({
               ...writePost,

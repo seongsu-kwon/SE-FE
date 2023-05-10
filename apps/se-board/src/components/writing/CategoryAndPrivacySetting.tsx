@@ -23,10 +23,9 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Category } from "@types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 import {
@@ -35,7 +34,7 @@ import {
   useSelectCategory,
   useSelectDisclosure,
 } from "@/hooks";
-import { useGetCategoryQuery } from "@/react-query/hooks";
+import { useMenu } from "@/hooks/useMenu";
 import { beforePostState, modifyPostState, writePostState } from "@/store";
 import { openColors } from "@/styles";
 
@@ -95,8 +94,8 @@ export const CategoryAndPrivacySetting = ({
   isModified,
   onClickRegistration,
 }: CategoryAndPrivacySettingProps) => {
-  const mainCategoryId = Number(useLocation().pathname.split("/")[1]);
-
+  const { getCurrentMenu } = useMenu();
+  const navigate = useNavigate();
   const [beforePost, setBeforePost] = useRecoilState(beforePostState);
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
@@ -128,18 +127,6 @@ export const CategoryAndPrivacySetting = ({
     onClickAnonymous,
     onClickPined,
   } = useAnonymousAndPined(isModified, beforePost.isPined);
-
-  // 카테고리 조회
-  const { data, error, isLoading, isSuccess } =
-    useGetCategoryQuery(mainCategoryId);
-
-  const [categoryOptions, setCategoryOptions] = useState<
-    Category[] | undefined
-  >(data?.subMenu);
-
-  useEffect(() => {
-    setCategoryOptions(data?.subMenu);
-  }, []);
 
   const settingClick = () => {
     setPrevOption({
@@ -191,7 +178,6 @@ export const CategoryAndPrivacySetting = ({
       <ButtonGroup gap="2.5rem">
         <Button
           onClick={() => {
-            const navigate = useNavigate();
             navigate(-1);
           }}
           variant="link"
@@ -225,7 +211,7 @@ export const CategoryAndPrivacySetting = ({
                 onChange={selectOption}
                 _hover={{ borderColor: "blue.500" }}
               >
-                {categoryOptions?.map((option) => (
+                {getCurrentMenu()?.subMenu.map((option) => (
                   <option id={String(option.menuId)} value={option.name} />
                 ))}
               </Select>
@@ -310,7 +296,7 @@ export const CategoryAndPrivacySetting = ({
 export const DesktopCategoryAndPrivacySetting = ({
   isModified,
 }: CategoryAndPrivacySettingProps) => {
-  const mainCategoryId = Number(useLocation().pathname.split("/")[1]);
+  const { getCurrentMenu } = useMenu();
 
   const [beforePost, setBeforePost] = useRecoilState(beforePostState); // 게시글 수정 시 해당 게시글 정보
 
@@ -334,18 +320,6 @@ export const DesktopCategoryAndPrivacySetting = ({
     onClickPined,
   } = useAnonymousAndPined(isModified, beforePost.isPined);
 
-  // 카테고리 조회
-  const { data, error, isLoading, isSuccess } =
-    useGetCategoryQuery(mainCategoryId);
-
-  const [categoryOptions, setCategoryOptions] = useState<
-    Category[] | undefined
-  >(data?.subMenu);
-
-  useEffect(() => {
-    setCategoryOptions(data?.subMenu);
-  }, [data]);
-
   return (
     <Flex
       maxW="100%"
@@ -368,7 +342,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           onChange={selectOption}
           _hover={{ borderColor: openColors.blue[5] }}
         >
-          {categoryOptions?.map((option) => (
+          {getCurrentMenu()?.subMenu?.map((option) => (
             <option id={String(option.menuId)} value={option.name}>
               {option.name}
             </option>

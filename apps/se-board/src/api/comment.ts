@@ -6,13 +6,16 @@ import {
 } from "@types";
 
 import { HTTP_METHODS } from ".";
-import { _axios } from "./axiosInstance";
+import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const fetchComments = (
   postId: string | undefined,
   pageParam: number
 ) => {
   return _axios<Comment>({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/posts/${postId}/comments?page=${pageParam}&perPage=25`,
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
@@ -20,6 +23,9 @@ export const fetchComments = (
 
 export const postComment = async (postData: PostCommentData) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: "/comments",
     method: HTTP_METHODS.POST,
     data: postData,
@@ -31,6 +37,9 @@ export const putComment = async (param: {
   putCommentData: PutCommentData;
 }) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/comments/${param.commentId}`,
     method: HTTP_METHODS.PUT,
     data: param.putCommentData,
@@ -39,6 +48,9 @@ export const putComment = async (param: {
 
 export const deleteComment = async (commentId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/comments/${commentId}`,
     method: HTTP_METHODS.DELETE,
   });
@@ -47,6 +59,9 @@ export const deleteComment = async (commentId: number) => {
 export const postReply = async (postReplyData: PostReplyData) => {
   // 답글 작성
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: "/reply",
     method: HTTP_METHODS.POST,
     data: postReplyData,
@@ -59,6 +74,9 @@ export const putReply = async (param: {
 }) => {
   // 답글 수정
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/reply/${param.replyId}`,
     method: HTTP_METHODS.PUT,
     data: param.putReplyData,
@@ -67,6 +85,9 @@ export const putReply = async (param: {
 
 export const deleteReply = async (replyId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/reply/${replyId}`,
     method: HTTP_METHODS.DELETE,
   });

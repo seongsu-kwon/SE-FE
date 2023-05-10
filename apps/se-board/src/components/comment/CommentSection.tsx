@@ -42,7 +42,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
   useEffect(() => {
     refetch();
-    setRefetchComment(false);
+    return setRefetchComment(false);
   }, [refetchComment]);
 
   useEffect(() => {

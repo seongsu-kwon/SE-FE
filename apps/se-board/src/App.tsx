@@ -45,6 +45,10 @@ const MenuRouter = () => {
           path: `${menu.urlId}/:postId`,
           element: <PostPage />,
         });
+        list.push({
+          path: `${menu.urlId}/:postId/modify`,
+          element: <NoticeWrite />,
+        });
       } else if (menu.type === "MENU") {
         menu.subMenu
           .filter((v) => v.type === "BOARD")
@@ -60,6 +64,10 @@ const MenuRouter = () => {
             list.push({
               path: `${subMenu.urlId}/:postId`,
               element: <PostPage />,
+            });
+            list.push({
+              path: `${subMenu.urlId}/:postId/modify`,
+              element: <NoticeWrite />,
             });
           });
       }

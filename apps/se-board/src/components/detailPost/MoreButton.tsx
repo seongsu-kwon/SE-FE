@@ -33,6 +33,7 @@ import {
 } from "@/react-query/hooks";
 import { refetchCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
+import { errorHandle } from "@/utils/errorHandling";
 
 interface MoreButtonProps {
   fontSize?: string;
@@ -130,18 +131,23 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
     isSuccess,
   } = useDeletePostMutation(postId);
 
+  if (isSuccess) {
+    onClose();
+
+    if (window.history.length === 1) {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
+  }
+
+  if (isError) {
+    onClose();
+    errorHandle(error);
+  }
+
   const postDeleteClick = () => {
     deleteMutate();
-
-    if (isSuccess) {
-      onClose();
-
-      if (window.history.length === 1) {
-        navigate("/");
-      } else {
-        navigate(-1);
-      }
-    }
   };
 
   return (
@@ -316,26 +322,39 @@ const CommentDeleteAlert = ({
     mutate: deleteMutate,
     isLoading: commentDeleteIsLoading,
     isError: commentDeleteIsError,
+    error: commentDeleteError,
     isSuccess: commentDeleteIsSuccess,
   } = useDeleteCommentMutation(postId);
   const {
     mutate: deleteReplyMutate,
     isError: deleteReplyIsError,
+    error: deleteReplyError,
     isLoading: deleteReplyIsLoading,
     isSuccess: deleteReplyIsSuccess,
   } = useDeleteReplyMutation(postId);
 
   const commentDeleteClick = () => {
     if (!isReply) {
-      deleteMutate(commentId);
+      deleteMutate(commentId, {
+        onSuccess: () => {
+          onClose();
+
+          setRefetchCommentState(true);
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      });
     } else {
-      deleteReplyMutate(commentId);
-    }
-
-    if (commentDeleteIsSuccess || deleteReplyIsSuccess) {
-      onClose();
-
-      setRefetchCommentState(true);
+      deleteReplyMutate(commentId, {
+        onSuccess: () => {
+          onClose();
+          setRefetchCommentState(true);
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      });
     }
   };
 

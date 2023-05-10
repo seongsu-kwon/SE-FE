@@ -1,7 +1,4 @@
-import { DateType } from "@types";
-import { useRecoilState } from "recoil";
-
-import { modifyPostState, writePostState } from "@/store";
+import { DateType, PostMutate } from "@types";
 
 import { isSameDateTime } from "./dateUtils";
 
@@ -13,23 +10,23 @@ export const isModified = (
   modifiedDateTime: DateType
 ) => !isSameDateTime(createdDateTime, modifiedDateTime);
 
-export const isWritePostActive = (isModified: boolean) => {
-  const [writePost, setWritePost] = useRecoilState(writePostState);
-  const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
-
+export const isWritePostActive = (
+  postData: PostMutate,
+  isModified: boolean
+) => {
   if (isModified) {
     return (
-      modifyPost.title !== "" &&
-      modifyPost.contents !== "" &&
-      modifyPost.categoryId !== -1 &&
-      modifyPost.exposeOption.name !== ""
+      postData.title !== "" &&
+      postData.contents !== "" &&
+      postData.categoryId !== -1 &&
+      postData.exposeOption.name !== ""
     );
   } else {
     return (
-      writePost.title !== "" &&
-      writePost.contents !== "" &&
-      writePost.categoryId !== -1 &&
-      writePost.exposeOption.name !== ""
+      postData.title !== "" &&
+      postData.contents !== "" &&
+      postData.categoryId !== -1 &&
+      postData.exposeOption.name !== ""
     );
   }
 };

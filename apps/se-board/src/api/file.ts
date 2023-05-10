@@ -1,14 +1,14 @@
 import { FileUploadRes } from "@types";
 
 import { HTTP_METHODS } from ".";
-import { _axios } from "./axiosInstance";
+import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const postFile = async (formData: FormData) => {
-  _axios.arguments.headers = {
-    "Content-Type": "multipart/form-data",
-  };
-
   return _axios<FileUploadRes>({
+    headers: {
+      "Content-Type": "multipart/form-data",
+      ...getJWTHeader(),
+    },
     url: "/files",
     method: HTTP_METHODS.POST,
     data: formData,
@@ -17,6 +17,9 @@ export const postFile = async (formData: FormData) => {
 
 export const deleteFile = async (fileId: number) => {
   return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: `/files/${fileId}`,
     method: HTTP_METHODS.DELETE,
   });

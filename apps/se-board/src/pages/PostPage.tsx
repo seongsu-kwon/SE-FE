@@ -1,6 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { PostDetail } from "@types";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
 import ChatIcon from "@/assets/images/chat_icon.png";
@@ -16,9 +16,11 @@ import {
   SkeletonDetailPostDesktopHeader,
   SkeletonDetailPostHeader,
 } from "@/components/detailPost";
-import { useGetPostQuery } from "@/react-query/hooks";
+import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 import { errorHandle } from "@/utils/errorHandling";
+
+import { PWInput } from "./SecretPostPWInput";
 
 const mainCategories = [
   { eng: "notice", kor: "공지사항", icon: NoticeIcon },
@@ -26,11 +28,7 @@ const mainCategories = [
   { eng: "archive", kor: "아카이브", icon: "" },
 ];
 
-interface PostPageProps {
-  secretData?: PostDetail;
-}
-
-export const PostPage = ({ secretData }: PostPageProps) => {
+export const PostPage = () => {
   const { postId } = useParams();
   const mainCategory = useLocation().pathname.split("/")[1];
 
@@ -41,24 +39,51 @@ export const PostPage = ({ secretData }: PostPageProps) => {
   );
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
   const [postData, setPostData] = useState<PostDetail | undefined>(data);
+  const [password, setPassword] = useState<string>("");
+
+  const { mutate } = useSecretPostMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const onSubmit = () => {
+    mutate(
+      { postId: Number(postId), password },
+      {
+        onSuccess: (data) => {
+          setPostData(data);
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      }
+    );
+  };
+
+  if (isError) {
+    const { code } = error as { code: number; message: string };
+
+    if (code === 113) {
+      // 비밀글
+      return (
+        <PWInput
+          password={password}
+          handleChange={handleChange}
+          onSubmit={onSubmit}
+        />
+      );
+    }
+    errorHandle(error);
+  }
 
   useEffect(() => {
     mobileHeaderClose();
-
-    if (secretData) {
-      setPostData(secretData);
-      setEnabledOption(false);
-    } else {
-      setPostData(data);
-      setEnabledOption(true);
-    }
-
-    if (isError) {
-      return errorHandle(error);
-    }
+    setPostData(data);
+    setEnabledOption(true);
 
     return mobileHeaderOpen;
-  }, [data, secretData]);
+  }, [data]);
 
   const headerInfo = {
     postId: Number(postId),

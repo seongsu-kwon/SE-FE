@@ -24,24 +24,37 @@ export const CommentInput = () => {
 
   const postCommentMutation = usePostCommentMutation(postId);
 
+  // if (postCommentMutation.isSuccess) {
+  //   setIsAnonymous(false);
+  //   setValue("");
+  //   setIsSecret(false);
+  //   // writeCommentTrue();
+  // }
+
+  // if (postCommentMutation.isError) {
+  //   errorHandle(postCommentMutation.error);
+  // }
+
   const handleSubmit = () => {
-    postCommentMutation.mutate({
-      postId: Number(postId),
-      contents: value,
-      isAnonymous: isAnonymous,
-      isReadOnlyAuthor: isSecret,
-    });
-
-    if (postCommentMutation.isSuccess) {
-      setIsAnonymous(false);
-      setValue("");
-      setIsSecret(false);
-      writeCommentTrue();
-    }
-
-    if (postCommentMutation.isError) {
-      return errorHandle(postCommentMutation.error);
-    }
+    postCommentMutation.mutate(
+      {
+        postId: Number(postId),
+        contents: value,
+        isAnonymous: isAnonymous,
+        isReadOnlyAuthor: isSecret,
+      },
+      {
+        onSuccess: () => {
+          setIsAnonymous(false);
+          setValue("");
+          setIsSecret(false);
+          // writeCommentTrue();
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      }
+    );
   };
 
   return (
