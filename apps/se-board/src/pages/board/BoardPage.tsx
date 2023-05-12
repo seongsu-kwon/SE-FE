@@ -38,6 +38,7 @@ export const BoardPage = () => {
     categoryId: getCurrentMenuId()!,
     perPage: 40,
   });
+
   const navigate = useNavigate();
   const goWritePage = () => {
     navigate("write");
@@ -77,6 +78,7 @@ export const BoardPage = () => {
             py="0.5rem"
             borderY="1px"
             borderColor="gray.3"
+            gap="5rem"
           >
             <CategoryNavigation categoryList={getCurrentMenu()?.subMenu!} />
             <Button
