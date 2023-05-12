@@ -1,4 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -29,6 +33,7 @@ export const useFetchPostList = ({
   const [pagination, setPageiation] = useRecoilState(postPaginationState);
   const setPostList = useSetRecoilState(postListState);
   const setPinedPostList = useSetRecoilState(pinedPostListState);
+  const client = useQueryClient();
   const { isLoading: pinedPostlistLoading } = useQuery(
     [queryKeys.pinedPostList, categoryId],
     () => fetchPinedPostList(categoryId),
@@ -84,6 +89,10 @@ export const useFetchPostList = ({
     }
   }, [searchParams.get("page"), data?.data.totalPages]);
 
+  useEffect(() => {
+    client.invalidateQueries([queryKeys.postList, categoryId]);
+  }, [categoryId]);
+
   return {
     isLoading: pinedPostlistLoading || postListLoading,
     totalPages: data?.data.totalPages,
@@ -95,4 +104,44 @@ export const useFetchPostList = ({
       window.scrollTo(0, 0);
     },
   };
+};
+
+export const useFetchInfinitePostList = ({
+  categoryId,
+  perPage,
+  page = 0,
+}: {
+  categoryId: number;
+  perPage?: number;
+  page?: number;
+}) => {
+  return useInfiniteQuery(
+    ["asdfasdf"],
+    ({ pageParam = page }) =>
+      fetchPostList({
+        categoryId: categoryId,
+        perPage: perPage,
+        page: pageParam,
+      }),
+    {
+      getNextPageParam: (lastPage) => {
+        const { number, totalPages } = lastPage.data;
+        return number + 1 < totalPages ? number + 1 : undefined;
+      },
+      select: (data) => {
+        return {
+          ...data,
+          pages: data.pages.map((v) => ({
+            ...v,
+            data: {
+              ...v.data,
+              content: v.data.content.map((item) =>
+                convertPostListItemDTOToPostListItem(item)
+              ),
+            },
+          })),
+        };
+      },
+    }
+  );
 };

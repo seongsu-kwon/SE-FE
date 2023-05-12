@@ -144,7 +144,7 @@ export const PostTable = ({ data }: PostTableProps) => {
               <Td
                 key={cell.id}
                 w={columnWidth[i]}
-                textAlign="center"
+                textAlign={cell.column.id === "title" ? "left" : "center"}
                 borderColor="gray.3"
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
