@@ -6,10 +6,10 @@ export const writePostState = atom({
   default: {
     title: "",
     contents: "",
-    categoryId: 43214233,
+    categoryId: -1,
     pined: false,
     exposeOption: {
-      name: "",
+      name: "PUBLIC",
       password: "",
     },
     attachmentIds: Array<number>(),
@@ -25,7 +25,7 @@ export const modifyPostState = atom({
     categoryId: -1,
     pined: false,
     exposeOption: {
-      name: "",
+      name: "PUBLIC",
       password: "",
     },
     attachmentIds: Array<number>(),

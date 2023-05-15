@@ -18,6 +18,15 @@ export const useGetPostQuery = (
   return useQuery(["post", postId], () => fetchGetPost(postId), {
     staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
     enabled: enabledOption,
+    retry: (failureCount, error) => {
+      const { code } = error as { code: number; message: string };
+
+      if (code === 113) {
+        return false;
+      }
+
+      return true;
+    },
   });
 };
 
@@ -44,8 +53,8 @@ export const useBookmarkDeleteMutation = () => {
   return useMutation((postId: number) => bookmarkDelete(postId));
 };
 
-export const useDeletePostMutation = (postId: number) => {
-  return useMutation(() => deletePost(postId));
+export const useDeletePostMutation = () => {
+  return useMutation((postId: number) => deletePost(postId));
 };
 
 export const useSecretPostMutation = () => {

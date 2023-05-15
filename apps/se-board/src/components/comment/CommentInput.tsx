@@ -7,7 +7,7 @@ import {
   Textarea,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { usePostCommentMutation } from "@/react-query/hooks";
@@ -24,17 +24,6 @@ export const CommentInput = () => {
 
   const postCommentMutation = usePostCommentMutation(postId);
 
-  // if (postCommentMutation.isSuccess) {
-  //   setIsAnonymous(false);
-  //   setValue("");
-  //   setIsSecret(false);
-  //   // writeCommentTrue();
-  // }
-
-  // if (postCommentMutation.isError) {
-  //   errorHandle(postCommentMutation.error);
-  // }
-
   const handleSubmit = () => {
     postCommentMutation.mutate(
       {
@@ -48,7 +37,8 @@ export const CommentInput = () => {
           setIsAnonymous(false);
           setValue("");
           setIsSecret(false);
-          // writeCommentTrue();
+
+          writeCommentTrue();
         },
         onError: (error) => {
           errorHandle(error);
@@ -98,6 +88,8 @@ export const CommentInput = () => {
       >
         <Button
           variant={value !== "" ? "primary" : "primary-inActive"}
+          isLoading={postCommentMutation.isLoading}
+          loadingText="등록중"
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmit}
         >

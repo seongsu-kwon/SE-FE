@@ -32,9 +32,9 @@ import {
   useDeleteReplyMutation,
 } from "@/react-query/hooks";
 import { refetchCommentState } from "@/store/CommentState";
+import { user } from "@/store/user";
 import { openColors } from "@/styles";
 import { errorHandle } from "@/utils/errorHandling";
-
 interface MoreButtonProps {
   fontSize?: string;
   menuItems: {
@@ -123,31 +123,19 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
-  const {
-    mutate: deleteMutate,
-    isLoading,
-    error,
-    isError,
-    isSuccess,
-  } = useDeletePostMutation(postId);
-
-  if (isSuccess) {
-    onClose();
-
-    if (window.history.length === 1) {
-      navigate("/");
-    } else {
-      navigate(-1);
-    }
-  }
-
-  if (isError) {
-    onClose();
-    errorHandle(error);
-  }
+  const { mutate: deleteMutate, isLoading } = useDeletePostMutation();
 
   const postDeleteClick = () => {
-    deleteMutate();
+    deleteMutate(postId, {
+      onSuccess: () => {
+        onClose();
+        navigate(-1);
+      },
+      onError: (error) => {
+        onClose();
+        errorHandle(error);
+      },
+    });
   };
 
   return (
@@ -288,7 +276,7 @@ export const PostMoreButton = ({
         ) : (
           <>
             <PostShareMenuItem onShareClick={onShareClick} />
-            <PostReportAlert />
+            {user.hasAuth() && <PostReportAlert />}
           </>
         )}
       </MenuList>
@@ -318,20 +306,10 @@ const CommentDeleteAlert = ({
 
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
 
-  const {
-    mutate: deleteMutate,
-    isLoading: commentDeleteIsLoading,
-    isError: commentDeleteIsError,
-    error: commentDeleteError,
-    isSuccess: commentDeleteIsSuccess,
-  } = useDeleteCommentMutation(postId);
-  const {
-    mutate: deleteReplyMutate,
-    isError: deleteReplyIsError,
-    error: deleteReplyError,
-    isLoading: deleteReplyIsLoading,
-    isSuccess: deleteReplyIsSuccess,
-  } = useDeleteReplyMutation(postId);
+  const { mutate: deleteMutate, isLoading: commentDeleteIsLoading } =
+    useDeleteCommentMutation(postId);
+  const { mutate: deleteReplyMutate, isLoading: deleteReplyIsLoading } =
+    useDeleteReplyMutation(postId);
 
   const commentDeleteClick = () => {
     if (!isReply) {
@@ -400,12 +378,17 @@ const CommentReportAlert = () => {
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
   const commentReportClick = () => {
     // TODO: 댓글 신고
+    if (!user.hasAuth()) {
+      onClose();
+      alert("로그인 후 신고가능합니다.");
+      console.log("로그인 후 신고가능합니다.");
+    }
     onClose();
   };
 
   return (
     <>
-      <MenuItem icon={<BsExclamationCircle />} onClick={() => {}} maxW="120px">
+      <MenuItem icon={<BsExclamationCircle />} onClick={onOpen} maxW="120px">
         신고
       </MenuItem>
       <AlertDialog

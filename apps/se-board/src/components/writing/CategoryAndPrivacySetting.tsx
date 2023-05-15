@@ -85,9 +85,9 @@ interface CategoryAndPrivacySettingProps {
 }
 
 const privacyOptions = [
-  { eng: "PUBLIC", kor: "전체" },
-  { eng: "KUMOH", kor: "금오인" },
-  { eng: "SECRET", kor: "비밀" },
+  { kor: "전체", value: "모든 사용자가 볼 수 있습니다.", eng: "PUBLIC" },
+  { kor: "금오인", value: "인증된 금오인만 볼 수 있습니다.", eng: "KUMOH" },
+  { kor: "비밀", value: "비밀글입니다.", eng: "PRIVACY" },
 ];
 
 export const CategoryAndPrivacySetting = ({
@@ -104,7 +104,7 @@ export const CategoryAndPrivacySetting = ({
   const [prevOption, setPrevOption] = useState({
     category: beforePost.category || { categoryId: -1, name: "카테고리" },
     active: beforePost.exposeType || "전체",
-    subscript: "",
+    subscript: privacyOptions[0].value,
     password: "",
     pined: beforePost.isPined || false,
     isAnonymous: false,
@@ -114,7 +114,7 @@ export const CategoryAndPrivacySetting = ({
   const { subscript, setSubscript, active, setActive, onClickDisclosure } =
     useSelectDisclosure(
       privacyOptions.find((value) => value.eng === beforePost.exposeType)
-        ?.kor || "",
+        ?.kor || "전체",
       isModified
     );
   const { password, setPassword, show, handleClick, handleChange } =
@@ -155,7 +155,9 @@ export const CategoryAndPrivacySetting = ({
         categoryId: prevOption.category.categoryId,
         pined: prevOption.pined,
         exposeOption: {
-          name: prevOption.active,
+          name:
+            privacyOptions.find((value) => value.kor === prevOption.active)
+              ?.eng || "PUBLIC",
           password: prevOption.password,
         },
       });
@@ -165,7 +167,9 @@ export const CategoryAndPrivacySetting = ({
         categoryId: prevOption.category.categoryId,
         pined: prevOption.pined,
         exposeOption: {
-          name: prevOption.active,
+          name:
+            privacyOptions.find((value) => value.kor === prevOption.active)
+              ?.eng || "PUBLIC",
           password: prevOption.password,
         },
       });
@@ -206,13 +210,21 @@ export const CategoryAndPrivacySetting = ({
                 카테고리
               </Heading>
               <Select
-                placeholder={prevOption.category.name}
                 py="4px"
                 onChange={selectOption}
                 _hover={{ borderColor: "blue.500" }}
               >
+                <option value="" hidden>
+                  카테고리
+                </option>
                 {getCurrentMenu()?.subMenu.map((option) => (
-                  <option id={String(option.menuId)} value={option.name} />
+                  <option
+                    id={String(option.menuId)}
+                    value={option.name}
+                    selected={selectedCategory.name === option.name}
+                  >
+                    {option.name}
+                  </option>
                 ))}
               </Select>
             </Box>
@@ -306,7 +318,7 @@ export const DesktopCategoryAndPrivacySetting = ({
   );
   const { subscript, active, onClickDisclosure } = useSelectDisclosure(
     privacyOptions.find((value) => value.eng === beforePost.exposeType)?.kor ||
-      "",
+      "전체",
     isModified
   );
   const { password, show, handleClick, handleChange } =
@@ -319,6 +331,8 @@ export const DesktopCategoryAndPrivacySetting = ({
     onClickAnonymous,
     onClickPined,
   } = useAnonymousAndPined(isModified, beforePost.isPined);
+
+  const categoryOptions = getCurrentMenu()?.subMenu;
 
   return (
     <Flex
@@ -333,7 +347,6 @@ export const DesktopCategoryAndPrivacySetting = ({
           카테고리
         </Heading>
         <Select
-          placeholder={selectedCategory.name}
           py="8px"
           w="20rem"
           maxW="260px"
@@ -342,8 +355,15 @@ export const DesktopCategoryAndPrivacySetting = ({
           onChange={selectOption}
           _hover={{ borderColor: openColors.blue[5] }}
         >
-          {getCurrentMenu()?.subMenu?.map((option) => (
-            <option id={String(option.menuId)} value={option.name}>
+          <option value="" hidden>
+            카테고리
+          </option>
+          {categoryOptions?.map((option) => (
+            <option
+              id={String(option.menuId)}
+              value={option.name}
+              selected={selectedCategory.name === option.name}
+            >
               {option.name}
             </option>
           ))}

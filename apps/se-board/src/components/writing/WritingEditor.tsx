@@ -20,7 +20,7 @@ export const WritingEditor = ({
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
-  const { mutate, data: resData, error } = usePostFileQuery();
+  const { mutate } = usePostFileQuery();
 
   useEffect(() => {
     setEditorData(`<h1>${title}</h1>` + contents);
@@ -37,8 +37,9 @@ export const WritingEditor = ({
 
             mutate(data, {
               onSuccess: (data) => {
+                console.log(data);
                 resolve({
-                  default: `${process.env.REACT_APP_API_ENDPOINT}${data?.fileMetaDataList[0].url}`,
+                  default: `http://202.31.202.9${data?.fileMetaDataList[0].url}`, // TODO: 서버 주소 변경
                 });
               },
               onError: (error) => {
@@ -86,7 +87,7 @@ export const WritingEditor = ({
         onChange={(event: any, editor: any) => {
           const data = editor.getData();
           const match = data.match(/<h[1-6][^>]*>([^<]+)<\/h[1-6]>/i);
-          const title = match ? match[1] : "";
+          const title = match ? match[1].replaceAll("&nbsp;", "").trim() : "";
           const body = data.replace(match && match[0], "");
 
           setEditorData(data);

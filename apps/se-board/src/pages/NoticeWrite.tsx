@@ -38,50 +38,17 @@ export const NoticeWrite = () => {
 
   const isModified = useRef(false);
 
-  const {
-    mutate: putPostMutate,
-    isError: putPostIsError,
-    isLoading: putPostIsLoading,
-    isSuccess: putPostIsSuccess,
-    error: putPostError,
-    data: putPostData,
-  } = usePutPostMutation();
+  const { mutate: putPostMutate, isLoading: putPostIsLoading } =
+    usePutPostMutation();
   const {
     data,
-    isLoading: getPostIsLoading,
     isError: getPostIsError,
     error: getPostError,
   } = useGetPostQuery(pathName.split("/")[2], isModified.current);
-  const {
-    mutate: writePostMutate,
-    isError: writePostIsError,
-    isLoading: writePostIsLoading,
-    isSuccess: writePostIsSuccess,
-    error: writePostError,
-    data: writePostData,
-  } = usePostPostMutation();
+  const { mutate: writePostMutate, isLoading: writePostIsLoading } =
+    usePostPostMutation();
 
   getPostIsError && errorHandle(getPostError);
-
-  putPostIsError && errorHandle(putPostError);
-
-  writePostIsError && errorHandle(writePostError);
-
-  if (putPostIsSuccess) {
-    navigate(`/${menu?.urlId}/${putPostData.id}`, {
-      replace: true,
-    });
-
-    queryClient.invalidateQueries(["post", pathName.split("/")[2]]);
-    resetModifyPost();
-  }
-
-  if (writePostIsSuccess) {
-    navigate(`/${menu?.urlId}/${writePostData.id}`, {
-      replace: true,
-    });
-    resetWritePost();
-  }
 
   useEffect(() => {
     if (pathName.includes("modify")) {
@@ -133,7 +100,23 @@ export const NoticeWrite = () => {
       return;
     }
 
-    putPostMutate({ postId: Number(pathName.split("/")[2]), data: modifyPost });
+    putPostMutate(
+      { postId: Number(pathName.split("/")[2]), data: modifyPost },
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries(["post", data.id]);
+
+          navigate(`/${menu?.urlId}/${data.id}`, {
+            replace: true,
+          });
+
+          resetModifyPost();
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      }
+    );
   };
 
   const onClickRegistrationInWrite = () => {
@@ -143,7 +126,17 @@ export const NoticeWrite = () => {
       alert("제목, 본문, 카테고리, 공개범위는 필수 입력 요소입니다!");
       return;
     }
-    writePostMutate(writePost);
+    writePostMutate(writePost, {
+      onSuccess: (data) => {
+        navigate(`/${menu?.urlId}/${data.id}`, {
+          replace: true,
+        });
+        resetWritePost();
+      },
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   return (
@@ -182,6 +175,7 @@ export const NoticeWrite = () => {
               ? onClickRegistrationInModify
               : onClickRegistrationInWrite
           }
+          isLoading={isModified.current ? putPostIsLoading : writePostIsLoading}
         />
       </Show>
     </Box>

@@ -19,12 +19,9 @@ export const errorHandle = (error: unknown) => {
   const { code } = error as ErrorData;
 
   switch (code) {
-    // case 113:
-    //   // 비밀글 일 때
-    //   return SecretPostPWInputModal();
-    // case 114:
-    //   // 비밀글 비밀번호 틀림
-    //   return alert("비밀번호가 틀렸습니다.");
+    case 114:
+      // 비밀글 비밀번호 틀림
+      return alert("비밀번호가 틀렸습니다.");
     case 201:
       // 필수 필드 누락
       return ErrorFieldAlert();

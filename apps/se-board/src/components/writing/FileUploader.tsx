@@ -83,7 +83,7 @@ export const DesktopFileUploader = ({
                 {files.map((file) => (
                   <ListItem key={file.fileMetaDataId} ml="20px">
                     <Link
-                      href={`http://192.158.0.67/${file.url}`}
+                      href={`${process.env.REACT_APP_API_ENDPOINT}${file.url}`}
                       download={file.originalFileName}
                     >
                       {file.originalFileName}
@@ -153,7 +153,12 @@ export const MobileFileUploader = ({
             <UnorderedList>
               {files.map((file) => (
                 <ListItem key={file.fileMetaDataId} display="flex" my="5px">
-                  <Text w="75%">{file.originalFileName}</Text>
+                  <Link
+                    href={`${process.env.REACT_APP_API_ENDPOINT}${file.url}`}
+                    download={file.originalFileName}
+                  >
+                    {file.originalFileName}
+                  </Link>
                   <Button
                     variant="danger"
                     size="xs"

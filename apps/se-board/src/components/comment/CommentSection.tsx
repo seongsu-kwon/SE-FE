@@ -46,11 +46,15 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   }, [refetchComment]);
 
   useEffect(() => {
-    while (hasNextPage) {
-      fetchNextPage();
+    if (!hasNextPage) {
+      refetch();
+    } else {
+      while (hasNextPage) {
+        fetchNextPage();
+      }
     }
 
-    setIsWriteState(false);
+    return setIsWriteState(false);
   }, [isWriteState]);
 
   useEffect(() => {

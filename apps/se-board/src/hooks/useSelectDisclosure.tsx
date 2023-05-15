@@ -34,7 +34,7 @@ export function useSelectDisclosure(
       const { innerHTML } = e.currentTarget;
 
       setSubscript(
-        privacyOptions.find((option) => option.id === innerHTML)?.value || "123"
+        privacyOptions.find((option) => option.id === innerHTML)?.value || ""
       );
 
       setActive(innerHTML);

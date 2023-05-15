@@ -129,10 +129,10 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
     <Box
       display="flex"
       w="100%"
-      m="20px auto 0 auto"
-      borderY={`1px solid ${openColors.gray[3]}`}
+      m="0px auto 0 auto"
+      borderBottom={`1px solid ${openColors.gray[3]}`}
     >
-      <Box m="16px 0 16px 16px">
+      <Box p="1.5rem 0 1.5rem 1rem">
         <Heading
           as="h2"
           size="lg"

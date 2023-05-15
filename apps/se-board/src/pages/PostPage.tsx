@@ -1,11 +1,8 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { PostDetail } from "@types";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import ChatIcon from "@/assets/images/chat_icon.png";
-import NoticeIcon from "@/assets/images/notice_icon.png";
-import { PostIllustration } from "@/components";
 import { CommentSection } from "@/components/comment";
 import {
   AttachmentFile,
@@ -22,18 +19,11 @@ import { errorHandle } from "@/utils/errorHandling";
 
 import { PWInput } from "./SecretPostPWInput";
 
-const mainCategories = [
-  { eng: "notice", kor: "공지사항", icon: NoticeIcon },
-  { eng: "free", kor: "자유게시판", icon: ChatIcon },
-  { eng: "archive", kor: "아카이브", icon: "" },
-];
-
 export const PostPage = () => {
   const { postId } = useParams();
-  const mainCategory = useLocation().pathname.split("/")[1];
 
   const [enabledOption, setEnabledOption] = useState<boolean>(false);
-  const { data, isLoading, isError, error } = useGetPostQuery(
+  const { data, isLoading, isError, error, refetch } = useGetPostQuery(
     postId,
     enabledOption
   );
@@ -52,7 +42,10 @@ export const PostPage = () => {
       { postId: Number(postId), password },
       {
         onSuccess: (data) => {
+          setEnabledOption(false);
           setPostData(data);
+
+          setPassword("");
         },
         onError: (error) => {
           errorHandle(error);
@@ -61,29 +54,36 @@ export const PostPage = () => {
     );
   };
 
-  if (isError) {
-    const { code } = error as { code: number; message: string };
-
-    if (code === 113) {
-      // 비밀글
-      return (
-        <PWInput
-          password={password}
-          handleChange={handleChange}
-          onSubmit={onSubmit}
-        />
-      );
-    }
-    errorHandle(error);
-  }
-
   useEffect(() => {
     mobileHeaderClose();
     setPostData(data);
-    setEnabledOption(true);
+
+    if (!postData) {
+      setEnabledOption(true);
+    }
+
+    if (!isError) refetch();
 
     return mobileHeaderOpen;
   }, [data]);
+
+  if (isError) {
+    const { code } = error as { code: number; message: string };
+
+    if (code !== 113) {
+      errorHandle(error);
+    } else {
+      if (!postData) {
+        return (
+          <PWInput
+            password={password}
+            handleChange={handleChange}
+            onSubmit={onSubmit}
+          />
+        );
+      }
+    }
+  }
 
   const headerInfo = {
     postId: Number(postId),
@@ -103,14 +103,7 @@ export const PostPage = () => {
   return (
     <Box maxW="984px" w="100%">
       <Show above="md">
-        <Box pt="3rem">
-          <PostIllustration
-            title={"공지사항"}
-            imgSrc={
-              mainCategories.find((category) => category.eng === mainCategory)
-                ?.icon || ""
-            }
-          />
+        <Box pt="0rem">
           {isLoading ? (
             <SkeletonDetailPostDesktopHeader />
           ) : (

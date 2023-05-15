@@ -1,5 +1,4 @@
 import { Box, Button } from "@chakra-ui/react";
-import { useState } from "react";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import { openColors } from "@/styles";
@@ -7,12 +6,12 @@ import { openColors } from "@/styles";
 export const DesktopAnonymousRegister = ({
   isModified,
   onClickRegistration,
+  isLoading,
 }: {
   isModified: boolean;
   onClickRegistration: () => void;
+  isLoading: boolean;
 }) => {
-  const [isAnonymous, setIsAnonymous] = useState(false);
-
   return (
     <Box
       h="75px"
@@ -25,6 +24,8 @@ export const DesktopAnonymousRegister = ({
       alignItems="center"
     >
       <Button
+        isLoading={isLoading}
+        loadingText="등록중"
         variant="primary"
         leftIcon={<BsFillPencilFill />}
         size="lg"

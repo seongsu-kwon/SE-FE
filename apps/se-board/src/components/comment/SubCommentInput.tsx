@@ -54,44 +54,18 @@ export const SubCommentInput = ({
   const [refetchComment, setRefetchComment] =
     useRecoilState(refetchCommentState);
 
-  const {
-    mutate: putCommentMutate,
-    isLoading: isPutLoading,
-    isError: isPutError,
-    isSuccess: isPutSuccess,
-  } = usePutCommentMutation(postId);
-  const {
-    mutate: putReplyMutate,
-    isLoading: isPutReplyLoading,
-    isError: isPutReplyError,
-    isSuccess: isPutReplySuccess,
-  } = usePutReplyMutation(postId);
-  const {
-    mutate: postReplyMutate,
-    isLoading: isPostReplyLoading,
-    isError: isPostReplyError,
-    isSuccess: isPostReplySuccess,
-  } = usePostReplyMutation(postId);
+  const { mutate: putCommentMutate, isLoading: isPutLoading } =
+    usePutCommentMutation(postId);
+  const { mutate: putReplyMutate, isLoading: isPutReplyLoading } =
+    usePutReplyMutation(postId);
+  const { mutate: postReplyMutate, isLoading: isPostReplyLoading } =
+    usePostReplyMutation(postId);
 
   useEffect(() => {
     if (subCommentInputRef?.current) {
       subCommentInputRef.current.focus();
     }
   }, [subCommentInputRef]);
-
-  if (isPostReplySuccess || isPutReplySuccess || isPutSuccess) {
-    // setComment("");
-    // setIsAnonymous(false);
-    // setIsSecret(false);
-    // if (isWritingReply) {
-    //   // 답글 작성
-    //   setIsWriteSubComment(false);
-    // } else {
-    //   // 댓글, 답글 수정
-    //   setIsModify && setIsModify(false);
-    // }
-    // setRefetchComment(true);
-  }
 
   const handleSubmitSubComment = () => {
     if (!isWritingReply) {
@@ -113,6 +87,7 @@ export const SubCommentInput = ({
                 setIsAnonymous(false);
                 setIsSecret(false);
                 setIsModify && setIsModify(false);
+
                 setRefetchComment(true);
               },
               onError: (error) => {
@@ -138,6 +113,7 @@ export const SubCommentInput = ({
                 setIsAnonymous(false);
                 setIsSecret(false);
                 setIsModify && setIsModify(false);
+
                 setRefetchComment(true);
               },
               onError: (error) => {
@@ -156,8 +132,8 @@ export const SubCommentInput = ({
             superCommentId: superCommentId,
             tagCommentId: tagCommentId,
             contents: comment,
-            anonymous: isAnonymous,
-            readOnlyAuthor: isSecret,
+            isAnonymous: isAnonymous,
+            isReadOnlyAuthor: isSecret,
           },
           {
             onSuccess: () => {
@@ -165,6 +141,7 @@ export const SubCommentInput = ({
               setIsAnonymous(false);
               setIsSecret(false);
               setIsWriteSubComment(false);
+
               setRefetchComment(true);
             },
             onError: (error) => {
@@ -175,18 +152,6 @@ export const SubCommentInput = ({
       }
     }
   };
-
-  if (isPutError) {
-    errorHandle(isPutError);
-  }
-
-  if (isPutReplyError) {
-    errorHandle(isPutReplyError);
-  }
-
-  if (isPostReplyError) {
-    errorHandle(isPostReplyError);
-  }
 
   return (
     <Box
@@ -246,6 +211,8 @@ export const SubCommentInput = ({
         </Button>
         <Button
           variant={comment !== "" ? "primary" : "primary-inActive"}
+          isLoading={isPutLoading || isPutReplyLoading || isPostReplyLoading}
+          loadingText="등록중"
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmitSubComment}
         >

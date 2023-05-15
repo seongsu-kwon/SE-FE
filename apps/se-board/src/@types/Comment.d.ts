@@ -64,7 +64,7 @@ declare module "@types" {
     superCommentId: number;
     tagCommentId: number;
     contents: string;
-    anonymous: boolean;
-    readOnlyAuthor: boolean;
+    isAnonymous: boolean;
+    isReadOnlyAuthor: boolean;
   }
 }

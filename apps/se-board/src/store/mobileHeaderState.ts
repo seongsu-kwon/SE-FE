@@ -2,7 +2,7 @@ import { atom, useRecoilState } from "recoil";
 
 export const mobileHeaderState = atom({
   key: "mobileHeaderState",
-  default: false,
+  default: true,
 });
 
 export const useMobileHeaderState = () => {
