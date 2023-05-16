@@ -23,9 +23,18 @@ import {
   BsThreeDotsVertical,
   BsTrash3,
 } from "react-icons/bs";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
+import { useDeletePostMutation } from "@/react-query/hooks";
+import {
+  useDeleteCommentMutation,
+  useDeleteReplyMutation,
+} from "@/react-query/hooks";
+import { refetchCommentState } from "@/store/CommentState";
+import { user } from "@/store/user";
 import { openColors } from "@/styles";
-
+import { errorHandle } from "@/utils/errorHandling";
 interface MoreButtonProps {
   fontSize?: string;
   menuItems: {
@@ -68,13 +77,15 @@ export const MoreButton = ({ fontSize, menuItems }: MoreButtonProps) => {
   );
 };
 
-const PostModifyMenuItem = () => {
+const PostModifyMenuItem = ({ postId }: { postId: number }) => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const modifyAlertRef = React.useRef<HTMLButtonElement>(null);
-  const commentModifyClick = () => {
-    // TODO: 작성글 수정
+  const modifyCancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const postModifyClick = () => {
     onClose();
-    // 작성글 수정 페이지로 이동
+
+    navigate(`/notice/${postId}/modify`);
   };
 
   return (
@@ -84,20 +95,20 @@ const PostModifyMenuItem = () => {
       </MenuItem>
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={modifyAlertRef}
+        leastDestructiveRef={modifyCancelRef}
         onClose={onClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              수정
+              게시글 수정
             </AlertDialogHeader>
             <AlertDialogBody>작성글을 수정하시겠습니까?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button ref={modifyAlertRef} onClick={onClose}>
+              <Button ref={modifyCancelRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="primary" onClick={commentModifyClick} ml="8px">
+              <Button variant="primary" onClick={postModifyClick} ml="8px">
                 수정
               </Button>
             </AlertDialogFooter>
@@ -108,13 +119,23 @@ const PostModifyMenuItem = () => {
   );
 };
 
-const PostDeleteAlert = () => {
+const PostDeleteAlert = ({ postId }: { postId: number }) => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
-  const commentDeleteClick = () => {
-    // TODO: 작성글 삭제
+  const { mutate: deleteMutate, isLoading } = useDeletePostMutation();
 
-    onClose();
+  const postDeleteClick = () => {
+    deleteMutate(postId, {
+      onSuccess: () => {
+        onClose();
+        navigate(-1);
+      },
+      onError: (error) => {
+        onClose();
+        errorHandle(error);
+      },
+    });
   };
 
   return (
@@ -137,7 +158,13 @@ const PostDeleteAlert = () => {
               <Button ref={deleteAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentDeleteClick} ml="8px">
+              <Button
+                isLoading={isLoading}
+                loadingText="삭제 중"
+                variant="danger"
+                onClick={postDeleteClick}
+                ml="8px"
+              >
                 삭제
               </Button>
             </AlertDialogFooter>
@@ -158,7 +185,7 @@ export const PostReportAlert = () => {
 
   return (
     <>
-      <MenuItem icon={<BsExclamationCircle />} onClick={() => {}} maxW="120px">
+      <MenuItem icon={<BsExclamationCircle />} onClick={onOpen} maxW="120px">
         신고
       </MenuItem>
       <AlertDialog
@@ -195,23 +222,36 @@ const PostShareMenuItem = ({ onShareClick }: { onShareClick: () => void }) => {
   );
 };
 
-export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
+export const PostMoreButton = ({
+  postId,
+  isEditable,
+}: {
+  postId: number;
+  isEditable: boolean;
+}) => {
   const toast = useToast();
 
   const onShareClick = () => {
     const url = window.location.href;
 
-    try {
-      navigator.clipboard.writeText(url);
-      toast({
-        title: "URL이 복사되었습니다.",
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-      });
-    } catch (err) {
-      alert("URL 복사에 실패했습니다.");
-    }
+    navigator.clipboard.writeText(url).then(
+      () => {
+        toast({
+          title: "URL이 복사되었습니다.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      },
+      (err) => {
+        toast({
+          title: "URL 복사에 실패했습니다.",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    );
   };
 
   return (
@@ -229,14 +269,14 @@ export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
       <MenuList minWidth="120px" shadow="xl">
         {isEditable ? (
           <>
-            <PostModifyMenuItem />
-            <PostDeleteAlert />
+            <PostModifyMenuItem postId={postId} />
+            <PostDeleteAlert postId={postId} />
             <PostShareMenuItem onShareClick={onShareClick} />
           </>
         ) : (
           <>
             <PostShareMenuItem onShareClick={onShareClick} />
-            <PostReportAlert />
+            {user.hasAuth() && <PostReportAlert />}
           </>
         )}
       </MenuList>
@@ -247,15 +287,53 @@ export const PostMoreButton = ({ isEditable }: { isEditable: boolean }) => {
 interface CommentMoreButtonProps {
   isEditable: boolean;
   setIsModify: React.Dispatch<React.SetStateAction<boolean>>;
+  commentId: number;
+  isReply: boolean;
 }
 
-const CommentDeleteAlert = () => {
+const CommentDeleteAlert = ({
+  commentId,
+  isReply,
+  postId,
+}: {
+  commentId: number;
+  isReply: boolean;
+  postId?: string;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
-  const commentDeleteClick = () => {
-    // TODO: 댓글 삭제
 
-    onClose();
+  const setRefetchCommentState = useSetRecoilState(refetchCommentState);
+
+  const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
+
+  const { mutate: deleteMutate, isLoading: commentDeleteIsLoading } =
+    useDeleteCommentMutation(postId);
+  const { mutate: deleteReplyMutate, isLoading: deleteReplyIsLoading } =
+    useDeleteReplyMutation(postId);
+
+  const commentDeleteClick = () => {
+    if (!isReply) {
+      deleteMutate(commentId, {
+        onSuccess: () => {
+          onClose();
+
+          setRefetchCommentState(true);
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      });
+    } else {
+      deleteReplyMutate(commentId, {
+        onSuccess: () => {
+          onClose();
+          setRefetchCommentState(true);
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      });
+    }
   };
 
   return (
@@ -278,7 +356,13 @@ const CommentDeleteAlert = () => {
               <Button ref={deleteAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentDeleteClick} ml="8px">
+              <Button
+                isLoading={commentDeleteIsLoading || deleteReplyIsLoading}
+                loadingText="삭제 중"
+                variant="danger"
+                onClick={commentDeleteClick}
+                ml="8px"
+              >
                 삭제
               </Button>
             </AlertDialogFooter>
@@ -294,12 +378,17 @@ const CommentReportAlert = () => {
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
   const commentReportClick = () => {
     // TODO: 댓글 신고
+    if (!user.hasAuth()) {
+      onClose();
+      alert("로그인 후 신고가능합니다.");
+      console.log("로그인 후 신고가능합니다.");
+    }
     onClose();
   };
 
   return (
     <>
-      <MenuItem icon={<BsExclamationCircle />} onClick={() => {}} maxW="120px">
+      <MenuItem icon={<BsExclamationCircle />} onClick={onOpen} maxW="120px">
         신고
       </MenuItem>
       <AlertDialog
@@ -331,10 +420,13 @@ const CommentReportAlert = () => {
 export const CommentMoreButton = ({
   isEditable,
   setIsModify,
+  commentId,
+  isReply,
 }: CommentMoreButtonProps) => {
   const commentModifyClick = () => {
     setIsModify(true);
   };
+  const { postId } = useParams();
 
   return (
     <Menu>
@@ -358,7 +450,11 @@ export const CommentMoreButton = ({
             >
               수정
             </MenuItem>
-            <CommentDeleteAlert />
+            <CommentDeleteAlert
+              commentId={commentId}
+              isReply={isReply}
+              postId={postId}
+            />
           </>
         ) : (
           <>

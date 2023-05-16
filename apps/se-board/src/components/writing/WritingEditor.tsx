@@ -1,35 +1,64 @@
 import { Box } from "@chakra-ui/react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
-export const WritingEditor = () => {
-  //   const imgLink = "http://localhost:3000/images";
+import { usePostFileQuery } from "@/react-query/hooks/useFileQuery";
+import { modifyPostState, writePostState } from "@/store";
 
-  //   const customUploaadAdapterPlugin = (loader: ) => {
-  //     return {
-  //       upload() {
-  //         return new Promise((resolve, reject) => {
-  //           const data = new FormData();
-  //           loader.file.then((file: File) => {
-  //             data.append("file", file);
-  //             data.append("name", file.name);
+export const WritingEditor = ({
+  title,
+  contents,
+  isModified,
+}: {
+  title: string;
+  contents: string;
+  isModified: boolean;
+}) => {
+  const [editorData, setEditorData] = useState<string>("");
+  const [writePost, setWritePost] = useRecoilState(writePostState);
+  const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
-  //             console.log({ file });
+  const { mutate } = usePostFileQuery();
 
-  //             resolve({
-  //               default: `${imgLink}/${file.name}`,
-  //             });
-  //           });
-  //         });
-  //       },
-  //     };
-  //   };
+  useEffect(() => {
+    setEditorData(`<h1>${title}</h1>` + contents);
+  }, [title, contents]);
 
-  //   function uploadPlugin(editor) {
-  //     editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-  //       return customUploaadAdapterPlugin(loader);
-  //     };
-  //   }
+  const customUploadAdapter = (loader: any) => {
+    return {
+      upload: () => {
+        return new Promise((resolve, reject) => {
+          const data = new FormData();
+
+          loader.file.then((file: File) => {
+            data.append("files", file);
+
+            mutate(data, {
+              onSuccess: (data) => {
+                console.log(data);
+                resolve({
+                  default: `http://202.31.202.9${data?.fileMetaDataList[0].url}`, // TODO: 서버 주소 변경
+                });
+              },
+              onError: (error) => {
+                reject(error);
+              },
+            });
+          });
+        });
+      },
+    };
+  };
+
+  const uploadPlugin = function (editor: any) {
+    editor.plugins.get("FileRepository").createUploadAdapter = (
+      loader: any
+    ) => {
+      return customUploadAdapter(loader);
+    };
+  };
 
   const editorConfiguration = {
     fontSize: {
@@ -37,6 +66,7 @@ export const WritingEditor = () => {
         6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 30, 32,
       ],
     },
+    extraPlugins: [uploadPlugin],
   };
 
   return (
@@ -44,6 +74,7 @@ export const WritingEditor = () => {
       <CKEditor
         editor={Editor}
         config={editorConfiguration}
+        data={editorData}
         onReady={(editor: any) => {
           editor.editing.view.change((writer: any) => {
             writer.setStyle(
@@ -53,11 +84,28 @@ export const WritingEditor = () => {
             );
           });
         }}
-        // onChange={(event: any, editor: any) => {
-        //   console.log(event);
-        //   const data = editor.getData();
-        //   console.log({ data });
-        // }}
+        onChange={(event: any, editor: any) => {
+          const data = editor.getData();
+          const match = data.match(/<h[1-6][^>]*>([^<]+)<\/h[1-6]>/i);
+          const title = match ? match[1].replaceAll("&nbsp;", "").trim() : "";
+          const body = data.replace(match && match[0], "");
+
+          setEditorData(data);
+
+          if (!isModified) {
+            setWritePost({
+              ...writePost,
+              title: title,
+              contents: body,
+            });
+          } else {
+            setModifyPost({
+              ...modifyPost,
+              title: title,
+              contents: body,
+            });
+          }
+        }}
       />
     </Box>
   );

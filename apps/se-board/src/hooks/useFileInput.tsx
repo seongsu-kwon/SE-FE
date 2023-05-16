@@ -1,18 +1,70 @@
-import React, { useCallback, useState } from "react";
+import { Attachment } from "@types";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
-export const useFileInput = (onFileDrop: (file: Array<File>) => void) => {
-  const [files, setFiles] = useState<File[]>([]);
+import {
+  useDeleteFileQuery,
+  usePostFileQuery,
+} from "@/react-query/hooks/useFileQuery";
+import { modifyPostState, writePostState } from "@/store";
+
+export const useFileInput = (
+  isModified: boolean,
+  beforeFiles: Attachment[]
+) => {
+  const [files, setFiles] = useState<Attachment[]>([]);
+
+  const [writePost, setWritePost] = useRecoilState(writePostState);
+  const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
+
+  const { mutate: postFileMutate } = usePostFileQuery();
+  const { mutate: deleteFileMutate } = useDeleteFileQuery();
+
+  useEffect(() => {
+    setFiles(beforeFiles);
+  }, [beforeFiles]);
+
+  const setPostState = (data: Attachment[]) => {
+    if (!isModified) {
+      setWritePost({
+        ...writePost,
+        attachmentIds: [
+          ...writePost.attachmentIds,
+          ...files.map((file) => file.fileMetaDataId),
+          ...data.map((file: Attachment) => file.fileMetaDataId),
+        ],
+      });
+    } else {
+      setModifyPost({
+        ...modifyPost,
+        attachmentIds: [
+          ...modifyPost.attachmentIds,
+          ...files.map((file) => file.fileMetaDataId),
+          ...data.map((file: Attachment) => file.fileMetaDataId),
+        ],
+      });
+    }
+  };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    const newFiles: Array<File> = [...files];
+    const formData = new FormData();
+
     for (let i = 0; i < e.dataTransfer.files.length; i++) {
-      newFiles.push(e.dataTransfer.files[i]);
+      formData.append("files", e.dataTransfer.files[i]);
     }
 
-    setFiles(newFiles);
-    onFileDrop(newFiles);
+    postFileMutate(formData, {
+      onSuccess(data) {
+        console.log(data);
+        setFiles([...files, ...data.fileMetaDataList]);
+
+        setPostState(data.fileMetaDataList);
+      },
+    });
+
+    e.dataTransfer.clearData();
   };
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -22,21 +74,43 @@ export const useFileInput = (onFileDrop: (file: Array<File>) => void) => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (!e.target.files) return;
 
-    const newFiles: Array<File> = [...files];
+    const formData = new FormData();
 
     for (let i = 0; i < e.target.files.length; i++) {
-      newFiles.push(e.target.files[i]);
+      formData.append("files", e.target.files[i]);
     }
 
-    onFileDrop(newFiles);
-    setFiles(newFiles);
+    postFileMutate(formData, {
+      onSuccess(data) {
+        setFiles([...files, ...data.fileMetaDataList]);
+
+        setPostState(data.fileMetaDataList);
+      },
+    });
   };
 
-  const handleRemove = (index: number): void => {
-    console.log(index);
-    const newFiles: Array<File> = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
+  const handleRemove = (fileId: number): void => {
+    deleteFileMutate(fileId, {
+      onSuccess() {
+        setFiles(files.filter((file) => file.fileMetaDataId !== fileId));
+
+        if (!isModified) {
+          setWritePost({
+            ...writePost,
+            attachmentIds: writePost.attachmentIds.filter(
+              (id) => id !== fileId
+            ),
+          });
+        } else {
+          setModifyPost({
+            ...modifyPost,
+            attachmentIds: modifyPost.attachmentIds.filter(
+              (id) => id !== fileId
+            ),
+          });
+        }
+      },
+    });
   };
 
   return {

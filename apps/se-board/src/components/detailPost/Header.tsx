@@ -11,10 +11,12 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
+import { DateType } from "@types";
 import { BsClock, BsFillEyeFill, BsPerson } from "react-icons/bs";
 
 import { useBookmarked } from "@/hooks";
 import { openColors } from "@/styles";
+import { toYYYYMMDDHHhhss } from "@/utils/dateUtils";
 
 import { BackButton } from "./BackButton";
 import { Bookmark, BookmarkFill } from "./Bookmark";
@@ -22,24 +24,22 @@ import { PostMoreButton } from "./MoreButton";
 
 interface HeaderProps {
   HeadingInfo: {
+    postId: number;
     title: string;
     author: {
-      login_id: string;
+      loginId: string;
       name: string;
     };
     views: number;
-    category: {
-      main_category: string;
-      sub_category: string;
-    };
-    created_at: string;
-    contents: string;
+    category: string;
+    createdAt: DateType;
+    modifiedAt: DateType;
     bookmarked: boolean;
     isEditable: boolean;
   };
 }
 
-const AuthorInfoMenuList = ({ name }: { name: string }) => {
+const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
   return (
     <Menu autoSelect={false}>
       <MenuButton>
@@ -58,15 +58,18 @@ const AuthorInfoMenuList = ({ name }: { name: string }) => {
           </Text>
         </Box>
       </MenuButton>
-      <MenuList maxW={{ base: "100px" }}>
-        <MenuItem w="100%">작성글 보기</MenuItem>
-      </MenuList>
+      {id !== null && (
+        <MenuList maxW={{ base: "100px" }}>
+          <MenuItem w="100%">작성글 보기</MenuItem>
+        </MenuList>
+      )}
     </Menu>
   );
 };
 
 export const Header = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
+    HeadingInfo.postId,
     HeadingInfo.bookmarked
   );
 
@@ -80,23 +83,27 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
         ) : (
           <BookmarkFill toggleBookmark={toggleBookmark} />
         )}
-        <PostMoreButton isEditable={HeadingInfo.isEditable} />
+        <PostMoreButton
+          postId={HeadingInfo.postId}
+          isEditable={HeadingInfo.isEditable}
+        />
       </Flex>
       <Box borderBottom={`1px solid ${openColors.gray[3]}`}>
         <Box m="16px 0 16px 16px">
           <Heading
             size="lg"
             w="fit-content"
-          >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
+          >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
           <HStack mt="4px" spacing="12px">
-            <AuthorInfoMenuList name={HeadingInfo.author.name} />
+            <AuthorInfoMenuList
+              id={HeadingInfo.author.loginId}
+              name={HeadingInfo.author.name}
+            />
 
             <Box display="flex">
               <Icon as={BsClock} boxSize="16px" my="auto" />
               <Box ml="6px" fontSize="md">
-                {`${HeadingInfo.created_at.split("-")[0]}.${
-                  HeadingInfo.created_at.split("-")[1]
-                }.${HeadingInfo.created_at.split("-")[2]}`}
+                {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
               </Box>
             </Box>
             <Box display="flex">
@@ -114,30 +121,32 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
 
 export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
   const { isBookmarked, toggleBookmark } = useBookmarked(
+    HeadingInfo.postId,
     HeadingInfo.bookmarked
   );
 
   return (
     <Box
       display="flex"
-      maxW="984px"
-      m="120px auto 0 auto"
-      borderY={`1px solid ${openColors.gray[3]}`}
+      w="100%"
+      m="0px auto 0 auto"
+      borderBottom={`1px solid ${openColors.gray[3]}`}
     >
-      <Box m="16px 0 16px 16px">
+      <Box p="1.5rem 0 1.5rem 1rem">
         <Heading
           as="h2"
           size="lg"
           w="fit-content"
-        >{`[${HeadingInfo.category.sub_category}] ${HeadingInfo.title}`}</Heading>
+        >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
-          <AuthorInfoMenuList name={HeadingInfo.author.name} />
+          <AuthorInfoMenuList
+            id={HeadingInfo.author.loginId}
+            name={HeadingInfo.author.name}
+          />
           <Box display="flex">
             <Icon as={BsClock} boxSize="20px" my="auto" />
             <Box ml="6px" fontSize="lg">
-              {`${HeadingInfo.created_at.split("-")[0]}.${
-                HeadingInfo.created_at.split("-")[1]
-              }.${HeadingInfo.created_at.split("-")[2]}`}
+              {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
             </Box>
           </Box>
           <Box display="flex">
@@ -155,7 +164,10 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
         ) : (
           <BookmarkFill boxSize="32px" toggleBookmark={toggleBookmark} />
         )}
-        <PostMoreButton isEditable={HeadingInfo.isEditable} />
+        <PostMoreButton
+          postId={HeadingInfo.postId}
+          isEditable={HeadingInfo.isEditable}
+        />
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { DateType } from "@types";
+import { DateType, PostMutate } from "@types";
 
 import { isSameDateTime } from "./dateUtils";
 
@@ -9,3 +9,24 @@ export const isModified = (
   createdDateTime: DateType,
   modifiedDateTime: DateType
 ) => !isSameDateTime(createdDateTime, modifiedDateTime);
+
+export const isWritePostActive = (
+  postData: PostMutate,
+  isModified: boolean
+) => {
+  if (isModified) {
+    return (
+      postData.title !== "" &&
+      postData.contents !== "" &&
+      postData.categoryId !== -1 &&
+      postData.exposeOption.name !== ""
+    );
+  } else {
+    return (
+      postData.title !== "" &&
+      postData.contents !== "" &&
+      postData.categoryId !== -1 &&
+      postData.exposeOption.name !== ""
+    );
+  }
+};

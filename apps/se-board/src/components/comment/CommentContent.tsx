@@ -8,18 +8,25 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { subCommentInfoType } from "@types";
+import { SubCommentInfoType } from "@types";
 import React, { useState } from "react";
 import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
 import { SubCommentInput } from "@/components/comment";
 import { CommentMoreButton } from "@/components/detailPost";
 import { openColors } from "@/styles";
+import { toYYYYMMDDHHhh } from "@/utils/dateUtils";
 
-const AuthorInfoMenuList = ({ name }: { name: string }) => {
+const AuthorInfoMenuList = ({
+  name,
+  authorId,
+}: {
+  name: string;
+  authorId: string | null;
+}) => {
   return (
     <Menu autoSelect={false}>
-      <MenuButton>
+      <MenuButton cursor={authorId === null ? "not-allowed" : "pointer"}>
         <Box display="flex" alignItems="center" w="fit-content">
           <Icon as={BsPersonCircle} boxSize="32px" color="gray.4" my="auto" />
           <Text px="10px" fontSize="lg" fontWeight="600" whiteSpace="nowrap">
@@ -27,9 +34,11 @@ const AuthorInfoMenuList = ({ name }: { name: string }) => {
           </Text>
         </Box>
       </MenuButton>
-      <MenuList>
-        <MenuItem>작성글 보기</MenuItem>
-      </MenuList>
+      {authorId !== null && (
+        <MenuList>
+          <MenuItem>작성글 보기</MenuItem>
+        </MenuList>
+      )}
     </Menu>
   );
 };
@@ -38,15 +47,17 @@ interface CommentContentProps {
   superCommentId: number;
   commentId: number;
   author: {
-    userId: string | null; // loginId로 수정 필요
+    loginId: string | null; // loginId로 수정 필요
     name: string;
   };
   contents: string;
   createdAt: string;
   isEditable: boolean;
+  isActive: boolean;
   tag?: string;
+  isReadOnlyAuthor: boolean;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubCommentInfo: React.Dispatch<React.SetStateAction<subCommentInfoType>>;
+  setSubCommentInfo: React.Dispatch<React.SetStateAction<SubCommentInfoType>>;
 }
 
 export const CommentContent = ({
@@ -56,7 +67,9 @@ export const CommentContent = ({
   contents,
   createdAt,
   isEditable,
+  isActive,
   tag,
+  isReadOnlyAuthor,
   setIsWriteSubComment,
   setSubCommentInfo,
 }: CommentContentProps) => {
@@ -72,24 +85,32 @@ export const CommentContent = ({
     setIsWriteSubComment(true);
   };
 
-  return author.userId !== null ? ( // loginId로 수정 필요
+  return (
     <>
       <Box display="flex" justifyContent="space-between">
-        <AuthorInfoMenuList name={author.name} />
+        <AuthorInfoMenuList name={author.name} authorId={author.loginId} />
         <Box w="fit-content">
-          <CommentMoreButton
-            isEditable={isEditable}
-            setIsModify={setIsModify}
-          />
+          {isActive && (
+            <CommentMoreButton
+              isEditable={isEditable}
+              setIsModify={setIsModify}
+              commentId={commentId}
+              isReply={superCommentId !== commentId}
+            />
+          )}
         </Box>
       </Box>
       {isModify ? (
         <SubCommentInput
           superCommentId={superCommentId}
+          commentId={commentId}
           tagCommentId={commentId}
           setIsWriteSubComment={setIsWriteSubComment}
           contents={contents}
           setIsModify={setIsModify}
+          isWritingReply={false} // 수정하기 버튼 클릭 시 false
+          isReply={superCommentId !== commentId}
+          isSecreted={isReadOnlyAuthor}
         />
       ) : (
         <>
@@ -118,11 +139,7 @@ export const CommentContent = ({
           </Box>
           <Box mt="2px">
             <Text textAlign="left" fontSize={{ base: "sm" }} fontWeight="400">
-              {createdAt
-                .replace("-", ".")
-                .replace("-", ".")
-                .replace("-", " ")
-                .slice(0, 16)}
+              {toYYYYMMDDHHhh(createdAt)}
             </Text>
           </Box>
           <Box
@@ -133,23 +150,21 @@ export const CommentContent = ({
             color="gray.6"
             _hover={{ color: "gray.7" }}
           >
-            <Button
-              size="sm"
-              p="0"
-              leftIcon={<BsArrowReturnRight />}
-              variant="ghost"
-              _hover={{ bgColor: openColors.white }}
-              onClick={replyOnClick}
-            >
-              답글 작성
-            </Button>
+            {isActive && (
+              <Button
+                size="sm"
+                p="0"
+                leftIcon={<BsArrowReturnRight />}
+                variant="ghost"
+                _hover={{ bgColor: openColors.white }}
+                onClick={replyOnClick}
+              >
+                답글 작성
+              </Button>
+            )}
           </Box>
         </>
       )}
     </>
-  ) : (
-    <Box display="flex" alignItems="center" justifyContent="center" h="120px">
-      <Text fontSize="xl">삭제된 댓글입니다.</Text>
-    </Box>
   );
 };

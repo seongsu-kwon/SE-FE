@@ -2,8 +2,6 @@ import { Icon } from "@chakra-ui/react";
 import { BsArrowLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
-// import { openColors } from "@/styles";
-
 export const BackButton = () => {
   const navigate = useNavigate();
 

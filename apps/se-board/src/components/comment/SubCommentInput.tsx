@@ -9,32 +9,57 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
-// import { usePutCommentMutation } from "@/react-query/hooks";
+import {
+  usePostReplyMutation,
+  usePutCommentMutation,
+  usePutReplyMutation,
+} from "@/react-query/hooks";
+import { refetchCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
+import { errorHandle } from "@/utils/errorHandling";
 
 interface SubCommentInputProps {
   superCommentId: number | null;
+  commentId: number | undefined;
   tagCommentId: number | null;
   subCommentInputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
   setIsWriteSubComment: React.Dispatch<React.SetStateAction<boolean>>;
   contents: string;
   setIsModify?: React.Dispatch<React.SetStateAction<boolean>>;
+  isReply: boolean; // true: 답글, false: 댓글
+  isWritingReply: boolean; // true: 답글 작성 중, false: 댓글, 답글 수정 중
+  isSecreted?: boolean;
 }
 
 export const SubCommentInput = ({
   superCommentId,
+  commentId,
   tagCommentId,
   setIsWriteSubComment,
   subCommentInputRef,
   contents,
   setIsModify,
+  isReply,
+  isWritingReply,
+  isSecreted,
 }: SubCommentInputProps) => {
   const { postId } = useParams<{ postId: string }>();
 
   const [comment, setComment] = useState<string>(contents);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [isSecret, setIsSecret] = useState(false);
+  const [isSecret, setIsSecret] = useState(isSecreted || false);
+
+  const [refetchComment, setRefetchComment] =
+    useRecoilState(refetchCommentState);
+
+  const { mutate: putCommentMutate, isLoading: isPutLoading } =
+    usePutCommentMutation(postId);
+  const { mutate: putReplyMutate, isLoading: isPutReplyLoading } =
+    usePutReplyMutation(postId);
+  const { mutate: postReplyMutate, isLoading: isPostReplyLoading } =
+    usePostReplyMutation(postId);
 
   useEffect(() => {
     if (subCommentInputRef?.current) {
@@ -43,12 +68,88 @@ export const SubCommentInput = ({
   }, [subCommentInputRef]);
 
   const handleSubmitSubComment = () => {
-    // TODO: 답글 등록, state 초기화
-    //답글 인지 수정 인지 확인 작업 필요 -> contents가 있으면 수정
-    if (contents !== undefined) {
+    if (!isWritingReply) {
       //수정
+      if (!isReply) {
+        // 댓글 수정
+        if (commentId) {
+          putCommentMutate(
+            {
+              commentId,
+              putCommentData: {
+                contents: comment,
+                isReadOnlyAuthor: isSecret,
+              },
+            },
+            {
+              onSuccess: () => {
+                setComment("");
+                setIsAnonymous(false);
+                setIsSecret(false);
+                setIsModify && setIsModify(false);
+
+                setRefetchComment(true);
+              },
+              onError: (error) => {
+                errorHandle(error);
+              },
+            }
+          );
+        }
+      } else {
+        // 답글 수정
+        if (commentId) {
+          putReplyMutate(
+            {
+              replyId: commentId,
+              putReplyData: {
+                contents: comment,
+                isReadOnlyAuthor: isSecret,
+              },
+            },
+            {
+              onSuccess: () => {
+                setComment("");
+                setIsAnonymous(false);
+                setIsSecret(false);
+                setIsModify && setIsModify(false);
+
+                setRefetchComment(true);
+              },
+              onError: (error) => {
+                errorHandle(error);
+              },
+            }
+          );
+        }
+      }
     } else {
-      //답글
+      //답글 작성
+      if (superCommentId && tagCommentId) {
+        postReplyMutate(
+          {
+            postId: Number(postId),
+            superCommentId: superCommentId,
+            tagCommentId: tagCommentId,
+            contents: comment,
+            isAnonymous: isAnonymous,
+            isReadOnlyAuthor: isSecret,
+          },
+          {
+            onSuccess: () => {
+              setComment("");
+              setIsAnonymous(false);
+              setIsSecret(false);
+              setIsWriteSubComment(false);
+
+              setRefetchComment(true);
+            },
+            onError: (error) => {
+              errorHandle(error);
+            },
+          }
+        );
+      }
     }
   };
 
@@ -99,14 +200,19 @@ export const SubCommentInput = ({
           _hover={{ bgColor: "gray.5" }}
           color="white"
           onClick={() => {
-            setIsWriteSubComment(false);
-            setIsModify && setIsModify(false);
+            if (isWritingReply) {
+              setIsWriteSubComment(false);
+            } else {
+              setIsModify && setIsModify(false);
+            }
           }}
         >
           취소
         </Button>
         <Button
-          variant="primary"
+          variant={comment !== "" ? "primary" : "primary-inActive"}
+          isLoading={isPutLoading || isPutReplyLoading || isPostReplyLoading}
+          loadingText="등록중"
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmitSubComment}
         >
@@ -130,7 +236,7 @@ export const SubCommentInput = ({
           justifyContent="space-between"
         >
           <Box
-            display="flex"
+            display={isWritingReply ? "flex" : "none"}
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
           >
@@ -140,6 +246,7 @@ export const SubCommentInput = ({
             <Switch
               id="anonymous"
               mt="3px"
+              isChecked={isAnonymous}
               onChange={() => {
                 setIsAnonymous(!isAnonymous);
               }}
@@ -158,6 +265,7 @@ export const SubCommentInput = ({
               <Switch
                 id="secret"
                 mt="3px"
+                isChecked={isSecret}
                 onChange={() => {
                   setIsSecret(!isSecret);
                 }}

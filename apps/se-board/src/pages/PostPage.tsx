@@ -1,4 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
+import { PostDetail } from "@types";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { CommentSection } from "@/components/comment";
@@ -7,97 +9,122 @@ import {
   Content,
   DesktopHeader,
   Header,
+  SkeletonDetailPostContent,
+  SkeletonDetailPostDesktopHeader,
+  SkeletonDetailPostHeader,
 } from "@/components/detailPost";
-import { useGetPostQuery } from "@/react-query/hooks";
+import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
+import { useMobileHeaderState } from "@/store/mobileHeaderState";
+import { errorHandle } from "@/utils/errorHandling";
 
-const post = {
-  post_id: 2234,
-  title: "hello SE Board", // header
-  author: {
-    // header
-    login_id: "m1234", //익명 사용자면, anonymous
-    name: "min jeong",
-  },
-  views: 10, // header
-  category: {
-    // header
-    main_category: "notice",
-    sub_category: "class",
-  },
-  created_at: "2022-05-05-12:00:02", // header
-  moified_at: "2022-05-06-12:00:01",
-  contents: `<div class="document_91563_19198 xe_content"><p>&nbsp;</p>
-
-  <p><span style="font-size:18px;">안녕하십니까&nbsp;클라우드 학생회입니다&nbsp;</span></p>
-  
-  <p>&nbsp;</p>
-  
-  <p><span style="font-size:18px;">4월 4일 화요일 19:00 ~ 20:00 DB134에서 4월 미니게임&nbsp;피카츄배구를 진행합니다&nbsp;</span></p>
-  
-  <p>&nbsp;</p>
-  
-  <p><span style="font-size:18px;">미니게임&nbsp;</span><span style="font-size:18px;">진행 동안은 DB134 사용이 어려울 예정이니 이점 양해부탁드립니다</span></p></div>`, // contents
-  bookmarked: false, // 익명 사용자이면 항상 false // header
-  isEditable: true, // 작성자가 익명 사용자면 항상 true, 작성자가 로그인 사용자면, 글 수정/삭제 가능할 시, true // header
-  attachment: {}, // file
-};
-
-const categories = [
-  { eng: "class", kor: "학사" },
-  { eng: "general", kor: "일반" },
-  { eng: "lecture", kor: "강의" },
-  { eng: "event", kor: "행사" },
-  { eng: "council", kor: "학생회" },
-];
-
-const files = [
-  {
-    file_id: 1,
-    file_name: "hello.pdf",
-    file_size: 100,
-    file_type: "pdf",
-    file_url: "https://www.google.com",
-  },
-  {
-    file_id: 2,
-    file_name: "hello.pdf",
-    file_size: 100,
-    file_type: "pdf",
-    file_url: "https://www.google.com",
-  },
-];
+import { PWInput } from "./SecretPostPWInput";
 
 export const PostPage = () => {
-  const { postId } = useParams<{ postId: string }>();
-  const { data, isLoading, isError } = useGetPostQuery(postId);
+  const { postId } = useParams();
+
+  const [enabledOption, setEnabledOption] = useState<boolean>(false);
+  const { data, isLoading, isError, error, refetch } = useGetPostQuery(
+    postId,
+    enabledOption
+  );
+  const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
+  const [postData, setPostData] = useState<PostDetail | undefined>(data);
+  const [password, setPassword] = useState<string>("");
+
+  const { mutate } = useSecretPostMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const onSubmit = () => {
+    mutate(
+      { postId: Number(postId), password },
+      {
+        onSuccess: (data) => {
+          setEnabledOption(false);
+          setPostData(data);
+
+          setPassword("");
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    mobileHeaderClose();
+    setPostData(data);
+
+    if (!postData) {
+      setEnabledOption(true);
+    }
+
+    if (!isError) refetch();
+
+    return mobileHeaderOpen;
+  }, [data]);
+
+  if (isError) {
+    const { code } = error as { code: number; message: string };
+
+    if (code !== 113) {
+      errorHandle(error);
+    } else {
+      if (!postData) {
+        return (
+          <PWInput
+            password={password}
+            handleChange={handleChange}
+            onSubmit={onSubmit}
+          />
+        );
+      }
+    }
+  }
 
   const headerInfo = {
-    title: post.title,
-    author: { login_id: post.author.login_id, name: post.author.name },
-    views: post.views,
-    category: {
-      main_category: post.category.main_category,
-      sub_category:
-        categories.find(
-          (category) => category.eng === post.category.sub_category
-        )?.kor || "",
+    postId: Number(postId),
+    title: postData?.title || "제목",
+    author: {
+      loginId: postData?.author.loginId || "",
+      name: postData?.author.name || "이름",
     },
-    created_at: post.created_at,
-    contents: post.contents,
-    bookmarked: post.bookmarked,
-    isEditable: post.isEditable,
+    views: postData?.views || 0,
+    category: postData?.category.name || "카테고리",
+    createdAt: postData?.createdAt,
+    modifiedAt: postData?.modifiedAt,
+    bookmarked: postData?.isBookmarked || false,
+    isEditable: postData?.isEditable || false,
   };
 
   return (
-    <Box>
+    <Box maxW="984px" w="100%">
       <Show above="md">
-        <DesktopHeader HeadingInfo={headerInfo} />
+        <Box pt="0rem">
+          {isLoading ? (
+            <SkeletonDetailPostDesktopHeader />
+          ) : (
+            <DesktopHeader HeadingInfo={headerInfo} />
+          )}
+        </Box>
       </Show>
       <Hide above="md">
-        <Header HeadingInfo={headerInfo} />
+        {isLoading ? (
+          <SkeletonDetailPostHeader />
+        ) : (
+          <Header HeadingInfo={headerInfo} />
+        )}
       </Hide>
-      <AttachmentFile files={files} />
-      <Content contents={post.contents} />
+      <AttachmentFile files={postData?.attachments.fileMetaDataList || []} />
+      {isLoading ? (
+        <SkeletonDetailPostContent />
+      ) : (
+        <Content contents={postData?.contents || "<p>내용 무</p>"} />
+      )}
+
       <CommentSection postId={postId} />
     </Box>
   );

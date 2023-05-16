@@ -1,6 +1,7 @@
 import { DateType, Pageable } from "@types";
 
 declare module "@types" {
+  type PostMutate = PostPut | PostCreate;
   interface PostListItemDTO {
     postId: number;
     title: string;
@@ -42,6 +43,11 @@ declare module "@types" {
     name: string;
   }
 
+  interface PostDetatilCategory {
+    categoryId: number;
+    name: string;
+  }
+
   interface FetchPostListResponse {
     content: PostListItemDTO[];
     pageable: Pageable;
@@ -64,5 +70,57 @@ declare module "@types" {
     categoryId: number;
     page?: number;
     perPage?: number;
+  }
+
+  interface Attachment {
+    fileMetaDataId: number;
+    originalFileName: string;
+    storedFileName: string;
+    url: string;
+  }
+
+  interface PostDetail {
+    postId: number;
+    title: string;
+    author: Author;
+    views: number;
+    category: PostDetatilCategory;
+    createdAt: DateType;
+    modifiedAt: DateType;
+    contents: string;
+    isBookmarked: boolean;
+    isEditable: boolean;
+    exposeType: string;
+    attachments: { fileMetaDataList: Attachment[] };
+    isPined: boolean;
+  }
+
+  interface exposeOptionDTO {
+    name: string;
+    password?: string;
+  }
+
+  interface PostPut {
+    title: string;
+    contents: string;
+    categoryId: number;
+    pined: boolean;
+    exposeOption: exposeOptionDTO;
+    attachmentIds: number[];
+  }
+
+  interface PostCreate {
+    title: string;
+    contents: string;
+    categoryId: number;
+    pined: boolean;
+    exposeOption: exposeOptionDTO;
+    attachmentIds: number[];
+    anonymous: boolean;
+  }
+
+  interface PostCreateRes {
+    id: number;
+    message: string;
   }
 }
