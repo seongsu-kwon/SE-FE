@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { MainLayout } from "@/components/layouts";
+import { AdminLayout, MainLayout } from "@/components/layouts";
 
 import { getStoredRefreshToken } from "./api/storage";
 import {
@@ -88,6 +88,7 @@ const MenuRouter = () => {
         },
       ],
     },
+    { path: "admin", element: <AdminLayout />, children: [] },
     {
       children: [
         {
