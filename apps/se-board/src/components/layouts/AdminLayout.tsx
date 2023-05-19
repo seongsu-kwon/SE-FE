@@ -97,6 +97,7 @@ export const AdminLayout = () => {
       <Box
         ml={{ md: "280px" }}
         pt={{ base: "56px", md: "0" }}
+        pb="2rem"
         h="full"
         textAlign="center"
         px={{ base: "16px", md: isFullWidth ? "12px" : "120px" }}
@@ -120,6 +121,7 @@ const MobileAdminLayout = () => {
         justifyContent="space-between"
         alignItems="center"
         position="fixed"
+        zIndex="100000"
       >
         <Button px="8px" bgColor="white" onClick={onOpen}>
           <BsList fontSize="32px" />
