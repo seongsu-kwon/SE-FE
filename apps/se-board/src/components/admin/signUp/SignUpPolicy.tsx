@@ -1,6 +1,6 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Divider, Text } from "@chakra-ui/react";
 
-import { BannedNickNameManage } from "./BannedNickNameManage";
+import { BannedIDManage, BannedNickNameManage } from "./Index";
 
 export const SignUpPolicy = () => {
   return (
@@ -21,6 +21,8 @@ export const SignUpPolicy = () => {
         회원가입
       </Text>
       <BannedNickNameManage />
+      <Divider border="1px" borderColor="gray.6" />
+      <BannedIDManage />
     </Box>
   );
 };

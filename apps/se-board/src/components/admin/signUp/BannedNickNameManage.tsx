@@ -2,8 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import React from "react";
 
-import { ItemInput } from "./ItemInput";
-import { ListContainer } from "./ListContainer";
+import { ItemInput, ListContainer } from "../";
 
 const data = {
   sise: 7,
@@ -13,7 +12,7 @@ const data = {
     { id: 3, name: "admin3" },
     { id: 4, name: "admin4" },
     { id: 5, name: "admin5" },
-    { id: 6, name: "admin6" },
+    { id: 6, name: "김민종❤️정이수" },
     { id: 7, name: "admin7" },
   ],
 };

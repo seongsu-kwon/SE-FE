@@ -20,7 +20,7 @@ export const ItemInput = ({
     <FormControl display={{ md: "flex" }} alignItems="center" mt="1rem">
       <FormLabel
         mb={{ base: "4px", md: "0" }}
-        mx={{ md: "0.5rem" }}
+        mr={{ md: "0.5rem" }}
         fontWeight="semibold"
       >
         {label}

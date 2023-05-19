@@ -1,4 +1,4 @@
-import { Flex, IconButton, Text } from "@chakra-ui/react";
+import { Flex, IconButton, Text, Tooltip } from "@chakra-ui/react";
 import { BsX } from "react-icons/bs";
 
 interface ListItemProps {
@@ -19,14 +19,16 @@ export const ListItem = ({ item, deleteOnClick }: ListItemProps) => {
       alignItems="center"
     >
       <Text fontSize={{ base: "md", md: "lg" }}>{item.name}</Text>
-      <IconButton
-        aria-label="삭제"
-        variant="danger"
-        icon={<BsX />}
-        fontSize="1.5rem"
-        size="xs"
-        onClick={() => deleteOnClick(item.id)}
-      />
+      <Tooltip hasArrow label="삭제" fontSize="sm" placement="top">
+        <IconButton
+          aria-label="삭제"
+          variant="danger"
+          icon={<BsX />}
+          fontSize="1.5rem"
+          size="xs"
+          onClick={() => deleteOnClick(item.id)}
+        />
+      </Tooltip>
     </Flex>
   );
 };

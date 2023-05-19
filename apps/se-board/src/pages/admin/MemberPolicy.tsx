@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 
-import { PageHeaderTitle, SignUpPolicy } from "@/components/admin";
+import { PageHeaderTitle } from "@/components/admin";
+import { SignUpPolicy } from "@/components/admin/signUp/Index";
 
 export const MemberPolicy = () => {
   return (
