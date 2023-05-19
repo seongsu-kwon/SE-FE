@@ -10,18 +10,13 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { BsPencilFill } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 
 import NoticeIcon from "@/assets/images/notice_icon.png";
 import { MobilePostPageBottonMenu } from "@/components";
+import { useNavigatePage } from "@/hooks";
 import { useMenu } from "@/hooks/useMenu";
+import { usePostSearchParams } from "@/hooks/usePostSearchParams";
 import { useFetchPostList } from "@/react-query/hooks/usePost";
-import {
-  pinedPostListState,
-  postListState,
-  postPaginationState,
-} from "@/store/post";
 
 import { CategoryNavigation } from "./CategoryNavigation";
 import { PostList } from "./PostList";
@@ -29,20 +24,17 @@ import { PostSearchForm } from "./PostSearchForm";
 import { PostTable } from "./PostTable";
 
 export const BoardPage = () => {
-  const { currentPage } = useRecoilValue(postPaginationState);
-  const postList = useRecoilValue(postListState);
-  const pinedPostList = useRecoilValue(pinedPostListState);
+  const { goToWritePage } = useNavigatePage();
+
   const { getCurrentMenu, getCurrentMenuId } = useMenu();
-
-  const { totalItems, isLoading, onChangePage } = useFetchPostList({
+  const { page, searchOption, query } = usePostSearchParams();
+  const { postList, totalItems, isLoading, onChangePage } = useFetchPostList({
     categoryId: getCurrentMenuId()!,
+    page,
     perPage: 40,
+    searchOption,
+    query,
   });
-
-  const navigate = useNavigate();
-  const goWritePage = () => {
-    navigate("write");
-  };
 
   return (
     <>
@@ -82,7 +74,7 @@ export const BoardPage = () => {
           >
             <CategoryNavigation categoryList={getCurrentMenu()?.subMenu!} />
             <Button
-              onClick={goWritePage}
+              onClick={goToWritePage}
               variant="primary"
               leftIcon={<Icon as={BsPencilFill} />}
             >
@@ -107,11 +99,11 @@ export const BoardPage = () => {
             </Flex>
           ) : (
             <PostTable
-              data={[...pinedPostList, ...postList]}
+              data={postList}
               totalItems={totalItems}
               perPage={40}
               onChange={onChangePage}
-              page={currentPage}
+              page={page}
             />
           )}
         </Stack>
@@ -140,11 +132,11 @@ export const BoardPage = () => {
           </Flex>
         ) : (
           <PostList
-            data={[...pinedPostList, ...postList]}
+            data={postList}
             totalItems={totalItems}
             perPage={40}
             onChange={onChangePage}
-            page={currentPage}
+            page={page}
           />
         )}
         <MobilePostPageBottonMenu categoryList={getCurrentMenu()?.subMenu!} />

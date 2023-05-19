@@ -65,4 +65,12 @@ declare module "@types" {
     page?: number;
     perPage?: number;
   }
+
+  interface SearchPostParams {
+    categoryId: number;
+    searchOption: string;
+    query: string;
+    page?: number;
+    perPage?: number;
+  }
 }

@@ -5,5 +5,6 @@ export const useNavigatePage = () => {
   return {
     goToLoginPage: () => navigate("/login"),
     goToMainPage: () => navigate("/"),
+    goToWritePage: () => navigate("write"),
   };
 };
