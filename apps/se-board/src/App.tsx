@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { MainLayout } from "@/components/layouts";
+import { AdminLayout, MainLayout } from "@/components/layouts";
 
 import { getStoredRefreshToken } from "./api/storage";
 import {
   LoginPage,
+  NoticeWrite,
   OAuthSignupPage,
+  PostPage,
   SignupCompletePage,
   SignupPage,
 } from "./pages";
@@ -38,7 +40,15 @@ const MenuRouter = () => {
         });
         list.push({
           path: `${menu.urlId}/write`,
-          element: <div>게시물작성컴포넌트</div>,
+          element: <NoticeWrite />,
+        });
+        list.push({
+          path: `${menu.urlId}/:postId`,
+          element: <PostPage />,
+        });
+        list.push({
+          path: `${menu.urlId}/:postId/modify`,
+          element: <NoticeWrite />,
         });
       } else if (menu.type === "MENU") {
         menu.subMenu
@@ -50,7 +60,15 @@ const MenuRouter = () => {
             });
             list.push({
               path: `${subMenu.urlId}/write`,
-              element: <div>게시물작성컴포넌트</div>,
+              element: <NoticeWrite />,
+            });
+            list.push({
+              path: `${subMenu.urlId}/:postId`,
+              element: <PostPage />,
+            });
+            list.push({
+              path: `${subMenu.urlId}/:postId/modify`,
+              element: <NoticeWrite />,
             });
           });
       }
@@ -70,6 +88,7 @@ const MenuRouter = () => {
         },
       ],
     },
+    { path: "admin", element: <AdminLayout />, children: [] },
     {
       children: [
         {

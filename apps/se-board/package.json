@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",
+    "@ckeditor/ckeditor5-react": "^6.0.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fontsource/noto-sans-kr": "^4.5.12",
@@ -61,7 +62,6 @@
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.3.0",
-    "@ckeditor/ckeditor5-react": "^6.0.0",
     "@craco/craco": "^7.1.0",
     "@types/dompurify": "^3.0.0",
     "dayjs": "^1.11.7",

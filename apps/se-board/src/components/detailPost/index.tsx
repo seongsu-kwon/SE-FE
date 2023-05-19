@@ -4,3 +4,4 @@ export * from "./Bookmark";
 export * from "./Content";
 export * from "./Header";
 export * from "./MoreButton";
+export * from "./SkeletonDetailPost";

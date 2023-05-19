@@ -25,9 +25,11 @@ import {
 import { Menu } from "@types";
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
 import { useNavigatePage } from "@/hooks";
 import { useLogout } from "@/react-query/hooks/auth";
+import { mobileHeaderState } from "@/store/mobileHeaderState";
 import { user } from "@/store/user";
 
 import { Logo } from "./Logo";
@@ -174,10 +176,12 @@ const DrawerNavigation = ({
 };
 
 export const HeaderNavigation = () => {
+  const open = useRecoilValue(mobileHeaderState);
+
   const { goToLoginPage } = useNavigatePage();
   const { refetch: logout } = useLogout();
   return (
-    <>
+    <Box display={open ? "block" : "none"}>
       <Flex
         align="center"
         justify="space-between"
@@ -220,7 +224,7 @@ export const HeaderNavigation = () => {
           ))}
         </Flex>
       </Center>
-    </>
+    </Box>
   );
 };
 

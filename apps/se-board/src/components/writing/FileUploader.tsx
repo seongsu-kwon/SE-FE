@@ -6,6 +6,7 @@ import {
   FormLabel,
   Icon,
   Input,
+  Link,
   ListItem,
   Text,
   UnorderedList,
@@ -16,20 +17,19 @@ import { BsPaperclip } from "react-icons/bs";
 import { useFileInput } from "@/hooks";
 import { openColors } from "@/styles";
 
-export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
+export const DesktopFileUploader = ({
+  isModified,
+  beforeFiles,
+}: FileUploaderProps) => {
   const { files, handleDrop, handleDragOver, handleFileInput, handleRemove } =
-    useFileInput(onFileDrop);
-
-  const onClick = () => {
-    console.log(files);
-  };
+    useFileInput(isModified, beforeFiles);
 
   return (
     <Box
       margin="0 auto"
       maxWidth="full"
       minH="64px"
-      backgroundColor={openColors.gray[0]}
+      backgroundColor="gray.0"
       borderBottom={`1px solid ${openColors.gray[3]}`}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
@@ -80,14 +80,19 @@ export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
                 추가된 파일
               </Text>
               <UnorderedList ml="15px">
-                {files.map((file, index) => (
-                  <ListItem key={index} ml="20px">
-                    {file.name}
+                {files.map((file) => (
+                  <ListItem key={file.fileMetaDataId} ml="20px">
+                    <Link
+                      href={`${process.env.REACT_APP_API_ENDPOINT}${file.url}`}
+                      download={file.originalFileName}
+                    >
+                      {file.originalFileName}
+                    </Link>
                     <Button
                       variant="danger"
                       size="xs"
                       ml="3px"
-                      onClick={() => handleRemove(index)}
+                      onClick={() => handleRemove(file.fileMetaDataId)}
                     >
                       삭제
                     </Button>
@@ -102,8 +107,14 @@ export const DesktopFileUploader = ({ onFileDrop }: FileUploaderProps) => {
   );
 };
 
-export const MobileFileUploader = ({ onFileDrop }: FileUploaderProps) => {
-  const { files, handleFileInput, handleRemove } = useFileInput(onFileDrop);
+export const MobileFileUploader = ({
+  isModified,
+  beforeFiles,
+}: FileUploaderProps) => {
+  const { files, handleFileInput, handleRemove } = useFileInput(
+    isModified,
+    beforeFiles
+  );
 
   return (
     <FormControl borderY={`1px solid ${openColors.gray[3]}`}>
@@ -140,14 +151,19 @@ export const MobileFileUploader = ({ onFileDrop }: FileUploaderProps) => {
               추가된 파일
             </Text>
             <UnorderedList>
-              {files.map((file, index) => (
-                <ListItem key={index} display="flex" my="5px">
-                  <Text w="75%">{file.name}</Text>
+              {files.map((file) => (
+                <ListItem key={file.fileMetaDataId} display="flex" my="5px">
+                  <Link
+                    href={`${process.env.REACT_APP_API_ENDPOINT}${file.url}`}
+                    download={file.originalFileName}
+                  >
+                    {file.originalFileName}
+                  </Link>
                   <Button
                     variant="danger"
                     size="xs"
                     my="auto"
-                    onClick={() => handleRemove(index)}
+                    onClick={() => handleRemove(file.fileMetaDataId)}
                   >
                     삭제
                   </Button>

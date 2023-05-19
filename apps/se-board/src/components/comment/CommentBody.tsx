@@ -1,21 +1,24 @@
 import { Box } from "@chakra-ui/react";
-import { subComment, subCommentInfoType } from "@types";
+import { SubComment, SubCommentInfoType } from "@types";
 import React, { useRef, useState } from "react";
 
 import { CommentContent, SubCommentInput } from "@/components/comment";
 import { openColors } from "@/styles";
+import { getTagName } from "@/utils/commentUtils";
 
 interface CommentBodyProps {
   commentId: number;
   author: {
-    userId: string | null; // loginId로 수정 필요
+    loginId: string | null; // loginId로 수정 필요
     name: string;
   };
   createdAt: string;
   modifiedAt: string;
   contents: string;
   isEditable: boolean;
-  subComments?: subComment[];
+  isActive: boolean;
+  isReadOnlyAuthor: boolean;
+  subComments?: SubComment[];
 }
 
 export const CommentBody = ({
@@ -25,11 +28,13 @@ export const CommentBody = ({
   modifiedAt,
   contents,
   isEditable,
+  isActive,
+  isReadOnlyAuthor,
   subComments,
 }: CommentBodyProps) => {
   const [isWriteSubComment, setIsWriteSubComment] = useState(false);
   const subCommentInputRef = useRef<HTMLTextAreaElement>(null);
-  const [subCommentInfo, setSubCommentInfo] = useState<subCommentInfoType>({
+  const [subCommentInfo, setSubCommentInfo] = useState<SubCommentInfoType>({
     superCommentId: null,
     tagCommentId: null,
     tagCommentAuthorName: null,
@@ -39,7 +44,6 @@ export const CommentBody = ({
     <Box
       borderTop={{ md: `1px solid ${openColors.gray[3]}` }}
       py={{ base: "8px", md: "0" }}
-      bgColor={openColors.gray[1]}
     >
       <Box w="100%" bg={openColors.white} p="16px">
         <CommentContent
@@ -49,20 +53,21 @@ export const CommentBody = ({
           contents={contents}
           createdAt={createdAt}
           isEditable={isEditable}
+          isActive={isActive}
+          isReadOnlyAuthor={isReadOnlyAuthor}
           setIsWriteSubComment={setIsWriteSubComment}
           setSubCommentInfo={setSubCommentInfo}
         />
       </Box>
-      {subComments?.map((subComment: subComment) => {
-        const tagName =
-          subComment.tag === commentId
-            ? author.name
-            : subComments.find(
-                (comment) => comment.comment_id === subComment.tag
-              )?.author.name;
+      {subComments?.map((subComment: SubComment) => {
+        const tagName = getTagName(
+          subComment,
+          { authorName: author.name, commentId: commentId },
+          subComments
+        );
         return (
           <Box
-            key={subComment.comment_id}
+            key={subComment.commentId}
             w="100%"
             p={{ base: "16px 16px 16px 36px", md: "16px 16px 16px 64px" }}
             borderTop={`1px solid ${openColors.gray[3]}`}
@@ -70,15 +75,17 @@ export const CommentBody = ({
           >
             <CommentContent
               superCommentId={commentId}
-              commentId={subComment.comment_id}
+              commentId={subComment.commentId}
               author={{
-                userId: subComment.author.loginId, // loginId로 수정 필요
+                loginId: subComment.author.loginId, // loginId로 수정 필요
                 name: subComment.author.name,
               }}
               contents={subComment.contents}
-              createdAt={subComment.created_at}
+              createdAt={subComment.createdAt}
               isEditable={subComment.isEditable}
+              isActive={subComment.isActive}
               tag={tagName}
+              isReadOnlyAuthor={subComment.isReadOnlyAuthor}
               setIsWriteSubComment={setIsWriteSubComment}
               setSubCommentInfo={setSubCommentInfo}
             />
@@ -94,10 +101,13 @@ export const CommentBody = ({
         >
           <SubCommentInput
             superCommentId={subCommentInfo.superCommentId}
+            commentId={undefined}
             tagCommentId={subCommentInfo.tagCommentId}
             subCommentInputRef={subCommentInputRef}
             contents=""
             setIsWriteSubComment={setIsWriteSubComment}
+            isWritingReply={true} // 답글 작성 시 true
+            isReply={true}
           />
         </Box>
       )}

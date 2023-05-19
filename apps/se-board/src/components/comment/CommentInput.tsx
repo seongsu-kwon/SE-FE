@@ -7,32 +7,44 @@ import {
   Textarea,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { usePostCommentMutation } from "@/react-query/hooks";
+import { useWriteCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
-
-interface CommentInputProps {}
+import { errorHandle } from "@/utils/errorHandling";
 
 export const CommentInput = () => {
   const { postId } = useParams();
   const [value, setValue] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
+  const { writeCommentTrue } = useWriteCommentState();
 
-  const postCommentMutation = usePostCommentMutation();
+  const postCommentMutation = usePostCommentMutation(postId);
 
   const handleSubmit = () => {
-    postCommentMutation.mutate({
-      postId: Number(postId),
-      contents: value,
-      isAnonymous,
-    });
+    postCommentMutation.mutate(
+      {
+        postId: Number(postId),
+        contents: value,
+        isAnonymous: isAnonymous,
+        isReadOnlyAuthor: isSecret,
+      },
+      {
+        onSuccess: () => {
+          setIsAnonymous(false);
+          setValue("");
+          setIsSecret(false);
 
-    setIsAnonymous(false);
-    setValue("");
-    setIsSecret(false);
+          writeCommentTrue();
+        },
+        onError: (error) => {
+          errorHandle(error);
+        },
+      }
+    );
   };
 
   return (
@@ -75,7 +87,9 @@ export const CommentInput = () => {
         float="right"
       >
         <Button
-          variant="primary"
+          variant={value !== "" ? "primary" : "primary-inActive"}
+          isLoading={postCommentMutation.isLoading}
+          loadingText="등록중"
           size={{ base: "sm", md: "md" }}
           onClick={handleSubmit}
         >
@@ -103,12 +117,13 @@ export const CommentInput = () => {
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
           >
-            <FormLabel htmlFor="anonymous" mb="0" mr="4px" minW="36px">
+            <FormLabel htmlFor="anonymous" mb="0" mr="0" minW="36px">
               익명
             </FormLabel>
             <Switch
               id="anonymous"
               mt="3px"
+              isChecked={isAnonymous}
               onChange={() => {
                 setIsAnonymous(!isAnonymous);
               }}
@@ -121,12 +136,13 @@ export const CommentInput = () => {
             closeDelay={1000}
           >
             <Box display="flex" alignItems="center">
-              <FormLabel htmlFor="secret" mb="0" mr="4px" minW="64px">
+              <FormLabel htmlFor="secret" mb="0" mr="2px" minW="64px">
                 비밀댓글
               </FormLabel>
               <Switch
                 id="secret"
                 mt="3px"
+                isChecked={isSecret}
                 onChange={() => {
                   setIsSecret(!isSecret);
                 }}
