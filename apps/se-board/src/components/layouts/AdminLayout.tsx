@@ -14,6 +14,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Hide,
   Icon,
   IconButton,
   Link,
@@ -56,25 +57,25 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 interface SubCategoryItemsProps {
-  [key: string]: { name: string }[];
+  [key: string]: { name: string; url: string }[];
 }
 
 const subCategoryItems: SubCategoryItemsProps[] = [
   {
-    menu: [{ name: "메뉴1" }],
+    menu: [{ name: "메뉴1", url: "#" }],
   },
   {
     person: [
-      { name: "회원 목록" },
-      { name: "회원 정책" },
-      { name: "회원 그룹" },
+      { name: "회원 목록", url: "#" },
+      { name: "회원 정책", url: "memberPolicy" },
+      { name: "회원 그룹", url: "#" },
     ],
   },
   {
-    content: [{ name: "menu" }],
+    content: [{ name: "menu", url: "#" }],
   },
   {
-    setting: [{ name: "menu" }],
+    setting: [{ name: "menu", url: "#" }],
   },
 ];
 
@@ -90,11 +91,12 @@ export const AdminLayout = () => {
       <Show above="md">
         <DesktopAdminLayout onChange={onChange} />
       </Show>
-      <Show below="md">
+      <Hide above="md">
         <MobileAdminLayout />
-      </Show>
+      </Hide>
       <Box
         ml={{ md: "280px" }}
+        pt={{ base: "56px", md: "0" }}
         h="full"
         textAlign="center"
         px={{ base: "16px", md: isFullWidth ? "12px" : "120px" }}
@@ -269,7 +271,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
               {subCategoryItems.map((subCategoryItem) =>
                 subCategoryItem[item.key]?.map((subItem) => (
                   <Link
-                    href="#"
+                    href={`admin/${subItem.url}`}
                     w="full"
                     fontSize="1rem"
                     _hover={{ textDecoration: "none" }}
