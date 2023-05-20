@@ -19,7 +19,7 @@ export const CategoryNavigation = ({
     }
   }, [searchPrams]);
   return (
-    <HStack>
+    <HStack flexWrap="wrap">
       <Button
         onClick={() => {
           searchPrams.delete("category");
@@ -31,7 +31,6 @@ export const CategoryNavigation = ({
       >
         전체
       </Button>
-
       {categoryList.map((category) => (
         <Button
           key={category.menuId}

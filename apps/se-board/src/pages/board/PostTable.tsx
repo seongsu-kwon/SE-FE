@@ -2,37 +2,27 @@ import { Flex } from "@chakra-ui/react";
 import { PostListItem } from "@types";
 
 import { Pagination, PostTable as Table } from "@/components";
-import { usePagination } from "@/hooks";
 
 export const PostTable = ({
   data,
   totalItems = 0,
-  perPage = 25,
+  perPage,
   onChange,
   page,
 }: {
   data?: PostListItem[];
   totalItems?: number;
-  perPage?: number;
+  perPage: number;
   page?: number;
-  onChange?: (page: number) => void;
+  onChange: (page: number) => void;
 }) => {
-  const { currentPage, totalPages, onChangePage } = usePagination(
-    totalItems,
-    perPage,
-    {
-      onChange,
-      current: page,
-    }
-  );
-
   return (
     <Flex direction="column" alignItems="center" gap="2rem" w="full">
       <Table data={data || []} />
       <Pagination
-        currentPage={currentPage}
-        totalPage={totalPages}
-        onChangePage={onChangePage}
+        currentPage={page || 0}
+        totalPage={Math.ceil(totalItems / perPage) || 1}
+        onChangePage={onChange}
       />
     </Flex>
   );

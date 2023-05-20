@@ -6,9 +6,6 @@ import {
   BsChevronLeft,
   BsChevronRight,
 } from "react-icons/bs";
-import { useRecoilValue } from "recoil";
-
-import { postPaginationState } from "@/store/post";
 
 const getPages = (
   currentGroup: number,
@@ -36,11 +33,11 @@ interface PaignationProps {
 }
 
 export const Pagination = ({
+  currentPage,
   totalPage,
   viewPage = 10,
   onChangePage,
 }: PaignationProps) => {
-  const { currentPage } = useRecoilValue(postPaginationState);
   const [pageGroup, setPageGroup] = useState<{
     currentGroup: number;
     lastGroup: number;

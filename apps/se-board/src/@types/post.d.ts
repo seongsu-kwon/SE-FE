@@ -72,6 +72,14 @@ declare module "@types" {
     perPage?: number;
   }
 
+  interface SearchPostParams {
+    categoryId: number;
+    searchOption: string;
+    query: string;
+    page?: number;
+    perPage?: number;
+  }
+  
   interface Attachment {
     fileMetaDataId: number;
     originalFileName: string;
