@@ -21,7 +21,7 @@ export const requestEmailAuthCode = async (email: string) => {
 
 export const checkAuthCode = async (data: checkAuthCodeDTO) => {
   return _axios({
-    url: "email/confirm",
+    url: "email/auth/confirm",
     method: HTTP_METHODS.POST,
     data,
   });
