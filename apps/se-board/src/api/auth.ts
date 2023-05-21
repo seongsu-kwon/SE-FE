@@ -88,13 +88,14 @@ export const fetchOAUthUserBasicInfo = async (id: string) => {
   });
 };
 
-export const logout = async () => {
+export const logout = async (refreshToken: string) => {
   return _axios<{ requiredRedirect: boolean; url: string }>({
     url: "logoutProc",
-    method: HTTP_METHODS.GET,
+    method: HTTP_METHODS.POST,
     headers: {
       ...getJWTHeader(),
     },
+    data: { refreshToken },
   });
 };
 

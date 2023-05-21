@@ -65,7 +65,7 @@ export const DesktopHeaderNavigation = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
+  const { mutate: logout } = useLogout();
 
   return (
     <Center
@@ -138,7 +138,7 @@ const DrawerNavigation = ({
   ...props
 }: DrawerNavigationProps) => {
   const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
+  const { mutate: logout } = useLogout();
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
@@ -149,7 +149,7 @@ const DrawerNavigation = ({
         <DrawerHeader borderBottomWidth="1px">
           <Flex alignItems="center" gap="1rem">
             <Avatar />
-            <Text>홍길동</Text>
+            <Text>{user.getNickname()}</Text>
           </Flex>
         </DrawerHeader>
         <DrawerBody>
@@ -179,7 +179,7 @@ export const HeaderNavigation = () => {
   const open = useRecoilValue(mobileHeaderState);
 
   const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
+  const { mutate: logout } = useLogout();
   return (
     <Box display={open ? "block" : "none"}>
       <Flex
