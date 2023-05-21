@@ -22,6 +22,7 @@ import {
   requestEmailAuthCode,
   signup,
 } from "@/api/auth";
+import { fetchUserSimpleInfo } from "@/api/myPage";
 import {
   getStoredRefreshToken,
   isMaintainLogin,
@@ -92,6 +93,14 @@ export const useLogin = (maintainLogin: boolean = false) => {
         setStoredRefreshToken(res.data.refreshToken);
       }
       user.setAccessToken(removeBearerToken(res.data.accessToken));
+
+      fetchUserSimpleInfo().then((res) => {
+        const { nickname, email, roles } = res.data;
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setRoles(roles);
+      });
+
       goToMainPage();
     },
   });
@@ -102,15 +111,22 @@ export const useKakaoLogin = async (id: string) => {
   return loginWithKakao(id).then((res) => {
     setStoredRefreshToken(res.data.refreshToken);
     user.setAccessToken(removeBearerToken(res.data.accessToken));
+
+    fetchUserSimpleInfo().then((res) => {
+      const { nickname, email, roles } = res.data;
+      user.setNickname(nickname);
+      user.setEmail(email);
+      user.setRoles(roles);
+    });
+
     goToMainPage();
   });
 };
 
 export const useLogout = () => {
   const { goToLoginPage } = useNavigatePage();
-  return useQuery(["logout"], logout, {
-    refetchOnWindowFocus: false,
-    enabled: false,
+  const refreshToken = getStoredRefreshToken();
+  return useMutation(["logout"], () => logout(refreshToken!), {
     onSuccess: (res) => {
       localStorage.removeItem("refresh_token");
       sessionStorage.removeItem("refresh_token");
@@ -132,6 +148,13 @@ export const useReissueToken = () => {
       } else {
         setStoredRefreshToken(res.data.refreshToken);
       }
+
+      fetchUserSimpleInfo().then((res) => {
+        const { nickname, email, roles } = res.data;
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setRoles(roles);
+      });
     },
     onError: () => {
       localStorage.removeItem("refresh_token");
