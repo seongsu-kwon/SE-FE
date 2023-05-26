@@ -13,7 +13,7 @@ import {
   SignupCompletePage,
   SignupPage,
 } from "./pages";
-import { MemberPolicy, SEMenuEdit } from "./pages/admin";
+import { AdminMenuEdit, MemberPolicy, SEMenuEdit } from "./pages/admin";
 import { BoardPage } from "./pages/board/BoardPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import { useReissueToken } from "./react-query/hooks/auth";
@@ -96,6 +96,10 @@ const MenuRouter = () => {
         {
           path: "SEMenu",
           element: <SEMenuEdit />,
+        },
+        {
+          path: "adminMenu",
+          element: <AdminMenuEdit />,
         },
         {
           path: "memberPolicy",

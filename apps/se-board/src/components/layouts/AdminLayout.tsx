@@ -64,7 +64,7 @@ const subCategoryItems: SubCategoryItemsProps[] = [
   {
     menu: [
       { name: "SE 메뉴 편집", url: "/admin/SEMenu" },
-      { name: "관리자 메뉴 편집", url: "admin/adminMenu" },
+      { name: "관리자 메뉴 편집", url: "/admin/adminMenu" },
     ],
   },
   {
