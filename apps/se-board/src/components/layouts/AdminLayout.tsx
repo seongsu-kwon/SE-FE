@@ -62,12 +62,15 @@ interface SubCategoryItemsProps {
 
 const subCategoryItems: SubCategoryItemsProps[] = [
   {
-    menu: [{ name: "메뉴1", url: "#" }],
+    menu: [
+      { name: "SE 메뉴 편집", url: "/admin/SEMenu" },
+      { name: "관리자 메뉴 편집", url: "admin/adminMenu" },
+    ],
   },
   {
     person: [
       { name: "회원 목록", url: "#" },
-      { name: "회원 정책", url: "memberPolicy" },
+      { name: "회원 정책", url: "/admin/memberPolicy" },
       { name: "회원 그룹", url: "#" },
     ],
   },
@@ -121,7 +124,7 @@ const MobileAdminLayout = () => {
         justifyContent="space-between"
         alignItems="center"
         position="fixed"
-        zIndex="100000"
+        zIndex="1"
       >
         <Button px="8px" bgColor="white" onClick={onOpen}>
           <BsList fontSize="32px" />
@@ -273,7 +276,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
               {subCategoryItems.map((subCategoryItem) =>
                 subCategoryItem[item.key]?.map((subItem) => (
                   <Link
-                    href={`admin/${subItem.url}`}
+                    href={`${subItem.url}`}
                     w="full"
                     fontSize="1rem"
                     _hover={{ textDecoration: "none" }}
