@@ -69,16 +69,24 @@ const subCategoryItems: SubCategoryItemsProps[] = [
   },
   {
     person: [
-      { name: "회원 목록", url: "#" },
+      { name: "회원 목록", url: "/admin/memberList" },
       { name: "회원 정책", url: "/admin/memberPolicy" },
-      { name: "회원 그룹", url: "#" },
+      { name: "회원 그룹", url: "/admin/memberGroup" },
     ],
   },
   {
-    content: [{ name: "menu", url: "#" }],
+    content: [
+      { name: "게시글 관리", url: "/admin/postManage" },
+      { name: "댓글 관리", url: "/admin/commentManage" },
+      { name: "첨부파일 관리", url: "/admin/attachmentManage" },
+      { name: "휴지통", url: "/admin/trash" },
+    ],
   },
   {
-    setting: [{ name: "menu", url: "#" }],
+    setting: [
+      { name: "일반", url: "/admin/general" },
+      { name: "메인 페이지 설정", url: "/admin/mainPageSetting" },
+    ],
   },
 ];
 

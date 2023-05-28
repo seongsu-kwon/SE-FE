@@ -76,7 +76,7 @@ export const AdminMenuEdit = () => {
               mr="4px"
               w={{ base: "5.75rem", md: "6.5rem" }}
             >
-              게시글 목록
+              게시글 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
@@ -86,7 +86,7 @@ export const AdminMenuEdit = () => {
               mr="4px"
               w={{ base: "5.75rem", md: "6.5rem" }}
             >
-              댓글 목록
+              댓글 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
@@ -96,7 +96,7 @@ export const AdminMenuEdit = () => {
               mr="4px"
               w={{ base: "5.75rem", md: "6.5rem" }}
             >
-              첨부파일 목록
+              첨부파일 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
@@ -106,7 +106,7 @@ export const AdminMenuEdit = () => {
               mr="4px"
               w={{ base: "5.75rem", md: "6.5rem" }}
             >
-              휴지통 목록
+              휴지통
             </Heading>
             <AuthorityMenu />
           </Flex>
