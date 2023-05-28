@@ -123,8 +123,14 @@ export const AdminMenuEdit = () => {
         <Heading fontSize="xl">설정 권한 설정</Heading>
         <Box ml="2rem">
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px" w={{ base: "2.75rem" }}>
+            <Heading fontSize="md" mr="4px" w={{ base: "6.75rem", md: "8rem" }}>
               일반
+            </Heading>
+            <AuthorityMenu />
+          </Flex>
+          <Flex alignItems="center" my="0.5rem">
+            <Heading fontSize="md" mr="4px" w={{ base: "6.75rem", md: "8rem" }}>
+              메인 페이지 설정
             </Heading>
             <AuthorityMenu />
           </Flex>
