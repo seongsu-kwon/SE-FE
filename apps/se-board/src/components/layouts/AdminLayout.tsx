@@ -63,7 +63,7 @@ interface SubCategoryItemsProps {
 const subCategoryItems: SubCategoryItemsProps[] = [
   {
     menu: [
-      { name: "SE 메뉴 편집", url: "/admin/SEMenu" },
+      { name: "SE 메뉴 편집", url: "/admin/seMenu" },
       { name: "관리자 메뉴 편집", url: "/admin/adminMenu" },
     ],
   },

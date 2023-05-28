@@ -13,7 +13,12 @@ import {
   SignupCompletePage,
   SignupPage,
 } from "./pages";
-import { AdminMenuEdit, MemberPolicy, SEMenuEdit } from "./pages/admin";
+import {
+  AdminMenuEdit,
+  GeneralSetting,
+  MemberPolicy,
+  SEMenuEdit,
+} from "./pages/admin";
 import { BoardPage } from "./pages/board/BoardPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import { useReissueToken } from "./react-query/hooks/auth";
@@ -94,7 +99,7 @@ const MenuRouter = () => {
       element: <AdminLayout />,
       children: [
         {
-          path: "SEMenu",
+          path: "seMenu",
           element: <SEMenuEdit />,
         },
         {
@@ -104,6 +109,10 @@ const MenuRouter = () => {
         {
           path: "memberPolicy",
           element: <MemberPolicy />,
+        },
+        {
+          path: "general",
+          element: <GeneralSetting />,
         },
       ],
     },
