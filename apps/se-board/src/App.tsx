@@ -16,6 +16,7 @@ import {
 import {
   AdminMenuEdit,
   GeneralSetting,
+  MainPageSetting,
   MemberPolicy,
   SEMenuEdit,
 } from "./pages/admin";
@@ -113,6 +114,10 @@ const MenuRouter = () => {
         {
           path: "general",
           element: <GeneralSetting />,
+        },
+        {
+          path: "mainPageSetting",
+          element: <MainPageSetting />,
         },
       ],
     },
