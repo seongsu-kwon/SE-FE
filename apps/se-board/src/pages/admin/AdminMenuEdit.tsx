@@ -22,12 +22,6 @@ export const AdminMenuEdit = () => {
             </Heading>
             <AuthorityMenu />
           </Flex>
-          <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px" w={{ base: "7rem", md: "8rem" }}>
-              관리자 메뉴 편집
-            </Heading>
-            <AuthorityMenu />
-          </Flex>
         </Box>
       </Box>
 
