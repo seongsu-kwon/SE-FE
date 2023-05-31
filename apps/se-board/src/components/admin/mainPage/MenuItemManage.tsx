@@ -96,6 +96,21 @@ export const MenuItemManage = () => {
           )}
         </Flex>
       )}
+
+      <Flex justifyContent="flex-end">
+        <Button
+          variant="primary"
+          mr="0.5rem"
+          isDisabled={menuList.find((v) => v.isChecked === true) === undefined}
+          onClick={() => {
+            setMenuList(
+              menuList.map((value) => ({ ...value, isChecked: false }))
+            );
+          }}
+        >
+          등록
+        </Button>
+      </Flex>
     </Box>
   );
 };

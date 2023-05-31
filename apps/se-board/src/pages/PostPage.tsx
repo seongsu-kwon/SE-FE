@@ -62,7 +62,7 @@ export const PostPage = () => {
       setEnabledOption(true);
     }
 
-    if (!isError) refetch();
+    // if (!isError) refetch(); // TODO: 연속 refetch 수정
 
     return mobileHeaderOpen;
   }, [data]);

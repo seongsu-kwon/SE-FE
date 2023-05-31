@@ -1,77 +1,80 @@
 import {
   Box,
   Button,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
+import { Menus } from "@types";
 import { useEffect, useState } from "react";
-import { BsChevronDown } from "react-icons/bs";
+import { BsChevronDown, BsPlusCircle } from "react-icons/bs";
 
 import { PageHeaderTitle } from "@/components/admin";
 import { MenuSetting } from "@/components/admin/menuSettings";
+import { useFetchMenuList } from "@/react-query/hooks/useMenu";
 
-const data = [
-  {
-    menuId: 1,
-    name: "공지",
-    urlId: "notice",
-    type: "BOARD",
-    subMenu: [
-      {
-        menuId: 2,
-        name: "일반",
-        urlId: "djggjgjjd",
-        type: "CATEGORY",
-        subMenu: [],
-      },
-      {
-        menuId: 3,
-        name: "학사",
-        urlId: "bjfjffdgd",
-        type: "CATEGORY",
-        subMenu: [],
-      },
-    ],
-  },
-  {
-    menuId: 4,
-    name: "채용",
-    externalUrl: "www.kumoh.ac.kr",
-    type: "EXTERNAL",
-    subMenu: [],
-  },
-  {
-    menuId: 5,
-    name: "프로젝트실 예약",
-    type: "MENU",
-    subMenu: [
-      {
-        menuId: 6,
-        name: "프로젝트실 예약 공지",
-        urlId: "booking-notice",
-        type: "BOARD",
-        subMenu: [
-          {
-            menuId: 7,
-            name: "일반",
-            urlId: "djggjgjjd",
-            type: "CATEGORY",
-            subMenu: [],
-          },
-        ],
-      },
-      {
-        menuId: 8,
-        name: "프로젝실 바로가기",
-        externalUrl: "www.kiosek.kr",
-        type: "EXTERNAL",
-        subMenu: [],
-      },
-    ],
-  },
-];
+// const data = [
+//   {
+//     menuId: 1,
+//     name: "공지",
+//     urlId: "notice",
+//     type: "BOARD",
+//     subMenu: [
+//       {
+//         menuId: 2,
+//         name: "일반",
+//         urlId: "djggjgjjd",
+//         type: "CATEGORY",
+//         subMenu: [],
+//       },
+//       {
+//         menuId: 3,
+//         name: "학사",
+//         urlId: "bjfjffdgd",
+//         type: "CATEGORY",
+//         subMenu: [],
+//       },
+//     ],
+//   },
+//   {
+//     menuId: 4,
+//     name: "채용",
+//     externalUrl: "www.kumoh.ac.kr",
+//     type: "EXTERNAL",
+//     subMenu: [],
+//   },
+//   {
+//     menuId: 5,
+//     name: "프로젝트실 예약",
+//     type: "MENU",
+//     subMenu: [
+//       {
+//         menuId: 6,
+//         name: "프로젝트실 예약 공지",
+//         urlId: "booking-notice",
+//         type: "BOARD",
+//         subMenu: [
+//           {
+//             menuId: 7,
+//             name: "일반",
+//             urlId: "djggjgjjd",
+//             type: "CATEGORY",
+//             subMenu: [],
+//           },
+//         ],
+//       },
+//       {
+//         menuId: 8,
+//         name: "프로젝실 바로가기",
+//         externalUrl: "www.kiosek.kr",
+//         type: "EXTERNAL",
+//         subMenu: [],
+//       },
+//     ],
+//   },
+// ];
 
 interface MenuInfo {
   menuId: number;
@@ -88,14 +91,21 @@ interface SubMenu {
 }
 
 export const SEMenuEdit = () => {
+  const { data } = useFetchMenuList();
+
+  const [menuList, setMenuList] = useState<Menus>([]);
   const [menuInfo, setMenuInfo] = useState<MenuInfo>({
-    menuId: 0,
+    menuId: -1,
     menuType: "",
   });
   const [subMenu, setSubMenu] = useState<SubMenu[]>([]);
 
   useEffect(() => {
-    setMenuInfo({ menuId: data[0].menuId, menuType: data[0].type });
+    if (!data) return;
+
+    setMenuList(data.data);
+
+    setMenuInfo({ menuId: data.data[0].menuId, menuType: data.data[0].type });
   }, [data]);
 
   return (
@@ -111,7 +121,7 @@ export const SEMenuEdit = () => {
           설정 메뉴
         </MenuButton>
         <MenuList paddingBottom="0">
-          {data.map((menu) => (
+          {menuList.map((menu) => (
             <MenuItem
               id={menu.menuId + menu.type}
               key={menu.menuId}
@@ -134,11 +144,13 @@ export const SEMenuEdit = () => {
           ))}
           <MenuItem
             id="add-menu"
-            borderTop="2px solid"
-            borderColor="gray.7"
+            borderTop="1px solid"
+            borderColor="gray.3"
+            bgColor="white"
             _hover={{ bg: "gray.1" }}
             onClick={() => setMenuInfo({ menuId: -1, menuType: "ADD" })}
           >
+            <Icon as={BsPlusCircle} mr="4px" />
             메뉴 추가
           </MenuItem>
         </MenuList>

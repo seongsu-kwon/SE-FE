@@ -1,5 +1,6 @@
 declare module "@types" {
   type Menu = MenuMenu & BoardMenu & ExternalMenu & CategoryMenu;
+  type Menus = Menu[];
   type MenuType = "MENU" | "BOARD" | "EXTERNAL" | "CATEGORY";
 
   interface MenuMenu {
