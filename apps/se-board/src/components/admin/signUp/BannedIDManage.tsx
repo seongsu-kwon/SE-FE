@@ -1,31 +1,54 @@
 import { Box, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { BannedId } from "@types";
+import React, { useEffect, useState } from "react";
+
+import {
+  useDeleteBannedIdMutation,
+  useGetBannedIdsQuery,
+  usePostBannedIdMutation,
+} from "@/react-query/hooks";
+import { errorHandle } from "@/utils/errorHandling";
 
 import { ItemInput, ListContainer } from "..";
 
-const data = {
-  sise: 7,
-  list: [
-    { id: 1, name: "id" },
-    { id: 2, name: "김민종2" },
-    { id: 3, name: "김민종3" },
-    { id: 4, name: "김민종4" },
-    { id: 5, name: "김민종5" },
-    { id: 6, name: "김민종6" },
-    { id: 7, name: "김민종7" },
-  ],
-};
-
 export const BannedIDManage = () => {
+  const { data, refetch } = useGetBannedIdsQuery();
+  const { mutate: postMutate, isLoading: postIsLoading } =
+    usePostBannedIdMutation();
+  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
+    useDeleteBannedIdMutation();
+
+  const [bannedIds, setBannedIds] = useState<BannedId[]>([]);
   const [identification, setIdentification] = useState<string>("");
 
-  const deleteOnClick = (id: number) => {
-    // TODO: delete Request
+  useEffect(() => {
+    if (!data) return;
+
+    setBannedIds(data.bannedIds);
+  }, [data]);
+
+  const deleteOnClick = (id: string) => {
+    deleteMutate(id, {
+      onSuccess: () => {
+        refetch();
+      },
+
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const addOnClick = () => {
-    // TODO: add Request
-    setIdentification("");
+    postMutate(identification, {
+      onSuccess: () => {
+        setIdentification("");
+        refetch();
+      },
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,15 +58,20 @@ export const BannedIDManage = () => {
   return (
     <Box my="1rem">
       <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
-        금지 아이디 관리({data.sise}개)
+        금지 아이디 관리({bannedIds.length}개)
       </Text>
-      <ListContainer data={data.list} deleteOnClick={deleteOnClick} />
+      <ListContainer
+        data={bannedIds}
+        deleteOnClick={deleteOnClick}
+        isLoading={deleteIsLoading}
+      />
       <ItemInput
         label="금지 아이디 추가"
         placeholder="금지 아이디 입력"
         value={identification}
         onChange={onChange}
         addOnClick={addOnClick}
+        isLoading={postIsLoading}
       />
     </Box>
   );

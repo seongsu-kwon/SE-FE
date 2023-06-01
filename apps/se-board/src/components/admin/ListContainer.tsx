@@ -1,13 +1,19 @@
 import { Box } from "@chakra-ui/react";
+import { BannedId, BannedNickname } from "@types";
 
 import { ListItem } from ".";
 
 interface ListContainerProps {
-  data: { id: number; name: string }[];
-  deleteOnClick: (id: number) => void;
+  data: BannedNickname[] | BannedId[] | { id: number; name: string }[];
+  deleteOnClick: (name: string) => void;
+  isLoading: boolean;
 }
 
-export const ListContainer = ({ data, deleteOnClick }: ListContainerProps) => {
+export const ListContainer = ({
+  data,
+  deleteOnClick,
+  isLoading,
+}: ListContainerProps) => {
   return (
     <Box
       w="full"
@@ -19,7 +25,11 @@ export const ListContainer = ({ data, deleteOnClick }: ListContainerProps) => {
       rounded={{ base: "sm", md: "lg" }}
     >
       {data.map((item) => (
-        <ListItem item={item} deleteOnClick={deleteOnClick} />
+        <ListItem
+          item={item}
+          deleteOnClick={deleteOnClick}
+          isLoading={isLoading}
+        />
       ))}
     </Box>
   );

@@ -1,32 +1,56 @@
 import { Box, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { BannedNickname } from "@types";
+import { useEffect, useState } from "react";
 import React from "react";
+
+import {
+  useDeleteBannedNicknameMutation,
+  useGetBannedNicknameQuery,
+  usePostBannedNicknameMutation,
+} from "@/react-query/hooks";
+import { errorHandle } from "@/utils/errorHandling";
 
 import { ItemInput, ListContainer } from "../";
 
-const data = {
-  sise: 7,
-  list: [
-    { id: 1, name: "admin" },
-    { id: 2, name: "admin2" },
-    { id: 3, name: "admin3" },
-    { id: 4, name: "admin4" },
-    { id: 5, name: "admin5" },
-    { id: 6, name: "김민종❤️정이수" },
-    { id: 7, name: "admin7" },
-  ],
-};
-
 export const BannedNickNameManage = () => {
+  const { data, refetch } = useGetBannedNicknameQuery();
+  const { mutate: postMutate, isLoading: postIsLoading } =
+    usePostBannedNicknameMutation();
+  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
+    useDeleteBannedNicknameMutation();
+
+  const [bannedNicknames, setBannedNicknames] = useState<BannedNickname[]>([]);
   const [nickName, setNickName] = useState<string>("");
 
-  const deleteOnClick = (id: number) => {
-    // TODO: delete Request
+  useEffect(() => {
+    if (!data) return;
+
+    setBannedNicknames(data.nicknames);
+  }, [data]);
+
+  const deleteOnClick = (name: string) => {
+    deleteMutate(name, {
+      onSuccess: () => {
+        refetch();
+      },
+
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const addOnClick = () => {
-    // TODO: add Request
-    setNickName("");
+    postMutate(nickName, {
+      onSuccess: () => {
+        setNickName("");
+        refetch();
+      },
+
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,15 +60,20 @@ export const BannedNickNameManage = () => {
   return (
     <Box my="16px">
       <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
-        금지 닉네임 관리({data.sise}개)
+        금지 닉네임 관리({bannedNicknames.length}개)
       </Text>
-      <ListContainer data={data.list} deleteOnClick={deleteOnClick} />
+      <ListContainer
+        data={bannedNicknames}
+        deleteOnClick={deleteOnClick}
+        isLoading={deleteIsLoading}
+      />
       <ItemInput
         label="금지 닉네임 추가"
         placeholder="금지 닉네임 입력"
         value={nickName}
         onChange={onChange}
         addOnClick={addOnClick}
+        isLoading={postIsLoading}
       />
     </Box>
   );

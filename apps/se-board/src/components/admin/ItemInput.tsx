@@ -7,6 +7,7 @@ interface ItemInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addOnClick: () => void;
+  isLoading: boolean;
 }
 
 export const ItemInput = ({
@@ -15,6 +16,7 @@ export const ItemInput = ({
   value,
   onChange,
   addOnClick,
+  isLoading,
 }: ItemInputProps) => {
   return (
     <FormControl display={{ md: "flex" }} alignItems="center" mt="1rem">
@@ -34,7 +36,14 @@ export const ItemInput = ({
         w={{ base: "12rem", md: "16rem" }}
         borderColor="gray.5"
       />
-      <Button variant="primary" onClick={addOnClick} size="sm" mx="0.5rem">
+      <Button
+        variant="primary"
+        onClick={addOnClick}
+        isLoading={isLoading}
+        loadingText="등록 중"
+        size="sm"
+        mx="0.5rem"
+      >
         등록
       </Button>
     </FormControl>
