@@ -12,39 +12,35 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BannedId, BannedNickname } from "@types";
+import { BannedId, BannedNickname, IpInfo } from "@types";
 import React from "react";
 import { BsX } from "react-icons/bs";
 
 interface ListItemProps {
-  item: BannedNickname | BannedId | { id: number; name: string };
+  item: BannedNickname | BannedId | IpInfo;
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }
 
-function nameValue(
-  item: BannedNickname | BannedId | { id: number; name: string }
-) {
+function nameValue(item: BannedNickname | BannedId | IpInfo) {
   if ("bannedNickname" in item) {
     return item.bannedNickname;
   } else if ("bannedId" in item) {
     return item.bannedId;
-  } else if ("name" in item) {
-    return item.name;
+  } else if ("ipAddress" in item) {
+    return item.ipAddress;
   }
 
   return "";
 }
 
-function typeValue(
-  item: BannedNickname | BannedId | { id: number; name: string }
-) {
+function typeValue(item: BannedNickname | BannedId | IpInfo) {
   if ("bannedNickname" in item) {
     return "금지 닉네임";
   } else if ("bannedId" in item) {
     return "금지 아이디";
-  } else if ("name" in item) {
-    return "이름";
+  } else if ("ipAddress" in item) {
+    return "금지 IP";
   }
 
   return "";

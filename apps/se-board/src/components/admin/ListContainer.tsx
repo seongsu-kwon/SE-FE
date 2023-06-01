@@ -1,10 +1,10 @@
-import { Box } from "@chakra-ui/react";
-import { BannedId, BannedNickname } from "@types";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { BannedId, BannedNickname, IpInfo } from "@types";
 
 import { ListItem } from ".";
 
 interface ListContainerProps {
-  data: BannedNickname[] | BannedId[] | { id: number; name: string }[];
+  data: BannedNickname[] | BannedId[] | IpInfo[];
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }
@@ -31,6 +31,13 @@ export const ListContainer = ({
           isLoading={isLoading}
         />
       ))}
+      {data.length === 0 && (
+        <Flex w="full" h="full" justifyContent="center" alignItems="center">
+          <Text color="gray.5" fontSize="lg">
+            데이터가 없습니다.
+          </Text>
+        </Flex>
+      )}
     </Box>
   );
 };

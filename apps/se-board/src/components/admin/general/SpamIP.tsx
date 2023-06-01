@@ -1,31 +1,55 @@
 import { Box, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { IpInfo } from "@types";
+import React, { useEffect, useState } from "react";
+
+import {
+  useDeleteBannedIpMutation,
+  useGetBannedIpQuery,
+  usePostBannedIpMutation,
+} from "@/react-query/hooks";
+import { errorHandle } from "@/utils/errorHandling";
 
 import { ItemInput, ListContainer } from "..";
 
-const data = {
-  sise: 7,
-  list: [
-    { id: 1, name: "admin" },
-    { id: 2, name: "admin2" },
-    { id: 3, name: "admin3" },
-    { id: 4, name: "admin4" },
-    { id: 5, name: "admin5" },
-    { id: 6, name: "김민종❤️정이수" },
-    { id: 7, name: "admin7" },
-  ],
-};
-
 export const SpamIP = () => {
+  const { data, refetch } = useGetBannedIpQuery();
+  const { mutate: postMutate, isLoading: postIsLoading } =
+    usePostBannedIpMutation();
+  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
+    useDeleteBannedIpMutation();
+
+  const [bannedIps, setBannedIps] = useState<IpInfo[]>([]);
   const [ip, setIp] = useState<string>("");
 
-  const deleteOnClick = (id: number) => {
-    // TODO: delete Request
+  useEffect(() => {
+    if (!data) return;
+
+    setBannedIps(data.ips);
+  }, [data]);
+
+  const deleteOnClick = (ipAddress: string) => {
+    deleteMutate(ipAddress, {
+      onSuccess: () => {
+        refetch();
+      },
+
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const addOnClick = () => {
-    // TODO: add Request
-    setIp("");
+    postMutate(ip, {
+      onSuccess: () => {
+        setIp("");
+        refetch();
+      },
+
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,15 +59,20 @@ export const SpamIP = () => {
   return (
     <Box my="16px">
       <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
-        스팸 키워드 관리(0개)
+        스팸 IP 관리({bannedIps.length}개)
       </Text>
-      <ListContainer data={data.list} deleteOnClick={deleteOnClick} />
+      <ListContainer
+        data={bannedIps}
+        deleteOnClick={deleteOnClick}
+        isLoading={deleteIsLoading}
+      />
       <ItemInput
         label="스팸 IP 추가"
         placeholder="스팸 IP 입력"
         value={ip}
         onChange={onChange}
         addOnClick={addOnClick}
+        isLoading={postIsLoading}
       />
     </Box>
   );
