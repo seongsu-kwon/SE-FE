@@ -1,4 +1,10 @@
-import { Menu, MenuList, SubMenus } from "@types";
+import {
+  MainPageMenus,
+  Menu,
+  MenuList,
+  SelectedMainPageMenus,
+  SubMenus,
+} from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
@@ -26,6 +32,26 @@ export const getCategory = (categoryId: number) => {
       ...getJWTHeader(),
     },
     url: `/admin/menu/${categoryId}`,
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const getMainPageMenus = () => {
+  return _axios<MainPageMenus>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/mainPageMenus/all",
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const getSelectedMainPageMenus = () => {
+  return _axios<SelectedMainPageMenus>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/mainPageMenus",
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };

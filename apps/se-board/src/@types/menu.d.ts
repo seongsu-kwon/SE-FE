@@ -45,4 +45,21 @@ declare module "@types" {
   interface MenuList {
     menus: MenuInfomation[];
   }
+
+  interface MainPageMenus {
+    menus: MainPageMenu[];
+  }
+
+  interface SelectedMainPageMenus {
+    mainPageMenus: {
+      id: number;
+      menuId: number;
+    }[];
+  }
+
+  interface MainPageMenu {
+    categoryId: number;
+    name: string;
+    url: string;
+  }
 }

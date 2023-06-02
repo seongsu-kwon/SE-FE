@@ -10,32 +10,41 @@ import {
   MenuOptionGroup,
   Text,
 } from "@chakra-ui/react";
+import { MainPageMenu } from "@types";
 import { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 
-const data = {
-  menu: [
-    { id: "notice", name: "공지사항" },
-    { id: "sch", name: "학사공지" },
-    { id: "ilban", name: "일반소식" },
-    { id: "ch", name: "취업정보" },
-    { id: "event", name: "행사안내" },
-  ],
-};
+import { LayoutExample } from "@/components/layouts";
+import {
+  useGetMainPageMenus,
+  useGetSelectedMainPageMenus,
+} from "@/react-query/hooks/useMenu";
 
 export const MenuItemManage = () => {
+  const { data } = useGetMainPageMenus();
+  const { data: selectedMenu } = useGetSelectedMainPageMenus();
+
   const [menuList, setMenuList] = useState<
-    { id: string; name: string; isChecked: boolean }[]
+    (MainPageMenu & { isChecked: boolean })[]
   >([]);
 
-  useEffect(
-    () =>
-      setMenuList(data.menu.map((value) => ({ ...value, isChecked: false }))),
-    [data]
-  );
+  useEffect(() => {
+    if (!data || !selectedMenu) return;
 
-  const onClick = (value: { id: string; name: string }) => {
-    const index = menuList.findIndex((v) => v.id === value.id);
+    const newMenuList = data.menus.map((value) => ({
+      ...value,
+      isChecked:
+        menuList.find((v) => v.categoryId === value.categoryId)?.isChecked ||
+        selectedMenu.mainPageMenus.find(
+          (menu) => menu.id === value.categoryId
+        ) !== undefined,
+    }));
+
+    setMenuList(newMenuList);
+  }, [data, selectedMenu]);
+
+  const onClick = (value: MainPageMenu) => {
+    const index = menuList.findIndex((v) => v.categoryId === value.categoryId);
     const newMenuList = [...menuList];
     newMenuList[index].isChecked = !newMenuList[index].isChecked;
     setMenuList(newMenuList);
@@ -75,27 +84,36 @@ export const MenuItemManage = () => {
         </MenuButton>
         <MenuList>
           <MenuOptionGroup type="checkbox">
-            {data.menu.map((value) => (
-              <MenuItemOption value={value.id} onClick={() => onClick(value)}>
+            {menuList.map((value) => (
+              <MenuItemOption
+                value={String(value.categoryId)}
+                onClick={() => onClick(value)}
+                isChecked={value.isChecked}
+              >
                 {value.name}
               </MenuItemOption>
             ))}
           </MenuOptionGroup>
         </MenuList>
       </Menu>
+
       {menuList.find((v) => v.isChecked === true) !== undefined && (
         <Flex alignItems="center" my="4px">
-          <Text>선택된 메뉴:</Text>
+          <Text fontWeight="bold" fontSize="xl">
+            선택된 메뉴:
+          </Text>
           {menuList.map(
             (value) =>
               value.isChecked && (
-                <Text key={value.id} mx="4px">
+                <Text key={value.categoryId} mx="4px">
                   {value.name}
                 </Text>
               )
           )}
         </Flex>
       )}
+
+      <LayoutExample menuList={menuList} />
 
       <Flex justifyContent="flex-end">
         <Button
