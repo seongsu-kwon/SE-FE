@@ -1,6 +1,5 @@
 declare module "@types" {
   type Menu = MenuMenu & BoardMenu & ExternalMenu & CategoryMenu;
-  type Menus = Menu[];
   type MenuType = "MENU" | "BOARD" | "EXTERNAL" | "CATEGORY";
 
   interface MenuMenu {
@@ -32,5 +31,18 @@ declare module "@types" {
     name: string;
     urlId: string;
     subMenu: [];
+  }
+
+  interface MenuInfomation {
+    menuId: number;
+    name: string;
+    urlId: string;
+    externalUrl: string;
+    type: MenuType | "ADD" | "NULL";
+    subMenu: MenuInfomation[];
+  }
+
+  interface MenuList {
+    menus: MenuInfomation[];
   }
 }

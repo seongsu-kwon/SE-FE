@@ -10,55 +10,65 @@ import {
   MenuItem,
   MenuList,
   SimpleGrid,
+  Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { CategoryInfomation } from "@types";
+import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+
+import { useGetCategory } from "@/react-query/hooks/useMenu";
 
 import { AuthorityMenu } from "./AuthoritySetting";
 
-const data = [
-  {
-    name: "학사",
-    id: "degree",
-    manage: ["관리자", "준회원", "정회원"],
-    write: ["관리자만"],
-  },
-  { name: "일반", id: "general", manage: ["관리자만"], write: ["관리자만"] },
-  { name: "취업", id: "employment", manage: ["관리자만"], write: ["관리자만"] },
-  { name: "행사", id: "event", manage: ["관리자만"], write: ["관리자만"] },
-  {
-    name: "프로젝트",
-    id: "project",
-    manage: ["관리자만"],
-    write: ["관리자만"],
-  },
-];
-
 interface CategoryItemProps {
   name: string;
-  id: string;
-  manage: string[];
-  write: string[];
+  menuId: number;
+  urlId: string;
+  manageRole: string[];
+  writeRole: string[];
 }
 
-const CategoryItem = ({ name, id, manage, write }: CategoryItemProps) => {
+const CategoryItem = ({
+  name,
+  menuId,
+  urlId,
+  manageRole,
+  writeRole,
+}: CategoryItemProps) => {
   const [isModify, setIsModify] = useState(false);
   const [modifyName, setModifyName] = useState(name);
-  const [modifyId, setModifyId] = useState(id);
+  const [modifyId, setModifyId] = useState(urlId);
+
+  useEffect(() => {
+    setModifyName(name);
+    setModifyId(urlId);
+  });
 
   return !isModify ? (
     <>
-      <Box fontSize={{ base: "14px", md: "18px" }}>{name}</Box>
-      <Box fontSize={{ base: "14px", md: "18px" }}>{id}</Box>
+      <Box fontSize={{ base: "14px", md: "16px" }}>{name}</Box>
+      <Box fontSize={{ base: "14px", md: "16px" }}>{urlId}</Box>
       <Box maxH="2.5rem" overflow="auto" wordBreak="keep-all">
-        {manage.map((value) => (
-          <Box>{value}</Box>
-        ))}
+        {manageRole.length === 0 ? (
+          <Flex w="full" h="full" justifyContent="center" alignItems="center">
+            <Text color="gray.5" fontSize="xs">
+              설정된 권한이 없습니다.
+            </Text>
+          </Flex>
+        ) : (
+          manageRole.map((value) => <Box>{value}</Box>)
+        )}
       </Box>
       <Box maxH="2.5rem" overflow="auto">
-        {write.map((value) => (
-          <Box>{value}</Box>
-        ))}
+        {writeRole.length === 0 ? (
+          <Flex w="full" h="full" justifyContent="center" alignItems="center">
+            <Text color="gray.5" fontSize="xs">
+              설정된 권한이 없습니다.
+            </Text>
+          </Flex>
+        ) : (
+          writeRole.map((value) => <Box>{value}</Box>)
+        )}
       </Box>
       <Menu>
         <MenuButton
@@ -100,7 +110,25 @@ const CategoryItem = ({ name, id, manage, write }: CategoryItemProps) => {
   );
 };
 
-export const CategorySetting = () => {
+export const CategorySetting = ({ menuId }: { menuId: number }) => {
+  const { data } = useGetCategory(menuId);
+
+  const [categoryList, setCategoryList] = useState<CategoryInfomation[]>([
+    {
+      name: "일반",
+      menuId: -1,
+      urlId: "",
+      manageRole: [],
+      writeRole: [],
+    },
+  ]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setCategoryList(data.subMenus);
+  }, [data]);
+
   return (
     <SimpleGrid
       columns={5}
@@ -121,14 +149,15 @@ export const CategorySetting = () => {
         작성 권한
       </Box>
       <Box borderBottom="1px solid" borderColor="gray.5">
-        추가/삭제
+        수정 / 삭제
       </Box>
-      {data.map((item) => (
+      {categoryList.map((category) => (
         <CategoryItem
-          name={item.name}
-          id={item.id}
-          manage={item.manage}
-          write={item.write}
+          name={category.name}
+          menuId={category.menuId}
+          urlId={category.urlId}
+          manageRole={category.manageRole}
+          writeRole={category.writeRole}
         />
       ))}
     </SimpleGrid>

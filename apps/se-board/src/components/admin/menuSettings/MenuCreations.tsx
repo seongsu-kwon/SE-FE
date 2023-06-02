@@ -92,7 +92,7 @@ export const BoardCreation = () => {
           borderColor="gray.3"
           overflowY="auto"
         >
-          <CategorySetting />
+          <CategorySetting menuId={-1} />
         </Box>
         <CategoryInput
           newCategory={newCategory}

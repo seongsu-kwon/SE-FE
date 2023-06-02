@@ -20,7 +20,7 @@ const data = {
 export const AdminIPManage = () => {
   const [ip, setIp] = useState<string>("");
 
-  const deleteOnClick = (id: number) => {
+  const deleteOnClick = (name: string) => {
     // TODO: delete Request
   };
 
@@ -54,13 +54,18 @@ export const AdminIPManage = () => {
         <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
           관리자 IP 관리({data.sise}개)
         </Text>
-        <ListContainer data={data.list} deleteOnClick={deleteOnClick} />
+        <ListContainer
+          data={data.list}
+          deleteOnClick={deleteOnClick}
+          isLoading={false}
+        />
         <ItemInput
           label="IP 추가"
           placeholder="IP 입력"
           value={ip}
           onChange={onChange}
           addOnClick={addOnClick}
+          isLoading={false}
         />
       </Box>
     </Box>

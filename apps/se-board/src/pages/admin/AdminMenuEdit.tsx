@@ -17,7 +17,7 @@ export const AdminMenuEdit = () => {
         <Heading fontSize="xl">메뉴 관리 권한 설정</Heading>
         <Box ml="2rem">
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px" w={{ base: "7rem", md: "8rem" }}>
+            <Heading fontSize="md" mr="4px" w="6rem">
               SE 메뉴 편집
             </Heading>
             <AuthorityMenu />
@@ -35,19 +35,19 @@ export const AdminMenuEdit = () => {
         <Heading fontSize="xl">회원 관리 권한 설정</Heading>
         <Box ml="2rem">
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px">
+            <Heading fontSize="md" mr="4px" w="6rem">
               회원 목록
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px">
+            <Heading fontSize="md" mr="4px" w="6rem">
               회원 정책
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px">
+            <Heading fontSize="md" mr="4px" w="6rem">
               회원 그룹
             </Heading>
             <AuthorityMenu />
@@ -65,41 +65,25 @@ export const AdminMenuEdit = () => {
         <Heading fontSize="xl">컨텐츠 관리 권한 설정</Heading>
         <Box ml="2rem">
           <Flex alignItems="center" my="0.5rem">
-            <Heading
-              fontSize="md"
-              mr="4px"
-              w={{ base: "5.75rem", md: "6.5rem" }}
-            >
+            <Heading fontSize="md" mr="4px" w="6.5rem">
               게시글 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading
-              fontSize="md"
-              mr="4px"
-              w={{ base: "5.75rem", md: "6.5rem" }}
-            >
+            <Heading fontSize="md" mr="4px" w="6.5rem">
               댓글 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading
-              fontSize="md"
-              mr="4px"
-              w={{ base: "5.75rem", md: "6.5rem" }}
-            >
+            <Heading fontSize="md" mr="4px" w="6.5rem">
               첨부파일 관리
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading
-              fontSize="md"
-              mr="4px"
-              w={{ base: "5.75rem", md: "6.5rem" }}
-            >
+            <Heading fontSize="md" mr="4px" w="6.5rem">
               휴지통
             </Heading>
             <AuthorityMenu />
@@ -117,13 +101,13 @@ export const AdminMenuEdit = () => {
         <Heading fontSize="xl">설정 권한 설정</Heading>
         <Box ml="2rem">
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px" w={{ base: "6.75rem", md: "8rem" }}>
+            <Heading fontSize="md" mr="4px" w="8rem">
               일반
             </Heading>
             <AuthorityMenu />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
-            <Heading fontSize="md" mr="4px" w={{ base: "6.75rem", md: "8rem" }}>
+            <Heading fontSize="md" mr="4px" w="8rem">
               메인 페이지 설정
             </Heading>
             <AuthorityMenu />

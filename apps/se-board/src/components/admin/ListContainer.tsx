@@ -4,7 +4,11 @@ import { BannedId, BannedNickname, IpInfo } from "@types";
 import { ListItem } from ".";
 
 interface ListContainerProps {
-  data: BannedNickname[] | BannedId[] | IpInfo[];
+  data:
+    | BannedNickname[]
+    | BannedId[]
+    | IpInfo[]
+    | { id: number; name: string }[];
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }

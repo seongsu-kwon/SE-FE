@@ -17,30 +17,38 @@ import React from "react";
 import { BsX } from "react-icons/bs";
 
 interface ListItemProps {
-  item: BannedNickname | BannedId | IpInfo;
+  item: BannedNickname | BannedId | IpInfo | { id: number; name: string };
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }
 
-function nameValue(item: BannedNickname | BannedId | IpInfo) {
+function nameValue(
+  item: BannedNickname | BannedId | IpInfo | { id: number; name: string }
+) {
   if ("bannedNickname" in item) {
     return item.bannedNickname;
   } else if ("bannedId" in item) {
     return item.bannedId;
   } else if ("ipAddress" in item) {
     return item.ipAddress;
+  } else if ("name" in item) {
+    return item.name;
   }
 
   return "";
 }
 
-function typeValue(item: BannedNickname | BannedId | IpInfo) {
+function typeValue(
+  item: BannedNickname | BannedId | IpInfo | { id: number; name: string }
+) {
   if ("bannedNickname" in item) {
     return "금지 닉네임";
   } else if ("bannedId" in item) {
     return "금지 아이디";
   } else if ("ipAddress" in item) {
     return "금지 IP";
+  } else if ("name" in item) {
+    return "name";
   }
 
   return "";

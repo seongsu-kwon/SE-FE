@@ -19,7 +19,7 @@ const data = {
 export const SpamKeyword = () => {
   const [keyword, setKeyword] = useState<string>("");
 
-  const deleteOnClick = (id: number) => {
+  const deleteOnClick = (name: string) => {
     // TODO: delete Request
   };
 
@@ -37,13 +37,18 @@ export const SpamKeyword = () => {
       <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
         스팸 키워드 관리({data.sise}개)
       </Text>
-      <ListContainer data={data.list} deleteOnClick={deleteOnClick} />
+      <ListContainer
+        data={data.list}
+        deleteOnClick={deleteOnClick}
+        isLoading={false}
+      />
       <ItemInput
         label="스팸 키워드 추가"
         placeholder="스팸 키워드 입력"
         value={keyword}
         onChange={onChange}
         addOnClick={addOnClick}
+        isLoading={false}
       />
     </Box>
   );

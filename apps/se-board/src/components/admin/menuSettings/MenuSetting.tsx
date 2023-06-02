@@ -14,6 +14,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
+import { MenuInfomation } from "@types";
 import { useEffect, useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
@@ -33,7 +34,7 @@ import {
 import { MenuDelete } from "./MenuDelete";
 import { ExternalMenuInfo, MenuInfo } from "./MenuInfo";
 
-const BoardSetting = () => {
+const BoardSetting = ({ menuId }: { menuId: number }) => {
   const { menuName, menuID, setMenuName, setMenuID, onNameChange, onIDChange } =
     useMenuInfo();
   const [newCategory, setNewCategory] = useState<string>("");
@@ -96,7 +97,7 @@ const BoardSetting = () => {
           borderColor="gray.3"
           overflowY="auto"
         >
-          <CategorySetting />
+          <CategorySetting menuId={menuId} />
         </Box>
         <CategoryInput
           newCategory={newCategory}
@@ -184,7 +185,7 @@ const ExternalSetting = () => {
 };
 
 interface GroupSettingProps {
-  subMenu: SubMenu[];
+  subMenu: MenuInfomation[];
 }
 
 const GroupSetting = ({ subMenu }: GroupSettingProps) => {
@@ -275,7 +276,7 @@ const GroupSetting = ({ subMenu }: GroupSettingProps) => {
           </TabPanel>
           {subMenu.map((menu) => (
             <TabPanel key={menu.menuId} my="20px" p="0">
-              {settingComponent(menu.type)}
+              {settingComponent(menu.menuId, menu.type, menu.subMenu)}
             </TabPanel>
           ))}
         </TabPanels>
@@ -323,10 +324,14 @@ const MenuCreation = () => {
   );
 };
 
-function settingComponent(type: string, subMenu?: SubMenu[]) {
+function settingComponent(
+  menuId: number,
+  type: string,
+  subMenu: MenuInfomation[]
+) {
   switch (type) {
     case "BOARD":
-      return <BoardSetting />;
+      return <BoardSetting menuId={menuId} />;
     case "EXTERNAL":
       return <ExternalSetting />;
     case "MENU":
@@ -336,25 +341,14 @@ function settingComponent(type: string, subMenu?: SubMenu[]) {
   }
 }
 
-interface SubMenu {
-  menuId: number;
-  name: string;
-  urlId?: string;
-  externalUrl?: string;
-  type: string;
-  subMenu: SubMenu[];
-}
-
 interface MenuSettingProps {
-  menuId: number;
-  menuType: string;
-  subMenu?: SubMenu[];
+  menuInfo: MenuInfomation;
 }
 
-export const MenuSetting = ({
-  menuId,
-  menuType,
-  subMenu,
-}: MenuSettingProps) => {
-  return <Box>{settingComponent(menuType, subMenu)}</Box>;
+export const MenuSetting = ({ menuInfo }: MenuSettingProps) => {
+  return (
+    <Box>
+      {settingComponent(menuInfo.menuId, menuInfo.type, menuInfo.subMenu)}
+    </Box>
+  );
 };
