@@ -62,4 +62,12 @@ declare module "@types" {
     name: string;
     url: string;
   }
+
+  interface MenuCreation {
+    superCategoryId: number;
+    name: string;
+    urlId: string;
+    externalUrl: string;
+    manageOption: string[];
+  }
 }

@@ -16,16 +16,19 @@ export const MenuAdd = () => {
   return (
     <Box my="1rem">
       <Heading fontSize="lg">그룹 메뉴 추가</Heading>
+      <Text fontSize="sm" color="gray.6">
+        그룹 메뉴 추가는 생성되어 있는 메뉴만 추가 가능합니다.
+      </Text>
       <Flex alignItems="center" my="1rem">
-        <Text fontSize="lg" mr="0.5rem">
+        <Heading fontSize="md" mr="0.5rem">
           메뉴
-        </Text>
+        </Heading>
         <Menu closeOnSelect={false}>
           <MenuButton as={Button} rightIcon={<BsChevronDown />}>
             메뉴 선택
           </MenuButton>
           <MenuList>
-            <MenuOptionGroup type="checkbox">
+            <MenuOptionGroup defaultValue="notice" type="radio">
               <MenuItemOption value="notice">공지사항</MenuItemOption>
               <MenuItemOption value="free">자유게시판</MenuItemOption>
               <MenuItemOption value="job">취업게시판</MenuItemOption>

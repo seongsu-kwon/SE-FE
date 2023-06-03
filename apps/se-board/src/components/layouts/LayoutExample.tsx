@@ -169,6 +169,7 @@ export const MobileLayout = ({ menuList }: Props) => {
         w="35%"
         mx="auto"
         mt="1rem"
+        minH="30rem"
         maxH="30rem"
         overflowY="auto"
         border="1px solid"
