@@ -13,6 +13,13 @@ import {
   SignupCompletePage,
   SignupPage,
 } from "./pages";
+import {
+  AdminMenuEdit,
+  GeneralSetting,
+  MainPageSetting,
+  MemberPolicy,
+  SEMenuEdit,
+} from "./pages/admin";
 import { BoardPage } from "./pages/board/BoardPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import { useReissueToken } from "./react-query/hooks/auth";
@@ -88,7 +95,32 @@ const MenuRouter = () => {
         },
       ],
     },
-    { path: "admin", element: <AdminLayout />, children: [] },
+    {
+      path: "admin",
+      element: <AdminLayout />,
+      children: [
+        {
+          path: "seMenu",
+          element: <SEMenuEdit />,
+        },
+        {
+          path: "adminMenu",
+          element: <AdminMenuEdit />,
+        },
+        {
+          path: "memberPolicy",
+          element: <MemberPolicy />,
+        },
+        {
+          path: "general",
+          element: <GeneralSetting />,
+        },
+        {
+          path: "mainPageSetting",
+          element: <MainPageSetting />,
+        },
+      ],
+    },
     {
       children: [
         {

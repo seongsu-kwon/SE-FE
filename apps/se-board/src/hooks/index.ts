@@ -1,6 +1,7 @@
 export * from "./useAnonymousAndPined";
 export * from "./useBookmarked";
 export * from "./useFileInput";
+export * from "./useMenuInfo";
 export * from "./useNavagatePage";
 export * from "./usePagination";
 export * from "./usePasswordInput";

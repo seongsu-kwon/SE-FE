@@ -14,6 +14,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Hide,
   Icon,
   IconButton,
   Link,
@@ -56,25 +57,36 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 interface SubCategoryItemsProps {
-  [key: string]: { name: string }[];
+  [key: string]: { name: string; url: string }[];
 }
 
 const subCategoryItems: SubCategoryItemsProps[] = [
   {
-    menu: [{ name: "메뉴1" }],
-  },
-  {
-    person: [
-      { name: "회원 목록" },
-      { name: "회원 정책" },
-      { name: "회원 그룹" },
+    menu: [
+      { name: "SE 메뉴 편집", url: "/admin/seMenu" },
+      { name: "관리자 메뉴 편집", url: "/admin/adminMenu" },
     ],
   },
   {
-    content: [{ name: "menu" }],
+    person: [
+      { name: "회원 목록", url: "/admin/memberList" },
+      { name: "회원 정책", url: "/admin/memberPolicy" },
+      { name: "회원 그룹", url: "/admin/memberGroup" },
+    ],
   },
   {
-    setting: [{ name: "menu" }],
+    content: [
+      { name: "게시글 관리", url: "/admin/postManage" },
+      { name: "댓글 관리", url: "/admin/commentManage" },
+      { name: "첨부파일 관리", url: "/admin/attachmentManage" },
+      { name: "휴지통", url: "/admin/trash" },
+    ],
+  },
+  {
+    setting: [
+      { name: "일반", url: "/admin/general" },
+      { name: "메인 페이지 설정", url: "/admin/mainPageSetting" },
+    ],
   },
 ];
 
@@ -90,11 +102,13 @@ export const AdminLayout = () => {
       <Show above="md">
         <DesktopAdminLayout onChange={onChange} />
       </Show>
-      <Show below="md">
+      <Hide above="md">
         <MobileAdminLayout />
-      </Show>
+      </Hide>
       <Box
         ml={{ md: "280px" }}
+        pt={{ base: "56px", md: "0" }}
+        pb="2rem"
         h="full"
         textAlign="center"
         px={{ base: "16px", md: isFullWidth ? "12px" : "120px" }}
@@ -118,6 +132,7 @@ const MobileAdminLayout = () => {
         justifyContent="space-between"
         alignItems="center"
         position="fixed"
+        zIndex="1"
       >
         <Button px="8px" bgColor="white" onClick={onOpen}>
           <BsList fontSize="32px" />
@@ -261,7 +276,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
                   flex="1"
                   textAlign="left"
                 >
-                  <Icon fontSize="1.25rem`" as={item.icon} mr="8px" />
+                  <Icon fontSize="1.25rem" as={item.icon} mr="8px" />
                   <Text fontSize="1.25rem">{item.name}</Text>
                 </Box>
                 <AccordionIcon color="gray.6" fontSize="1.5rem" />
@@ -269,13 +284,13 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
               {subCategoryItems.map((subCategoryItem) =>
                 subCategoryItem[item.key]?.map((subItem) => (
                   <Link
-                    href="#"
+                    href={`${subItem.url}`}
                     w="full"
                     fontSize="1rem"
                     _hover={{ textDecoration: "none" }}
                   >
                     <AccordionPanel
-                      py="8px"
+                      py="6px"
                       pl="48px"
                       w="full"
                       transition="0.2s"
