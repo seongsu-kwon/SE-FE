@@ -276,7 +276,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
                   flex="1"
                   textAlign="left"
                 >
-                  <Icon fontSize="1.25rem`" as={item.icon} mr="8px" />
+                  <Icon fontSize="1.25rem" as={item.icon} mr="8px" />
                   <Text fontSize="1.25rem">{item.name}</Text>
                 </Box>
                 <AccordionIcon color="gray.6" fontSize="1.5rem" />
@@ -290,7 +290,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
                     _hover={{ textDecoration: "none" }}
                   >
                     <AccordionPanel
-                      py="8px"
+                      py="6px"
                       pl="48px"
                       w="full"
                       transition="0.2s"
