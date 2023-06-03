@@ -8,42 +8,79 @@ import {
   Select,
   Tooltip,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
-import { useSearchParams } from "react-router-dom";
+
+import { usePostSearchParams } from "@/hooks/usePostSearchParams";
 
 export const PostSearchForm = () => {
-  const [searchPrams, setSearchParams] = useSearchParams();
+  const [inputs, setInputs] = React.useState({
+    searchOption: "ALL",
+    query: "",
+  });
+  const {
+    searchOption,
+    query,
+    setSearchOptionParam,
+    setQueryParam,
+    deleteQueryParam,
+    deleteSearchOptionParam,
+    deletePageParam,
+  } = usePostSearchParams();
 
   const search = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const target = e.target as typeof e.target & {
-      field: { value: string };
-      query: { value: string };
-    };
-    const field = target.field.value;
-    const query = target.query.value;
+
     if (!query) {
-      searchPrams.delete(field);
-      setSearchParams(searchPrams);
+      deleteQueryParam();
+      deleteSearchOptionParam();
+      deletePageParam();
     } else {
-      searchPrams.set(field, query);
-      setSearchParams(searchPrams);
+      setSearchOptionParam(inputs.searchOption);
+      setQueryParam(inputs.query);
+      deletePageParam();
     }
   };
+
+  useEffect(() => {
+    setInputs({ searchOption, query });
+  }, [searchOption, query]);
 
   return (
     <form onSubmit={search}>
       <Flex gap="0.5rem" w="full">
-        <Select name="field" rounded="full" w="10rem">
-          <option value="title">제목</option>
-          <option value="author">작성자</option>
+        <Select
+          value={inputs.searchOption}
+          onChange={(e) =>
+            setInputs((prev) => ({ ...prev, searchOption: e.target.value }))
+          }
+          name="option"
+          rounded="full"
+          w="13rem"
+        >
+          <option value="ALL">전체</option>
+          <option value="TITLE">제목</option>
+          <option value="CONTENT">내용</option>
+          <option value="TITLE_OR_CONTENT">제목+내용</option>
+          <option value="AUTHOR">작성자</option>
         </Select>
         <InputGroup>
-          <Input name="query" placeholder="검색" rounded="full" />
+          <Input
+            value={inputs.query}
+            onChange={(e) =>
+              setInputs((prev) => ({ ...prev, query: e.target.value }))
+            }
+            name="query"
+            placeholder="검색"
+            rounded="full"
+          />
           <Tooltip label="검색">
             <InputRightElement>
-              <Button variant="ghost" _hover={{ bgColor: "transparent" }}>
+              <Button
+                type="submit"
+                variant="ghost"
+                _hover={{ bgColor: "transparent" }}
+              >
                 <Icon as={BsSearch} />
               </Button>
             </InputRightElement>

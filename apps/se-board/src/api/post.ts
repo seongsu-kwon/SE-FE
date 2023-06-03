@@ -3,6 +3,7 @@ import {
   FetchPostListResponse,
   PostListItem,
   PostListItemDTO,
+  SearchPostParams,
 } from "@types";
 import { PostCreate, PostCreateRes, PostDetail, PostPut } from "@types";
 
@@ -31,6 +32,26 @@ export const fetchPinedPostList = (categoryId: number) => {
     method: HTTP_METHODS.GET,
     params: {
       categoryId,
+    },
+  });
+};
+
+export const searchPost = async ({
+  categoryId,
+  page,
+  perPage,
+  searchOption,
+  query,
+}: SearchPostParams) => {
+  return _axios<FetchPostListResponse>({
+    url: `/search/posts`,
+    method: HTTP_METHODS.GET,
+    params: {
+      categoryId,
+      page,
+      perPage,
+      searchOption,
+      query,
     },
   });
 };
