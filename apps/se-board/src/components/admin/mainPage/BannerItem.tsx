@@ -157,8 +157,9 @@ export const BannerItem = ({
         ) : (
           <>
             <Button
-              variant="danger"
+              bgColor="gray.3"
               size="sm"
+              _hover={{ bgColor: "gray.4" }}
               onClick={() => setIsModify(false)}
             >
               취소
