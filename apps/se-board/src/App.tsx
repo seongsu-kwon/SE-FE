@@ -17,6 +17,7 @@ import {
   AdminMenuEdit,
   GeneralSetting,
   MainPageSetting,
+  MemberGroupManage,
   MemberPolicy,
   SEMenuEdit,
 } from "./pages/admin";
@@ -110,6 +111,10 @@ const MenuRouter = () => {
         {
           path: "memberPolicy",
           element: <MemberPolicy />,
+        },
+        {
+          path: "memberGroup",
+          element: <MemberGroupManage />,
         },
         {
           path: "general",
