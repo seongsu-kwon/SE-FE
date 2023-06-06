@@ -9,19 +9,22 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 import { loginWithKakao } from "@/api/auth";
+import { fetchUserSimpleInfo } from "@/api/profile";
 import { removeBearerToken, setStoredRefreshToken } from "@/api/storage";
 import { ReactComponent as KakaoSymbol } from "@/assets/images/kakao_symbol.svg";
 import { Logo } from "@/components";
 import { useNavigatePage } from "@/hooks";
-import { user } from "@/store/user";
+import { roleNames, user, userState } from "@/store/user";
 
 import { LoginForm } from "./LoginForm";
 
 export const LoginPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { goToMainPage } = useNavigatePage();
+  const setUserInfo = useSetRecoilState(userState);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -29,6 +32,16 @@ export const LoginPage = () => {
       loginWithKakao(id).then((res) => {
         setStoredRefreshToken(res.data.refreshToken);
         user.setAccessToken(removeBearerToken(res.data.accessToken));
+        setUserInfo((prev) => ({ ...prev, accessToken: res.data.accessToken }));
+        fetchUserSimpleInfo().then((res) => {
+          const { nickname, email, roles } = res.data;
+          setUserInfo((prev) => ({
+            ...prev,
+            nickname,
+            email,
+            roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
+          }));
+        });
         goToMainPage();
       });
     }

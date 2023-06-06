@@ -134,9 +134,9 @@ export const PostTable = ({ data }: PostTableProps) => {
         ))}
       </Thead>
       <Tbody>
-        {table.getRowModel().rows.map((row) => (
+        {table.getRowModel().rows.map((row, i) => (
           <Tr
-            key={row.id}
+            key={i}
             bgColor={row.original.pined ? "gray.1" : "transparent"}
             fontSize="sm"
           >

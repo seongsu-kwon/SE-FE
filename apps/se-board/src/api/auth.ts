@@ -1,4 +1,5 @@
 import {
+  ChangePasswordRequestDTO,
   checkAuthCodeDTO,
   FormLoginResponse,
   LoginDTO,
@@ -10,6 +11,7 @@ import {
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
+import { getStoredRefreshToken } from "./storage";
 
 export const requestEmailAuthCode = async (email: string) => {
   return _axios({
@@ -21,7 +23,7 @@ export const requestEmailAuthCode = async (email: string) => {
 
 export const checkAuthCode = async (data: checkAuthCodeDTO) => {
   return _axios({
-    url: "email/confirm",
+    url: "email/auth/confirm",
     method: HTTP_METHODS.POST,
     data,
   });
@@ -88,13 +90,14 @@ export const fetchOAUthUserBasicInfo = async (id: string) => {
   });
 };
 
-export const logout = async () => {
+export const logout = async (refreshToken: string) => {
   return _axios<{ requiredRedirect: boolean; url: string }>({
     url: "logoutProc",
-    method: HTTP_METHODS.GET,
+    method: HTTP_METHODS.POST,
     headers: {
       ...getJWTHeader(),
     },
+    data: { refreshToken },
   });
 };
 
@@ -103,5 +106,54 @@ export const reissueToken = async (refreshToken: string) => {
     url: "refresh",
     method: HTTP_METHODS.POST,
     data: { refreshToken },
+  });
+};
+
+export const changePassword = async (data: ChangePasswordRequestDTO) => {
+  return _axios({
+    url: "mypage/password",
+    method: HTTP_METHODS.POST,
+    headers: {
+      ...getJWTHeader(),
+    },
+    data,
+  });
+};
+
+export const requestKumohmailAuthCode = async (email: string) => {
+  return _axios({
+    url: "email/kumoh",
+    method: HTTP_METHODS.POST,
+    data: { email },
+  });
+};
+
+export const checkKumohmailAuthCode = async (data: checkAuthCodeDTO) => {
+  return _axios({
+    url: "email/kumoh/confirm",
+    method: HTTP_METHODS.POST,
+    data,
+  });
+};
+
+export const kumohCertification = async (email: string) => {
+  return _axios({
+    url: "kumoh",
+    method: HTTP_METHODS.POST,
+    headers: {
+      ...getJWTHeader(),
+    },
+    data: { email },
+  });
+};
+
+export const withdrawal = async () => {
+  return _axios({
+    url: "withdraw",
+    method: HTTP_METHODS.DELETE,
+    headers: {
+      ...getJWTHeader(),
+    },
+    data: { refreshToken: getStoredRefreshToken() },
   });
 };
