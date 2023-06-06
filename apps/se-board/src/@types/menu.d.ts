@@ -1,3 +1,5 @@
+import { MenuSettingRole } from "@types";
+
 declare module "@types" {
   type Menu = MenuMenu & BoardMenu & ExternalMenu & CategoryMenu;
   type MenuType = "MENU" | "BOARD" | "EXTERNAL" | "CATEGORY";
@@ -69,5 +71,16 @@ declare module "@types" {
     urlId: string;
     externalUrl: string;
     manageOption: string[];
+  }
+
+  interface MenuInfo {
+    name: string;
+    description: string;
+    externalUrl: string;
+    urlId: string;
+    access: MenuSettingRole;
+    write: MenuSettingRole;
+    manage: MenuSettingRole;
+    menuExpose: MenuSettingRole;
   }
 }

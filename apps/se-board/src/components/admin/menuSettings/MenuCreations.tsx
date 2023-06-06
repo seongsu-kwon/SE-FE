@@ -1,4 +1,5 @@
 import { Box, Button, Divider, Heading } from "@chakra-ui/react";
+import { Role } from "@types";
 import { useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
@@ -11,7 +12,11 @@ import { CategoryInput, CategorySetting } from "./CategorySetting";
 import { MenuAdd } from "./MenuAdd";
 import { ExternalMenuInfo, MenuInfo } from "./MenuInfo";
 
-export const GroupCreation = () => {
+interface MenuCreationProps {
+  roleList: Role[];
+}
+
+export const GroupCreation = ({ roleList }: MenuCreationProps) => {
   const { menuName, menuID, onNameChange, onIDChange } = useMenuInfo();
 
   return (
@@ -31,7 +36,7 @@ export const GroupCreation = () => {
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
-      <ExposureTargetAuthoritySetting />
+      <ExposureTargetAuthoritySetting roleList={roleList} />
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
@@ -45,7 +50,7 @@ export const GroupCreation = () => {
   );
 };
 
-export const BoardCreation = () => {
+export const BoardCreation = ({ roleList }: MenuCreationProps) => {
   const { menuName, menuID, onNameChange, onIDChange } = useMenuInfo();
   const [newCategory, setNewCategory] = useState<string>("");
   const [newCategoryId, setNewCategoryId] = useState<string>("");
@@ -69,6 +74,7 @@ export const BoardCreation = () => {
         <Divider borderColor="gray.6" my="0.5rem" />
 
         <AuthoritySetting
+          roleList={roleList}
           authorityName1="게시판 접근 권한"
           authorityName2="메뉴 노출 대상"
         />
@@ -92,20 +98,21 @@ export const BoardCreation = () => {
           borderColor="gray.3"
           overflowY="auto"
         >
-          <CategorySetting menuId={-1} />
+          <CategorySetting menuId={-1} roleList={roleList} />
         </Box>
         <CategoryInput
           newCategory={newCategory}
           onNewCategoryChange={(e) => setNewCategory(e.target.value)}
           newCategoryId={newCategoryId}
           onNewCategoryIdChange={(e) => setNewCategoryId(e.target.value)}
+          roleList={roleList}
         />
       </Box>
     </>
   );
 };
 
-export const ExternalCreation = () => {
+export const ExternalCreation = ({ roleList }: MenuCreationProps) => {
   const { menuName, menuURL, onNameChange, onURLChange } = useMenuInfo();
 
   return (
@@ -125,7 +132,7 @@ export const ExternalCreation = () => {
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
-      <ExposureTargetAuthoritySetting />
+      <ExposureTargetAuthoritySetting roleList={roleList} />
 
       <Box textAlign="right">
         <Button variant="primary" mr={{ md: "1rem" }}>

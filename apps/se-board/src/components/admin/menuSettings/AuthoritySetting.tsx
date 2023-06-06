@@ -10,30 +10,29 @@ import {
   MenuList,
   MenuOptionGroup,
 } from "@chakra-ui/react";
+import { MenuSettingRole, Role } from "@types";
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 
-const roleList = {
-  default: [
-    { value: "all", label: "모든 사용자" },
-    { value: "associate", label: "준회원이상" },
-    { value: "regular", label: "정회원이상" },
-    { value: "admin", label: "관리자만" },
-    { value: "select", label: "선택 사용자" },
-  ],
-  select: [
-    { value: "associate", label: "준회원" },
-    { value: "regular", label: "정회원" },
-    { value: "admin", label: "관리자" },
-    { value: "student", label: "학생회" },
-  ],
-};
+const defaultRoleList = [
+  { value: "all", label: "모든 사용자" },
+  { value: "overUser", label: "준회원이상" },
+  { value: "overKumoh", label: "정회원이상" },
+  { value: "onlyAdmin", label: "관리자만" },
+  { value: "select", label: "선택 사용자" },
+];
 
 interface AuthorityMenuProps {
   authorityName?: string;
+  authority?: MenuSettingRole;
+  roleList: Role[];
 }
 
-export const AuthorityMenu = ({ authorityName }: AuthorityMenuProps) => {
+export const AuthorityMenu = ({
+  authorityName,
+  authority,
+  roleList,
+}: AuthorityMenuProps) => {
   const [isSelect, setIsSelect] = useState<boolean>(false);
 
   return (
@@ -47,8 +46,12 @@ export const AuthorityMenu = ({ authorityName }: AuthorityMenuProps) => {
         {authorityName || "역할 선택"}
       </MenuButton>
       <MenuList>
-        <MenuOptionGroup title="기본 선택" type="radio">
-          {roleList.default.map((role) => (
+        <MenuOptionGroup
+          title="기본 선택"
+          type="radio"
+          defaultValue={authority?.option || ""}
+        >
+          {defaultRoleList.map((role) => (
             <MenuItemOption
               key={role.value}
               value={role.value}
@@ -66,17 +69,18 @@ export const AuthorityMenu = ({ authorityName }: AuthorityMenuProps) => {
         </MenuOptionGroup>
         <MenuDivider />
         <MenuOptionGroup title="선택 사용자" type="checkbox">
-          {roleList.select.map((role) => (
+          {roleList.map((role) => (
             <MenuItemOption
+              isChecked={authority?.roles.includes(role.alias)}
               isDisabled={!isSelect}
-              key={role.value}
-              value={role.value}
+              key={role.roleId}
+              value={role.name}
               h="28px"
               borderTop="1px solid"
               borderColor="gray.2"
               _hover={{ bg: "blue.1" }}
             >
-              {role.label}
+              {role.alias}
             </MenuItemOption>
           ))}
         </MenuOptionGroup>
@@ -86,11 +90,17 @@ export const AuthorityMenu = ({ authorityName }: AuthorityMenuProps) => {
 };
 
 interface AuthoritySettingProps {
+  roleList: Role[];
+  authority1?: MenuSettingRole;
+  authority2?: MenuSettingRole;
   authorityName1: string;
   authorityName2: string;
 }
 
 export const AuthoritySetting = ({
+  roleList,
+  authority1,
+  authority2,
   authorityName1,
   authorityName2,
 }: AuthoritySettingProps) => {
@@ -101,19 +111,25 @@ export const AuthoritySetting = ({
         <Heading fontSize="md" w={{ md: "8rem" }}>
           {authorityName1}
         </Heading>
-        <AuthorityMenu />
+        <AuthorityMenu authority={authority1} roleList={roleList} />
       </Flex>
       <Flex alignItems="center" my="0.5rem">
         <Heading fontSize="md" w={{ md: "8rem" }}>
           {authorityName2}
         </Heading>
-        <AuthorityMenu />
+        <AuthorityMenu authority={authority2} roleList={roleList} />
       </Flex>
     </>
   );
 };
 
-export const ExposureTargetAuthoritySetting = () => {
+export const ExposureTargetAuthoritySetting = ({
+  roleList,
+  authority,
+}: {
+  roleList: Role[];
+  authority?: MenuSettingRole;
+}) => {
   return (
     <Box my="1rem">
       <Heading fontSize="xl">권한 설정</Heading>
@@ -121,7 +137,7 @@ export const ExposureTargetAuthoritySetting = () => {
         <Heading fontSize="md" w={{ md: "7rem" }}>
           메뉴 노출 대상
         </Heading>
-        <AuthorityMenu />
+        <AuthorityMenu authority={authority} roleList={roleList} />
       </Flex>
     </Box>
   );

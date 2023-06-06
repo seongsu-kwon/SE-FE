@@ -5,6 +5,7 @@ import {
   fetchMenuList,
   getCategory,
   getMainPageMenus,
+  getMenuInfo,
   getMenuList,
   getSelectedMainPageMenus,
   putMainPageMenus,
@@ -83,6 +84,17 @@ export const useGetSelectedMainPageMenus = () => {
 
 export const usePutMainPageMenus = () => {
   return useMutation((menuIds: number[]) => putMainPageMenus(menuIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useGetMenuInfo = (categoryId: number) => {
+  return useQuery(["menuInfo", categoryId], () => getMenuInfo(categoryId), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
     onError: (err) => {
       errorHandle(err);
     },

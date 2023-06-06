@@ -12,4 +12,9 @@ declare module "@types" {
     description: string;
     alias: string;
   }
+
+  interface MenuSettingRole {
+    option: string;
+    roles: string[];
+  }
 }

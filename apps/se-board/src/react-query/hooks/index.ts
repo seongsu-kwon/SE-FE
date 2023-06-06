@@ -1,3 +1,4 @@
+export * from "./useAdminDashboard";
 export * from "./useCommentQuery";
 export * from "./useGeneralPolicy";
 export * from "./usePostQuery";
