@@ -1,4 +1,5 @@
 import {
+  FetchCommentListResponse,
   FetchPostListParams,
   FetchPostListResponse,
   PostListItem,
@@ -147,4 +148,55 @@ export const secretPost = async (postId: number, password: string) => {
       password: password,
     },
   }).then((res) => res.data);
+};
+
+export const fetchPostListByLoginId = ({
+  loginId,
+  page = 0,
+  perPage = 0,
+}: {
+  loginId: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  return _axios<FetchPostListResponse>({
+    url: `/profile/${loginId}/posts`,
+    method: HTTP_METHODS.GET,
+    headers: { ...getJWTHeader() },
+    params: { page, perPage },
+  });
+};
+
+export const fetchCommentListByLoginId = ({
+  loginId,
+  page = 0,
+  perPage = 0,
+}: {
+  loginId: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  return _axios<FetchCommentListResponse>({
+    url: `/profile/${loginId}/comments`,
+    method: HTTP_METHODS.GET,
+    headers: { ...getJWTHeader() },
+    params: { page, perPage },
+  });
+};
+
+export const fetchBookmarkListByLoginId = ({
+  loginId,
+  page = 0,
+  perPage = 0,
+}: {
+  loginId: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  return _axios<FetchPostListResponse>({
+    url: `/profile/${loginId}/bookmarks`,
+    method: HTTP_METHODS.GET,
+    headers: { ...getJWTHeader() },
+    params: { page, perPage },
+  });
 };

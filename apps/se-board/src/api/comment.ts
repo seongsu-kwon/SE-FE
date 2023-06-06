@@ -1,6 +1,7 @@
 import {
   AllComments,
   Comment,
+  FetchCommentListResponse,
   PostCommentData,
   PostReplyData,
   PutCommentData,
@@ -91,6 +92,23 @@ export const deleteReply = async (replyId: number) => {
     },
     url: `/reply/${replyId}`,
     method: HTTP_METHODS.DELETE,
+  });
+};
+
+export const fetchCommentListByLoginId = ({
+  loginId,
+  page = 0,
+  perPage = 0,
+}: {
+  loginId: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  return _axios<FetchCommentListResponse>({
+    url: `/profile/comments/${loginId}`,
+    method: HTTP_METHODS.GET,
+    headers: { ...getJWTHeader() },
+    params: { page, perPage },
   });
 };
 

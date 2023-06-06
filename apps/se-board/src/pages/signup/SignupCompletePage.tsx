@@ -10,8 +10,9 @@ export const SignupCompletePage = () => {
       <Flex
         direction="column"
         alignItems="center"
+        justifyContent="center"
         maxW={{ base: "full", md: "480px" }}
-        minH={{ base: "100vh", md: "max-content" }}
+        minH={{ base: "100vh", md: "600px" }}
         w="full"
         py="2rem"
         bgColor="white"

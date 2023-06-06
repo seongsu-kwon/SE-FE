@@ -2,8 +2,9 @@ import { DateType, PostMutate } from "@types";
 
 import { isSameDateTime } from "./dateUtils";
 
-export const commentsSizeFormat = (commentsSize: number, max = 99) =>
-  commentsSize > max ? max + "+" : commentsSize + "";
+export const commentsSizeFormat = (commentsSize: number, max = 99) => {
+  return commentsSize > max ? max + "+" : commentsSize + "";
+};
 
 export const isModified = (
   createdDateTime: DateType,

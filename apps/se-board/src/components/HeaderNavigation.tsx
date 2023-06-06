@@ -30,7 +30,7 @@ import { useRecoilValue } from "recoil";
 import { useNavigatePage } from "@/hooks";
 import { useLogout } from "@/react-query/hooks/auth";
 import { mobileHeaderState } from "@/store/mobileHeaderState";
-import { user } from "@/store/user";
+import { userState } from "@/store/user";
 
 import { Logo } from "./Logo";
 
@@ -64,13 +64,14 @@ export const DesktopHeaderNavigation = ({
   menuList: Menu[];
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
-
+  const { goToLoginPage, goToMyPage } = useNavigatePage();
+  const { mutate: logout } = useLogout();
+  const userInfo = useRecoilValue(userState);
   return (
     <Center
       as="header"
-      position={{ base: "fixed", md: "static" }}
+      position={{ base: "fixed", md: "relative" }}
+      zIndex={10}
       w="full"
       bgColor="white"
       shadow="base"
@@ -92,14 +93,19 @@ export const DesktopHeaderNavigation = ({
             </Wrap>
           </Box>
           <ButtonGroup>
-            {user.hasAuth() ? (
-              <Button
-                onClick={() => logout()}
-                variant="primary-outline"
-                rounded="full"
-              >
-                로그아웃
-              </Button>
+            {userInfo.accessToken ? (
+              <>
+                <Button onClick={goToMyPage} variant="link" color="gray.7">
+                  {userInfo.nickname}
+                </Button>
+                <Button
+                  onClick={() => logout()}
+                  variant="primary-outline"
+                  rounded="full"
+                >
+                  로그아웃
+                </Button>
+              </>
             ) : (
               <Button
                 onClick={goToLoginPage}
@@ -137,8 +143,9 @@ const DrawerNavigation = ({
   menuList,
   ...props
 }: DrawerNavigationProps) => {
-  const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
+  const { goToLoginPage, goToMyPage } = useNavigatePage();
+  const { mutate: logout } = useLogout();
+  const userInfo = useRecoilValue(userState);
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
@@ -147,10 +154,38 @@ const DrawerNavigation = ({
         <DrawerCloseButton />
         {/* 로그인 했을 때 DrawerHeader 보여주기 */}
         <DrawerHeader borderBottomWidth="1px">
-          <Flex alignItems="center" gap="1rem">
-            <Avatar />
-            <Text>홍길동</Text>
-          </Flex>
+          {userInfo.accessToken ? (
+            <Flex
+              onClick={() => {
+                goToMyPage();
+                onClose();
+              }}
+              alignItems="center"
+              gap="1rem"
+              _hover={{
+                cursor: "pointer",
+              }}
+            >
+              <Avatar />
+              <Text>{userInfo.nickname}</Text>
+            </Flex>
+          ) : (
+            <Flex
+              onClick={() => {
+                goToLoginPage();
+                onClose();
+              }}
+              alignItems="center"
+              pl="1rem"
+              _hover={{
+                cursor: "pointer",
+              }}
+            >
+              <Text fontSize="md" color="gray.6">
+                로그인이 필요합니다
+              </Text>
+            </Flex>
+          )}
         </DrawerHeader>
         <DrawerBody>
           <Wrap>
@@ -160,7 +195,7 @@ const DrawerNavigation = ({
           </Wrap>
         </DrawerBody>
         <DrawerFooter borderTopWidth="1px">
-          {user.hasAuth() ? (
+          {userInfo.accessToken ? (
             <Button onClick={() => logout()} variant="primary" w="full">
               로그아웃
             </Button>
@@ -179,7 +214,9 @@ export const HeaderNavigation = () => {
   const open = useRecoilValue(mobileHeaderState);
 
   const { goToLoginPage } = useNavigatePage();
-  const { refetch: logout } = useLogout();
+  const { mutate: logout } = useLogout();
+  const userInfo = useRecoilValue(userState);
+
   return (
     <Box display={open ? "block" : "none"}>
       <Flex
@@ -189,7 +226,7 @@ export const HeaderNavigation = () => {
         py="0.5rem"
       >
         <Logo size="3rem" />
-        {user.hasAuth() ? (
+        {userInfo.accessToken ? (
           <Button
             onClick={() => logout()}
             variant="primary-outline"

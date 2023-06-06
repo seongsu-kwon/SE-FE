@@ -1,3 +1,5 @@
+import { AuthorDTO, DateType, Pageable } from "@types";
+
 declare module "@types" {
   interface SubComment {
     commentId: number;
@@ -66,6 +68,35 @@ declare module "@types" {
     contents: string;
     isAnonymous: boolean;
     isReadOnlyAuthor: boolean;
+  }
+
+  interface FetchCommentListResponse {
+    content: CommentListItemDTO[];
+    pageable: Pageable;
+    totalPages: number;
+    totalElements: number;
+    last: boolean;
+    numberOfElements: number;
+    size: number;
+    number: number;
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    };
+    first: boolean;
+    empty: boolean;
+  }
+
+  interface CommentListItemDTO {
+    commentId: number;
+    superCommendId: number | null;
+    tagCommetId: number | null;
+    postId: number;
+    author: AuthorDTO;
+    contents: string;
+    createdAt: DateType;
+    modifiedAt: DateType;
   }
 
   interface Sort {
