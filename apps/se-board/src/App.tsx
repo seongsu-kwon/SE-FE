@@ -23,6 +23,7 @@ import {
   SEMenuEdit,
 } from "./pages/admin";
 import { BoardPage } from "./pages/board/BoardPage";
+import { MainPage } from "./pages/main/MainPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import { BookmarkPage } from "./pages/profile/BookmarkPage";
 import { ProfileCommentListPage } from "./pages/profile/CommentListPage";
@@ -100,6 +101,7 @@ const MenuRouter = () => {
       element: <MainLayout />,
       children: [
         ...dynamicRoutes,
+        { path: "", element: <MainPage /> },
         {
           path: "/posts/:postId",
           element: <PostPage />,
