@@ -65,7 +65,6 @@ instance.interceptors.response.use(
       alert("로그인이 필요합니다");
       window.location.href = "/login";
     } else if (error.response.data.code === 108) {
-      console.log("성공");
       const {
         data: { accessToken, refreshToken },
       } = await reissueToken(getStoredRefreshToken()!);

@@ -15,6 +15,15 @@ import {
 } from "./pages";
 import { BoardPage } from "./pages/board/BoardPage";
 import { PageNotFound } from "./pages/PageNotFound";
+import { BookmarkPage } from "./pages/profile/BookmarkPage";
+import { ProfileCommentListPage } from "./pages/profile/CommentListPage";
+import { KumohCertificationPage } from "./pages/profile/KumohCertificationPage";
+import { NickNameChangePage } from "./pages/profile/NicknameChangePage";
+import { NotificationSettingPage } from "./pages/profile/NotificationSetting";
+import { PasswordChangepage } from "./pages/profile/PasswordChangePage";
+import { ProfilePostListPage } from "./pages/profile/PostListPage";
+import { ProfilePage } from "./pages/profile/ProfilePage";
+import { WithdrawalPage } from "./pages/profile/WithdrawalPage";
 import { useReissueToken } from "./react-query/hooks/auth";
 import { useFetchMenuList } from "./react-query/hooks/useMenu";
 import { menuListState } from "./store/menu";
@@ -82,6 +91,54 @@ const MenuRouter = () => {
       element: <MainLayout />,
       children: [
         ...dynamicRoutes,
+        {
+          path: "/posts/:postId",
+          element: <PostPage />,
+        },
+        {
+          path: "/profile/:userId",
+          element: <ProfilePage />,
+        },
+        {
+          path: "/profile/:userId/posts",
+          element: <ProfilePostListPage />,
+        },
+        {
+          path: "/profile/:userId/comments",
+          element: <ProfileCommentListPage />,
+        },
+        {
+          path: "/profile/:userId/posts/:postId",
+          element: <PostPage />,
+        },
+        {
+          path: "/profile/:userId/comments",
+          element: <ProfilePostListPage />,
+        },
+        {
+          path: "/profile/bookmark",
+          element: <BookmarkPage />,
+        },
+        {
+          path: "/profile/edit",
+          element: <NickNameChangePage />,
+        },
+        {
+          path: "/profile/password/edit",
+          element: <PasswordChangepage />,
+        },
+        {
+          path: "/profile/kumoh-certification",
+          element: <KumohCertificationPage />,
+        },
+        {
+          path: "/profile/notification/setting",
+          element: <NotificationSettingPage />,
+        },
+        {
+          path: "/profile/withdrawal",
+          element: <WithdrawalPage />,
+        },
         {
           path: "*",
           element: <PageNotFound />,

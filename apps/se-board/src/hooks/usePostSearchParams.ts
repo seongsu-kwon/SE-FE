@@ -18,7 +18,6 @@ export const usePostSearchParams = () => {
   });
 
   useEffect(() => {
-    console.log("~~~~~");
     const page = Number(searchParams.get("page"));
     if (Number.isInteger(page) && page > 0) {
       console.log("page : ", page);

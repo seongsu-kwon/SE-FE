@@ -44,4 +44,9 @@ declare module "@types" {
     provider: string;
     subject: string;
   }
+
+  interface ChangePasswordRequestDTO {
+    nowPassword: string;
+    newPassword: string;
+  }
 }

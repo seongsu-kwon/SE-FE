@@ -1,4 +1,25 @@
+import { atom } from "recoil";
+
 import { getStoredRefreshToken } from "@/api/storage";
+
+export const roleNames = {
+  ROLE_KUMOH: "금오인",
+};
+
+export const userState = atom<{
+  accessToken: string;
+  nickname: string;
+  email: string;
+  roles: string[];
+}>({
+  key: "userState",
+  default: {
+    accessToken: "",
+    nickname: "",
+    email: "",
+    roles: [],
+  },
+});
 
 class User {
   private accessToken: string = "";

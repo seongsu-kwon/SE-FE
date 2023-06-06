@@ -1,18 +1,20 @@
 import { Divider, Flex } from "@chakra-ui/react";
-import { PostListItem as PostListItemType } from "@types";
+import { CommentListItemDTO } from "@types";
 import { Fragment } from "react";
 
-import { Pagination, PostListItem } from "@/components";
+import { Pagination } from "@/components";
 import { usePagination } from "@/hooks";
 
-export const PostList = ({
+import { CommentListItem } from "./CommentListItem";
+
+export const CommentList = ({
   data,
   totalItems = 0,
   perPage = 25,
   onChange,
   page,
 }: {
-  data?: PostListItemType[];
+  data?: CommentListItemDTO[];
   totalItems?: number;
   perPage?: number;
   page?: number;
@@ -28,9 +30,9 @@ export const PostList = ({
   );
   return (
     <Flex direction="column" pt="56px" pb="54px" w="full">
-      {data?.map((notice, i) => (
+      {data?.map((item, i) => (
         <Fragment key={i}>
-          <PostListItem {...notice} />
+          <CommentListItem {...item} />
           <Divider />
         </Fragment>
       ))}
