@@ -39,7 +39,7 @@ export const WritingEditor = ({
               onSuccess: (data) => {
                 console.log(data);
                 resolve({
-                  default: `http://202.31.202.9${data?.fileMetaDataList[0].url}`, // TODO: 서버 주소 변경
+                  default: `${process.env.REACT_APP_API_FILE_ENDPOINT}${data?.fileMetaDataList[0].url}`, // TODO: 서버 주소 변경
                 });
               },
               onError: (error) => {

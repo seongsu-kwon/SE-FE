@@ -45,5 +45,7 @@ export const errorHandle = (error: unknown) => {
     case 303:
       // 댓글 없음
       return NoneCommentAlert();
+    default:
+      return;
   }
 };

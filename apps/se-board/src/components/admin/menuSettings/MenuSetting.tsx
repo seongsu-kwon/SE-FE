@@ -14,10 +14,12 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { MenuInfomation } from "@types";
+import { MenuInfo as DetailMenuInfo, MenuInfomation, Role } from "@types";
 import { useEffect, useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
+import { useGetRoleInfos } from "@/react-query/hooks";
+import { useGetMenuInfo } from "@/react-query/hooks/useMenu";
 import { semanticColors } from "@/styles";
 
 import {
@@ -34,15 +36,23 @@ import {
 import { MenuDelete } from "./MenuDelete";
 import { ExternalMenuInfo, MenuInfo } from "./MenuInfo";
 
-const BoardSetting = ({ menuId }: { menuId: number }) => {
+const BoardSetting = ({
+  menuId,
+  info,
+  roleList,
+}: {
+  menuId: number;
+  info: DetailMenuInfo;
+  roleList: Role[];
+}) => {
   const { menuName, menuID, setMenuName, setMenuID, onNameChange, onIDChange } =
     useMenuInfo();
   const [newCategory, setNewCategory] = useState<string>("");
   const [newCategoryId, setNewCategoryId] = useState<string>("");
 
   useEffect(() => {
-    setMenuName("공지사항");
-    setMenuID("notice");
+    setMenuName(info.name);
+    setMenuID(info.urlId);
   });
 
   return (
@@ -73,6 +83,9 @@ const BoardSetting = ({ menuId }: { menuId: number }) => {
         <Divider borderColor="gray.6" my="0.5rem" />
 
         <AuthoritySetting
+          roleList={roleList}
+          authority1={info.access}
+          authority2={info.menuExpose}
           authorityName1="게시판 접근 권한"
           authorityName2="메뉴 노출 대상"
         />
@@ -97,13 +110,14 @@ const BoardSetting = ({ menuId }: { menuId: number }) => {
           borderColor="gray.3"
           overflowY="auto"
         >
-          <CategorySetting menuId={menuId} />
+          <CategorySetting menuId={menuId} roleList={roleList} />
         </Box>
         <CategoryInput
           newCategory={newCategory}
           onNewCategoryChange={(e) => setNewCategory(e.target.value)}
           newCategoryId={newCategoryId}
           onNewCategoryIdChange={(e) => setNewCategoryId(e.target.value)}
+          roleList={roleList}
         />
       </Box>
 
@@ -120,7 +134,13 @@ const BoardSetting = ({ menuId }: { menuId: number }) => {
   );
 };
 
-const ExternalSetting = () => {
+const ExternalSetting = ({
+  info,
+  roleList,
+}: {
+  info: DetailMenuInfo;
+  roleList: Role[];
+}) => {
   const {
     menuName,
     menuURL,
@@ -131,8 +151,8 @@ const ExternalSetting = () => {
   } = useMenuInfo();
 
   useEffect(() => {
-    setMenuName("채용");
-    setMenuURL("https://cs.kumoh.ac.kr/cs/sub0602.do");
+    setMenuName(info.name);
+    setMenuURL(info.externalUrl);
   });
 
   return (
@@ -162,7 +182,10 @@ const ExternalSetting = () => {
 
         <Divider borderColor="gray.6" my="0.5rem" />
 
-        <ExposureTargetAuthoritySetting />
+        <ExposureTargetAuthoritySetting
+          authority={info.menuExpose}
+          roleList={roleList}
+        />
 
         <Box textAlign="right">
           <Button variant="primary" mr={{ md: "1rem" }}>
@@ -186,16 +209,50 @@ const ExternalSetting = () => {
 
 interface GroupSettingProps {
   subMenu: MenuInfomation[];
+  info: DetailMenuInfo;
+  roleList: Role[];
 }
 
-const GroupSetting = ({ subMenu }: GroupSettingProps) => {
+const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
+  const [subMenuId, setSubMenuId] = useState<number>(subMenu[0].menuId);
+
+  const { data } = useGetMenuInfo(subMenuId);
+
+  const [menuDetail, setMenuDetail] = useState<DetailMenuInfo>({
+    name: "",
+    description: "",
+    externalUrl: "",
+    urlId: "",
+    access: {
+      option: "ALL",
+      roles: [],
+    },
+    write: {
+      option: "ALL",
+      roles: [],
+    },
+    manage: {
+      option: "ALL",
+      roles: [],
+    },
+    menuExpose: {
+      option: "ALL",
+      roles: [],
+    },
+  });
   const { menuName, menuID, setMenuName, setMenuID, onNameChange, onIDChange } =
     useMenuInfo();
 
   useEffect(() => {
-    setMenuName("예약");
-    setMenuID("reservation");
+    setMenuName(info.name);
+    setMenuID(info.urlId);
   });
+
+  useEffect(() => {
+    if (!data) return;
+
+    setMenuDetail(data);
+  }, [data]);
 
   return (
     <Box>
@@ -219,6 +276,7 @@ const GroupSetting = ({ subMenu }: GroupSettingProps) => {
                 key={menu.menuId}
                 wordBreak="keep-all"
                 _selected={{ borderColor: semanticColors.primary }}
+                onClick={() => setSubMenuId(menu.menuId)}
               >
                 {menu.name}
               </Tab>
@@ -251,7 +309,10 @@ const GroupSetting = ({ subMenu }: GroupSettingProps) => {
 
               <Divider borderColor="gray.6" my="0.5rem" />
 
-              <ExposureTargetAuthoritySetting />
+              <ExposureTargetAuthoritySetting
+                authority={info.menuExpose}
+                roleList={roleList}
+              />
 
               <Divider borderColor="gray.6" my="0.5rem" />
 
@@ -276,7 +337,13 @@ const GroupSetting = ({ subMenu }: GroupSettingProps) => {
           </TabPanel>
           {subMenu.map((menu) => (
             <TabPanel key={menu.menuId} my="20px" p="0">
-              {settingComponent(menu.menuId, menu.type, menu.subMenu)}
+              {settingComponent(
+                menu.menuId,
+                menu.type,
+                menu.subMenu,
+                menuDetail,
+                roleList
+              )}
             </TabPanel>
           ))}
         </TabPanels>
@@ -285,20 +352,20 @@ const GroupSetting = ({ subMenu }: GroupSettingProps) => {
   );
 };
 
-function creationComponent(type: string) {
+function creationComponent(type: string, roleList: Role[]) {
   switch (type) {
     case "GROUP":
-      return <GroupCreation />;
+      return <GroupCreation roleList={roleList} />;
     case "BOARD":
-      return <BoardCreation />;
+      return <BoardCreation roleList={roleList} />;
     case "EXTERNAL":
-      return <ExternalCreation />;
+      return <ExternalCreation roleList={roleList} />;
     default:
       return <></>;
   }
 }
 
-const MenuCreation = () => {
+const MenuCreation = ({ roleList }: { roleList: Role[] }) => {
   const [value, setValue] = useState("GROUP");
 
   return (
@@ -319,7 +386,7 @@ const MenuCreation = () => {
           </Stack>
         </RadioGroup>
       </Box>
-      {creationComponent(value)}
+      {creationComponent(value, roleList)}
     </Box>
   );
 };
@@ -327,17 +394,21 @@ const MenuCreation = () => {
 function settingComponent(
   menuId: number,
   type: string,
-  subMenu: MenuInfomation[]
+  subMenu: MenuInfomation[],
+  info: DetailMenuInfo,
+  roleList: Role[]
 ) {
   switch (type) {
     case "BOARD":
-      return <BoardSetting menuId={menuId} />;
+      return <BoardSetting menuId={menuId} info={info} roleList={roleList} />;
     case "EXTERNAL":
-      return <ExternalSetting />;
+      return <ExternalSetting info={info} roleList={roleList} />;
     case "MENU":
-      return <GroupSetting subMenu={subMenu || []} />;
+      return (
+        <GroupSetting subMenu={subMenu || []} info={info} roleList={roleList} />
+      );
     case "ADD":
-      return <MenuCreation />;
+      return <MenuCreation roleList={roleList} />;
   }
 }
 
@@ -346,9 +417,54 @@ interface MenuSettingProps {
 }
 
 export const MenuSetting = ({ menuInfo }: MenuSettingProps) => {
+  const { data } = useGetMenuInfo(menuInfo.menuId);
+  const { data: RoleList } = useGetRoleInfos();
+
+  const [info, setInfo] = useState<DetailMenuInfo>({
+    name: "",
+    description: "",
+    externalUrl: "",
+    urlId: "",
+    access: {
+      option: "ALL",
+      roles: [],
+    },
+    write: {
+      option: "ALL",
+      roles: [],
+    },
+    manage: {
+      option: "ALL",
+      roles: [],
+    },
+    menuExpose: {
+      option: "ALL",
+      roles: [],
+    },
+  });
+  const [roleList, setRoleList] = useState<Role[]>([]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setInfo(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (!RoleList) return;
+
+    setRoleList(RoleList.roles);
+  }, [RoleList]);
+
   return (
     <Box>
-      {settingComponent(menuInfo.menuId, menuInfo.type, menuInfo.subMenu)}
+      {settingComponent(
+        menuInfo.menuId,
+        menuInfo.type,
+        menuInfo.subMenu,
+        info,
+        roleList
+      )}
     </Box>
   );
 };
