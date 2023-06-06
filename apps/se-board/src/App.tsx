@@ -193,6 +193,10 @@ const MenuRouter = () => {
           path: "mainPageSetting",
           element: <MainPageSetting />,
         },
+        {
+          path: "*",
+          element: <PageNotFound />,
+        },
       ],
     },
     {

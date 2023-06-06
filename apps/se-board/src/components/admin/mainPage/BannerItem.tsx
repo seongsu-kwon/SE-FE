@@ -139,10 +139,10 @@ export const BannerItem = ({
             objectFit="contain"
             src={
               !isModify
-                ? `${process.env.REACT_APP_API_FILE_ENDPOINT}${fileMetaData.url}`
+                ? `${process.env.REACT_APP_FILE_ENDPOINT}${fileMetaData.url}`
                 : newFileMetaData
-                ? `${process.env.REACT_APP_API_FILE_ENDPOINT}${newFileMetaData.url}`
-                : `${process.env.REACT_APP_API_FILE_ENDPOINT}${fileMetaData.url}`
+                ? `${process.env.REACT_APP_FILE_ENDPOINT}${newFileMetaData.url}`
+                : `${process.env.REACT_APP_FILE_ENDPOINT}${fileMetaData.url}`
             }
             alt={fileMetaData.originalFileName}
           />
