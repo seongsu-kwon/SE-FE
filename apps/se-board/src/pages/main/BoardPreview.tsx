@@ -1,4 +1,4 @@
-import { Divider, Flex, Heading, Img, Stack } from "@chakra-ui/react";
+import { Divider, Flex, Heading, Img, Skeleton, Stack } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -51,6 +51,23 @@ export const BoardPreview = ({
           </Fragment>
         ))}
       </Flex>
+    </Stack>
+  );
+};
+
+export const BoardPreviewSkeleton = () => {
+  return (
+    <Stack w="full">
+      <Skeleton
+        w="full"
+        h="4.5rem"
+        mb={{ base: "1rem", md: "2rem" }}
+      ></Skeleton>
+      <Skeleton w="full" h="5rem" />
+      <Skeleton w="full" h="5rem" />
+      <Skeleton w="full" h="5rem" />
+      <Skeleton w="full" h="5rem" />
+      <Skeleton w="full" h="5rem" />
     </Stack>
   );
 };

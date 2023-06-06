@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 
+import { fetchBanners } from "@/api/mainpage";
 import {
   fetchMenuList,
   getCategory,
@@ -78,4 +79,8 @@ export const useGetSelectedMainPageMenus = () => {
       errorHandle(err);
     },
   });
+};
+
+export const useFetchBanners = () => {
+  return useQuery(["banners"], fetchBanners, {});
 };

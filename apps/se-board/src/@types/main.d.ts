@@ -23,4 +23,14 @@ declare module "@types" {
     menuName: string;
     urlId: string;
   }
+
+  interface BannerDTO {
+    fileMetaData: {
+      fileMetaDataId: number;
+      originalFileName: string;
+      storedFileName: string;
+      url: string;
+    };
+    bannerUrl: string;
+  }
 }
