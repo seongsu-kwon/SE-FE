@@ -7,7 +7,7 @@ import { isCheckedMenuCount } from "@/utils/menuUtils";
 
 import { Logo } from "../Logo";
 
-const menuExample = ["공지사항", "자유게시판", "학사", "채용", "팀 매칭"];
+const menuExample = ["메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5"];
 
 interface Props {
   menuList: (MainPageMenu & { isChecked: boolean })[];
@@ -27,7 +27,7 @@ const DesktopLayout = ({ menuList }: Props) => {
           h="1.75rem"
           borderY="1px solid"
           borderColor="gray.3"
-          fontSize="xs"
+          fontSize={{ base: "8px", md: "xs" }}
           alignItems="center"
           justifyContent="space-around"
         >
@@ -62,7 +62,7 @@ const DesktopLayout = ({ menuList }: Props) => {
           <Logo size="2rem" />
           <Flex justifyContent="space-between">
             {menuExample.map((menu) => (
-              <Text px="0.5rem">{menu}</Text>
+              <Text px={{ base: "0.25rem", md: "0.5rem" }}>{menu}</Text>
             ))}
           </Flex>
           <Box
@@ -81,7 +81,7 @@ const DesktopLayout = ({ menuList }: Props) => {
           </Box>
         </Flex>
 
-        <Box mx="auto" w="65%" py="0.75rem">
+        <Box mx="auto" w={{ base: "80%", md: "65%" }} py="0.75rem">
           <Flex
             w="100%"
             h="7.5rem"
@@ -108,11 +108,12 @@ const DesktopLayout = ({ menuList }: Props) => {
                     <Flex
                       w="full"
                       h="2rem"
-                      px="1.5rem"
+                      px={{ base: "0.5rem", md: "1.5rem" }}
                       justifyContent="space-between"
                       alignItems="center"
                       bgColor="gray.3"
                       rounded="md"
+                      fontSize={{ base: "xs", md: "sm" }}
                       fontWeight="bold"
                     >
                       {v.name}
@@ -135,8 +136,6 @@ const DesktopLayout = ({ menuList }: Props) => {
 };
 
 export const MobileLayout = ({ menuList }: Props) => {
-  const menuListCount = useMemo(() => isCheckedMenuCount(menuList), [menuList]);
-
   const postTable = useCallback(() => {
     const postTable = [];
 
@@ -166,7 +165,7 @@ export const MobileLayout = ({ menuList }: Props) => {
   return (
     <>
       <Box
-        w="35%"
+        w={{ base: "full", md: "35%" }}
         mx="auto"
         mt="1rem"
         minH="30rem"

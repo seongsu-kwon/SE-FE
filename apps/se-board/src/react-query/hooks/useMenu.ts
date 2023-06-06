@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 
 import { fetchBanners } from "@/api/mainpage";
@@ -6,8 +6,10 @@ import {
   fetchMenuList,
   getCategory,
   getMainPageMenus,
+  getMenuInfo,
   getMenuList,
   getSelectedMainPageMenus,
+  putMainPageMenus,
 } from "@/api/menu";
 import { menuListState } from "@/store/menu";
 import { errorHandle } from "@/utils/errorHandling";
@@ -83,4 +85,23 @@ export const useGetSelectedMainPageMenus = () => {
 
 export const useFetchBanners = () => {
   return useQuery(["banners"], fetchBanners, {});
+};
+
+export const usePutMainPageMenus = () => {
+  return useMutation((menuIds: number[]) => putMainPageMenus(menuIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useGetMenuInfo = (categoryId: number) => {
+  return useQuery(["menuInfo", categoryId], () => getMenuInfo(categoryId), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };

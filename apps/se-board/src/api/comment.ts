@@ -1,4 +1,5 @@
 import {
+  AllComments,
   Comment,
   FetchCommentListResponse,
   PostCommentData,
@@ -109,4 +110,40 @@ export const fetchCommentListByLoginId = ({
     headers: { ...getJWTHeader() },
     params: { page, perPage },
   });
+};
+
+export const getAdminComments = (
+  page: number = 0,
+  perPage: number = 25,
+  isReadOnlyAuthor?: boolean,
+  isReported?: boolean
+) => {
+  let url = "/admin/comments?";
+
+  if (isReadOnlyAuthor !== undefined) {
+    url += `isReadOnlyAuthor=${isReadOnlyAuthor}&`;
+  }
+
+  if (isReported !== undefined) {
+    url += `isReported=${isReported}&`;
+  }
+
+  return _axios<AllComments>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: (url += `page=${page}&perPage=${perPage}`),
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const deleteCommentList = (commentIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/comments",
+    method: HTTP_METHODS.DELETE,
+    data: { commentIds },
+  }).then((res) => res.data);
 };

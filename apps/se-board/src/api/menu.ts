@@ -1,6 +1,7 @@
 import {
   MainPageMenus,
   Menu,
+  MenuInfo,
   MenuList,
   SelectedMainPageMenus,
   SubMenus,
@@ -52,6 +53,29 @@ export const getSelectedMainPageMenus = () => {
       ...getJWTHeader(),
     },
     url: "admin/mainPageMenus",
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const putMainPageMenus = (menuIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/mainPageMenus",
+    method: HTTP_METHODS.PUT,
+    data: {
+      menuIds,
+    },
+  }).then((res) => res.data);
+};
+
+export const getMenuInfo = (categoryId: number) => {
+  return _axios<MenuInfo>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/authorization/category/${categoryId}`,
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };

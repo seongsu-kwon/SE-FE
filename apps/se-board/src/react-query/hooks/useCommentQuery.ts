@@ -1,15 +1,18 @@
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { Comment, PutCommentData } from "@types";
 
 import {
   deleteComment,
+  deleteCommentList,
   deleteReply,
   fetchComments,
+  getAdminComments,
   postComment,
   postReply,
   putComment,
   putReply,
 } from "@/api/comment";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetCommentQuery = (postId?: string) => {
   return useInfiniteQuery(
@@ -53,4 +56,35 @@ export const usePutReplyMutation = (postId?: string) => {
 
 export const useDeleteReplyMutation = (postId?: string) => {
   return useMutation((replyId: number) => deleteReply(replyId));
+};
+
+export const useGetAdminCommmentQuery = (
+  page?: number,
+  perPage?: number,
+  isReadOnlyAuthor?: boolean,
+  isReported?: boolean
+) => {
+  return useQuery(
+    ["adminComments"],
+    () => getAdminComments(page, perPage, isReadOnlyAuthor, isReported),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const useDeleteCommentListMutation = () => {
+  return useMutation(
+    (commentIdList: number[]) => deleteCommentList(commentIdList),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
 };
