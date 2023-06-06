@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 
 import {
@@ -7,6 +7,7 @@ import {
   getMainPageMenus,
   getMenuList,
   getSelectedMainPageMenus,
+  putMainPageMenus,
 } from "@/api/menu";
 import { menuListState } from "@/store/menu";
 import { errorHandle } from "@/utils/errorHandling";
@@ -74,6 +75,14 @@ export const useGetSelectedMainPageMenus = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const usePutMainPageMenus = () => {
+  return useMutation((menuIds: number[]) => putMainPageMenus(menuIds), {
     onError: (err) => {
       errorHandle(err);
     },

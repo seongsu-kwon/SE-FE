@@ -7,7 +7,6 @@ import {
   MenuButton,
   MenuItemOption,
   MenuList,
-  MenuOptionGroup,
   Text,
 } from "@chakra-ui/react";
 import { MainPageMenu } from "@types";
@@ -18,11 +17,14 @@ import { LayoutExample } from "@/components/layouts";
 import {
   useGetMainPageMenus,
   useGetSelectedMainPageMenus,
+  usePutMainPageMenus,
 } from "@/react-query/hooks/useMenu";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const MenuItemManage = () => {
   const { data } = useGetMainPageMenus();
-  const { data: selectedMenu } = useGetSelectedMainPageMenus();
+  const { data: selectedMenu, refetch } = useGetSelectedMainPageMenus();
+  const { mutate, isLoading } = usePutMainPageMenus();
 
   const [menuList, setMenuList] = useState<
     (MainPageMenu & { isChecked: boolean })[]
@@ -34,9 +36,8 @@ export const MenuItemManage = () => {
     const newMenuList = data.menus.map((value) => ({
       ...value,
       isChecked:
-        menuList.find((v) => v.categoryId === value.categoryId)?.isChecked ||
         selectedMenu.mainPageMenus.find(
-          (menu) => menu.id === value.categoryId
+          (menu) => menu.menuId === value.categoryId
         ) !== undefined,
     }));
 
@@ -48,6 +49,25 @@ export const MenuItemManage = () => {
     const newMenuList = [...menuList];
     newMenuList[index].isChecked = !newMenuList[index].isChecked;
     setMenuList(newMenuList);
+  };
+
+  const onUpdate = () => {
+    if (menuList.filter((v) => v.isChecked).length < 1)
+      return alert("메뉴를 선택해 주세요.");
+
+    const updateMenuList = new Array<number>();
+    menuList
+      .filter((v) => v.isChecked)
+      .map((v) => updateMenuList.push(v.categoryId));
+
+    mutate(updateMenuList, {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        errorHandle(error);
+      },
+    });
   };
 
   return (
@@ -83,17 +103,16 @@ export const MenuItemManage = () => {
           메뉴
         </MenuButton>
         <MenuList>
-          <MenuOptionGroup type="checkbox">
-            {menuList.map((value) => (
-              <MenuItemOption
-                value={String(value.categoryId)}
-                onClick={() => onClick(value)}
-                isChecked={value.isChecked}
-              >
-                {value.name}
-              </MenuItemOption>
-            ))}
-          </MenuOptionGroup>
+          {menuList.map((value) => (
+            <MenuItemOption
+              value={String(value.categoryId)}
+              type="checkbox"
+              isChecked={value.isChecked}
+              onClick={() => onClick(value)}
+            >
+              {value.name}
+            </MenuItemOption>
+          ))}
         </MenuList>
       </Menu>
 
@@ -119,11 +138,11 @@ export const MenuItemManage = () => {
         <Button
           variant="primary"
           mr="0.5rem"
+          isLoading={isLoading}
+          loadingText="등록 중..."
           isDisabled={menuList.find((v) => v.isChecked === true) === undefined}
           onClick={() => {
-            setMenuList(
-              menuList.map((value) => ({ ...value, isChecked: false }))
-            );
+            onUpdate();
           }}
         >
           등록

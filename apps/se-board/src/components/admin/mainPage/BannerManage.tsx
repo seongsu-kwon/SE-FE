@@ -1,34 +1,23 @@
 import { Box, Button, Divider, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { Banner } from "@types";
+import { useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
+
+import { useBannerQuery } from "@/react-query/hooks/useBannerQuery";
 
 import { AddBannerItem, BannerItem } from "./BannerItem";
 
-const data = {
-  list: [
-    {
-      img: "",
-      startDate: "2023-05-22",
-      endDate: "2023-05-29",
-      link: "www.kumoh.ac.kr",
-    },
-    {
-      img: "",
-      startDate: "2023-05-22",
-      endDate: "2023-05-29",
-      link: "www.kumoh.ac.kr",
-    },
-    {
-      img: "",
-      startDate: "2023-05-22",
-      endDate: "2023-05-29",
-      link: "www.kumoh.ac.kr",
-    },
-  ],
-};
-
 export const BannerManage = () => {
+  const { data, refetch } = useBannerQuery();
+
   const [isAdd, setIsAdd] = useState(false);
+  const [banners, setBanners] = useState<Banner[]>([]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setBanners(data.content);
+  }, [data]);
 
   return (
     <Box
@@ -47,15 +36,17 @@ export const BannerManage = () => {
       >
         배너 관리
       </Text>
-      {data.list.map((value) => (
+      {banners.map((value) => (
         <BannerItem
-          img={value.img}
+          bannerId={value.bannerId}
+          fileMetaData={value.fileMetaData}
           startDate={value.startDate}
           endDate={value.endDate}
-          link={value.link}
+          link={value.bannerUrl}
+          refetch={refetch}
         />
       ))}
-      {isAdd && <AddBannerItem setIsAdd={setIsAdd} />}
+      {isAdd && <AddBannerItem setIsAdd={setIsAdd} refetch={refetch} />}
       <Divider my="1rem" />
       <Box textAlign="right">
         <Button

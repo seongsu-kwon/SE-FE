@@ -55,3 +55,16 @@ export const getSelectedMainPageMenus = () => {
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };
+
+export const putMainPageMenus = (menuIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/mainPageMenus",
+    method: HTTP_METHODS.PUT,
+    data: {
+      menuIds,
+    },
+  }).then((res) => res.data);
+};

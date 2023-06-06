@@ -79,7 +79,7 @@ declare module "@types" {
     page?: number;
     perPage?: number;
   }
-  
+
   interface Attachment {
     fileMetaDataId: number;
     originalFileName: string;

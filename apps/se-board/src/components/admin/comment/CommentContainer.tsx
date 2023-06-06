@@ -41,7 +41,6 @@ export const CommentContainer = () => {
   }, [data]);
 
   useEffect(() => {
-    console.log(selectedTab);
     refetch();
   }, [selectedTab, page]);
 
