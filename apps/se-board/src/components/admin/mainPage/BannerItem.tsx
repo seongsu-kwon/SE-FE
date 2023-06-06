@@ -390,7 +390,7 @@ export const AddBannerItem = ({ setIsAdd, refetch }: AddBannerItemProps) => {
     <Box pt="1rem">
       {fileMetaData ? (
         <Image
-          src={`${process.env.REACT_APP_API_FILE_ENDPOINT}${fileMetaData.url}`}
+          src={`${process.env.REACT_APP_FILE_ENDPOINT}${fileMetaData.url}`}
           alt={fileMetaData.originalFileName}
           w="1000px"
           h="180px"
