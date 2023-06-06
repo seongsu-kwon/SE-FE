@@ -15,6 +15,7 @@ import {
 } from "./pages";
 import {
   AdminMenuEdit,
+  CommentManage,
   GeneralSetting,
   MainPageSetting,
   MemberGroupManage,
@@ -119,6 +120,10 @@ const MenuRouter = () => {
         {
           path: "general",
           element: <GeneralSetting />,
+        },
+        {
+          path: "commentManage",
+          element: <CommentManage />,
         },
         {
           path: "mainPageSetting",
