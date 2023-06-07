@@ -8,6 +8,7 @@ import { commentsSizeFormat, isModified } from "@/utils/postUtils";
 
 interface PostListItemProps extends PostListItemInfo {
   ellipsisLine?: 0 | 1 | 2;
+  menuUrlId?: string;
 }
 
 export const PostListItem = ({
@@ -22,15 +23,19 @@ export const PostListItem = ({
   commentSize,
   pined,
   ellipsisLine = 0,
+  menuUrlId,
 }: PostListItemProps) => {
   const navigate = useNavigate();
-  const goDetailPost = () => navigate(`${postId}`);
+  const goDetailPost = () => {
+    if (menuUrlId) navigate(`${menuUrlId}/${postId}`);
+    else navigate(`${postId}`);
+  };
   return (
     <Flex
       onClick={goDetailPost}
       alignItems="flex-start"
       p="1rem"
-      _hover={{ bgColor: "gray.0" }}
+      _hover={{ bgColor: "gray.0", cursor: "pointer" }}
     >
       {pined && <Icon as={BsPinAngleFill} mr="0.5rem" color="primary" />}
       <Flex direction="column" gap="0.5rem" mr="2rem">

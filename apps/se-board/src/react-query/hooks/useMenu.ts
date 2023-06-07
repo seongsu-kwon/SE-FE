@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { PostMenuInfo } from "@types";
 import { useSetRecoilState } from "recoil";
 
+import { fetchBanners } from "@/api/mainpage";
 import {
   deleteCategory,
   fetchMenuList,
@@ -85,6 +86,10 @@ export const useGetSelectedMainPageMenus = () => {
       errorHandle(err);
     },
   });
+};
+
+export const useFetchBanners = () => {
+  return useQuery(["banners"], fetchBanners, {});
 };
 
 export const usePutMainPageMenus = () => {
