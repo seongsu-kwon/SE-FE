@@ -40,7 +40,7 @@ const columns: ColumnDef<CommentListItemDTO, any>[] = [
       const { postId } = info.row.original;
       return (
         <Flex alignItems="center">
-          <Link to={`posts/${postId}`}>
+          <Link to={`/posts/${postId}`}>
             <Text
               noOfLines={1}
               _hover={{
