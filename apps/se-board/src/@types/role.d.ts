@@ -17,4 +17,13 @@ declare module "@types" {
     option: string;
     roles: string[];
   }
+
+  interface PutRoleData {
+    option: string;
+    roles: SelectRoleList[];
+  }
+  interface SelectRoleList {
+    roleName: string;
+    roleId: number;
+  }
 }

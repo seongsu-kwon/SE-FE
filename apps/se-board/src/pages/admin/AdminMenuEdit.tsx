@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
-import { AdminSettingRole, Role } from "@types";
+import { AdminSettingRole, PutRoleData, Role } from "@types";
 import { useEffect, useState } from "react";
 
 import { PageHeaderTitle } from "@/components/admin";
@@ -12,6 +12,49 @@ export const AdminMenuEdit = () => {
 
   const [roleList, setRoleList] = useState<Role[]>([]);
   const [settingRoleList, setSettingRoleList] = useState<AdminSettingRole>();
+  const [seSelectedRole, setSeSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [accountListSelectedRole, setAccountListSelectedRole] =
+    useState<PutRoleData>({
+      option: "",
+      roles: [],
+    });
+  const [accountPolicySelectedRole, setAccountPolicySelectedRole] =
+    useState<PutRoleData>({
+      option: "",
+      roles: [],
+    });
+  const [roleSelectedRole, setRoleSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [postSelectedRole, setPostSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [commentSelectedRole, setCommentSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [attachmentSelectedRole, setAttachmentSelectedRole] =
+    useState<PutRoleData>({
+      option: "",
+      roles: [],
+    });
+  const [trashSelectedRole, setTrashSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [settingSelectedRole, setSettingSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [mainSelectedRole, setMainSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
 
   useEffect(() => {
     if (!RoleList) return;
@@ -49,6 +92,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={seSelectedRole}
+              setSelectedRole={setSeSelectedRole}
             />
           </Flex>
         </Box>
@@ -75,6 +120,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={accountListSelectedRole}
+              setSelectedRole={setAccountListSelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -89,6 +136,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={accountPolicySelectedRole}
+              setSelectedRole={setAccountPolicySelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -103,6 +152,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={roleSelectedRole}
+              setSelectedRole={setRoleSelectedRole}
             />
           </Flex>
         </Box>
@@ -129,6 +180,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={postSelectedRole}
+              setSelectedRole={setPostSelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -143,6 +196,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={commentSelectedRole}
+              setSelectedRole={setCommentSelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -157,6 +212,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={attachmentSelectedRole}
+              setSelectedRole={setAttachmentSelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -171,6 +228,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={trashSelectedRole}
+              setSelectedRole={setTrashSelectedRole}
             />
           </Flex>
         </Box>
@@ -197,6 +256,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={settingSelectedRole}
+              setSelectedRole={setSettingSelectedRole}
             />
           </Flex>
           <Flex alignItems="center" my="0.5rem">
@@ -211,6 +272,8 @@ export const AdminMenuEdit = () => {
                 }
               }
               roleList={roleList}
+              selectedRole={mainSelectedRole}
+              setSelectedRole={setMainSelectedRole}
             />
           </Flex>
         </Box>

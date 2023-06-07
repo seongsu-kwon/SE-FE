@@ -1,8 +1,9 @@
 import { Box, Button, Divider, Heading } from "@chakra-ui/react";
-import { Role } from "@types";
+import { PutRoleData, Role } from "@types";
 import { useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
+import { usePostAddCategory } from "@/react-query/hooks/useMenu";
 
 import {
   AuthoritySetting,
@@ -14,10 +15,53 @@ import { ExternalMenuInfo, MenuInfo } from "./MenuInfo";
 
 interface MenuCreationProps {
   roleList: Role[];
+  infoRefetch: () => void;
 }
 
-export const GroupCreation = ({ roleList }: MenuCreationProps) => {
+export const GroupCreation = ({ roleList, infoRefetch }: MenuCreationProps) => {
+  const { mutate, isLoading } = usePostAddCategory();
+
   const { menuName, menuID, onNameChange, onIDChange } = useMenuInfo();
+  const [selectedRole, setSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+
+  const onAddGroup = () => {
+    mutate(
+      {
+        categoryType: "MENU",
+        data: {
+          superCategoryId: null,
+          name: menuName,
+          urlId: menuID,
+          externalUrl: "",
+          description: "",
+          access: {
+            option: "",
+            roles: [],
+          },
+          write: {
+            option: "",
+            roles: [],
+          },
+          manage: {
+            option: "",
+            roles: [],
+          },
+          expose: {
+            option: selectedRole.option,
+            roles: selectedRole.roles.map((role) => role.roleId),
+          },
+        },
+      },
+      {
+        onSuccess: () => {
+          infoRefetch();
+        },
+      }
+    );
+  };
 
   return (
     <Box
@@ -36,13 +80,23 @@ export const GroupCreation = ({ roleList }: MenuCreationProps) => {
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
-      <ExposureTargetAuthoritySetting roleList={roleList} />
+      <ExposureTargetAuthoritySetting
+        roleList={roleList}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+      />
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
       <MenuAdd />
       <Box textAlign="right">
-        <Button variant="primary" mr={{ md: "1rem" }}>
+        <Button
+          variant="primary"
+          mr={{ md: "1rem" }}
+          onClick={onAddGroup}
+          isLoading={isLoading}
+          loadingText="등록 중"
+        >
           저장
         </Button>
       </Box>
@@ -50,8 +104,17 @@ export const GroupCreation = ({ roleList }: MenuCreationProps) => {
   );
 };
 
-export const BoardCreation = ({ roleList }: MenuCreationProps) => {
+export const BoardCreation = ({ roleList, infoRefetch }: MenuCreationProps) => {
   const { menuName, menuID, onNameChange, onIDChange } = useMenuInfo();
+
+  const [selectedRole1, setSelectedRole1] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [selectedRole2, setSelectedRole2] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
   const [newCategory, setNewCategory] = useState<string>("");
   const [newCategoryId, setNewCategoryId] = useState<string>("");
 
@@ -75,6 +138,10 @@ export const BoardCreation = ({ roleList }: MenuCreationProps) => {
 
         <AuthoritySetting
           roleList={roleList}
+          selectedRole1={selectedRole1}
+          selectedRole2={selectedRole2}
+          setSelectedRole1={setSelectedRole1}
+          setSelectedRole2={setSelectedRole2}
           authorityName1="게시판 접근 권한"
           authorityName2="메뉴 노출 대상"
         />
@@ -101,6 +168,7 @@ export const BoardCreation = ({ roleList }: MenuCreationProps) => {
           <CategorySetting menuId={-1} roleList={roleList} />
         </Box>
         <CategoryInput
+          menuId={0} //TODO: menuId 받아서 넣어주기
           newCategory={newCategory}
           onNewCategoryChange={(e) => setNewCategory(e.target.value)}
           newCategoryId={newCategoryId}
@@ -112,8 +180,53 @@ export const BoardCreation = ({ roleList }: MenuCreationProps) => {
   );
 };
 
-export const ExternalCreation = ({ roleList }: MenuCreationProps) => {
+export const ExternalCreation = ({
+  roleList,
+  infoRefetch,
+}: MenuCreationProps) => {
+  const { mutate, isLoading } = usePostAddCategory();
+
   const { menuName, menuURL, onNameChange, onURLChange } = useMenuInfo();
+  const [selectedRole, setSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+
+  const onAddCategory = () => {
+    mutate(
+      {
+        categoryType: "EXTERNAL",
+        data: {
+          superCategoryId: null,
+          name: menuName,
+          urlId: "",
+          externalUrl: menuURL,
+          description: "",
+          access: {
+            option: "",
+            roles: [],
+          },
+          write: {
+            option: "",
+            roles: [],
+          },
+          manage: {
+            option: "",
+            roles: [],
+          },
+          expose: {
+            option: selectedRole.option,
+            roles: selectedRole.roles.map((role) => role.roleId),
+          },
+        },
+      },
+      {
+        onSuccess: () => {
+          infoRefetch();
+        },
+      }
+    );
+  };
 
   return (
     <Box
@@ -132,10 +245,20 @@ export const ExternalCreation = ({ roleList }: MenuCreationProps) => {
 
       <Divider borderColor="gray.6" my="0.5rem" />
 
-      <ExposureTargetAuthoritySetting roleList={roleList} />
+      <ExposureTargetAuthoritySetting
+        roleList={roleList}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+      />
 
       <Box textAlign="right">
-        <Button variant="primary" mr={{ md: "1rem" }}>
+        <Button
+          variant="primary"
+          mr={{ md: "1rem" }}
+          onClick={onAddCategory}
+          isLoading={isLoading}
+          loadingText="등록 중"
+        >
           저장
         </Button>
       </Box>
