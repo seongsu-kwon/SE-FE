@@ -14,12 +14,17 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { MenuInfo as DetailMenuInfo, MenuInfomation, Role } from "@types";
+import {
+  MenuInfo as DetailMenuInfo,
+  MenuInfomation,
+  PutRoleData,
+  Role,
+} from "@types";
 import { useEffect, useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
 import { useGetRoleInfos } from "@/react-query/hooks";
-import { useGetMenuInfo } from "@/react-query/hooks/useMenu";
+import { useGetMenuInfo, usePostMenuInfo } from "@/react-query/hooks/useMenu";
 import { semanticColors } from "@/styles";
 
 import {
@@ -40,20 +45,66 @@ const BoardSetting = ({
   menuId,
   info,
   roleList,
+  infoRefetch,
 }: {
   menuId: number;
   info: DetailMenuInfo;
   roleList: Role[];
+  infoRefetch: () => void;
 }) => {
+  const { mutate: postMenuInfoMutate, isLoading } = usePostMenuInfo();
+
   const { menuName, menuID, setMenuName, setMenuID, onNameChange, onIDChange } =
     useMenuInfo();
+  const [selectedRole1, setSelectedRole1] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+  const [selectedRole2, setSelectedRole2] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
   const [newCategory, setNewCategory] = useState<string>("");
   const [newCategoryId, setNewCategoryId] = useState<string>("");
 
   useEffect(() => {
     setMenuName(info.name);
     setMenuID(info.urlId);
-  });
+  }, [info]);
+
+  const onSettingMenu = () => {
+    const menuInfo = {
+      name: menuName,
+      description: "",
+      externalUrl: "",
+      urlId: menuID,
+      access: {
+        option: selectedRole1.option,
+        roles: selectedRole1.roles.map((v) => v.roleId),
+      },
+      expose: {
+        option: selectedRole2.option,
+        roles: selectedRole2.roles.map((v) => v.roleId),
+      },
+      manage: {
+        option: "",
+        roles: [],
+      },
+      write: {
+        option: "",
+        roles: [],
+      },
+    };
+
+    postMenuInfoMutate(
+      { categoryId: menuId, data: menuInfo },
+      {
+        onSuccess: () => {
+          infoRefetch();
+        },
+      }
+    );
+  };
 
   return (
     <Box>
@@ -86,12 +137,23 @@ const BoardSetting = ({
           roleList={roleList}
           authority1={info.access}
           authority2={info.menuExpose}
+          selectedRole1={selectedRole1}
+          selectedRole2={selectedRole2}
+          setSelectedRole1={setSelectedRole1}
+          setSelectedRole2={setSelectedRole2}
           authorityName1="게시판 접근 권한"
           authorityName2="메뉴 노출 대상"
         />
 
         <Box textAlign="right" mr={{ md: "1rem" }}>
-          <Button variant="primary">저장</Button>
+          <Button
+            variant="primary"
+            onClick={onSettingMenu}
+            isLoading={isLoading}
+            loadingText="저장 중"
+          >
+            저장
+          </Button>
         </Box>
       </Box>
 
@@ -113,6 +175,7 @@ const BoardSetting = ({
           <CategorySetting menuId={menuId} roleList={roleList} />
         </Box>
         <CategoryInput
+          menuId={menuId}
           newCategory={newCategory}
           onNewCategoryChange={(e) => setNewCategory(e.target.value)}
           newCategoryId={newCategoryId}
@@ -135,12 +198,18 @@ const BoardSetting = ({
 };
 
 const ExternalSetting = ({
+  menuId,
   info,
   roleList,
+  infoRefetch,
 }: {
+  menuId: number;
   info: DetailMenuInfo;
   roleList: Role[];
+  infoRefetch: () => void;
 }) => {
+  const { mutate: postMenuInfoMutate, isLoading } = usePostMenuInfo();
+
   const {
     menuName,
     menuURL,
@@ -150,10 +219,49 @@ const ExternalSetting = ({
     onURLChange,
   } = useMenuInfo();
 
+  const [selectedRole, setSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+
   useEffect(() => {
     setMenuName(info.name);
     setMenuURL(info.externalUrl);
   });
+
+  const onSettingMenu = () => {
+    const menuInfo = {
+      name: menuName,
+      description: "",
+      externalUrl: menuURL,
+      urlId: "",
+      access: {
+        option: "",
+        roles: [],
+      },
+      expose: {
+        option: selectedRole.option,
+        roles: selectedRole.roles.map((v) => v.roleId),
+      },
+      manage: {
+        option: "",
+        roles: [],
+      },
+      write: {
+        option: "",
+        roles: [],
+      },
+    };
+
+    postMenuInfoMutate(
+      { categoryId: menuId, data: menuInfo },
+      {
+        onSuccess: () => {
+          infoRefetch();
+        },
+      }
+    );
+  };
 
   return (
     <Box>
@@ -185,10 +293,18 @@ const ExternalSetting = ({
         <ExposureTargetAuthoritySetting
           authority={info.menuExpose}
           roleList={roleList}
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
         />
 
         <Box textAlign="right">
-          <Button variant="primary" mr={{ md: "1rem" }}>
+          <Button
+            variant="primary"
+            mr={{ md: "1rem" }}
+            onClick={onSettingMenu}
+            isLoading={isLoading}
+            loadingText="저장 중"
+          >
             저장
           </Button>
         </Box>
@@ -208,15 +324,29 @@ const ExternalSetting = ({
 };
 
 interface GroupSettingProps {
+  menuId: number;
   subMenu: MenuInfomation[];
   info: DetailMenuInfo;
   roleList: Role[];
+  infoRefetch: () => void;
 }
 
-const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
-  const [subMenuId, setSubMenuId] = useState<number>(subMenu[0].menuId);
+const GroupSetting = ({
+  menuId,
+  subMenu,
+  info,
+  roleList,
+  infoRefetch,
+}: GroupSettingProps) => {
+  const { mutate: postMenuInfoMutate, isLoading } = usePostMenuInfo();
 
-  const { data } = useGetMenuInfo(subMenuId);
+  const [subMenuId, setSubMenuId] = useState<number>(subMenu[0].menuId);
+  const [selectedRole, setSelectedRole] = useState<PutRoleData>({
+    option: "",
+    roles: [],
+  });
+
+  const { data, refetch: menuDetailRefetch } = useGetMenuInfo(subMenuId);
 
   const [menuDetail, setMenuDetail] = useState<DetailMenuInfo>({
     name: "",
@@ -224,19 +354,19 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
     externalUrl: "",
     urlId: "",
     access: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     write: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     manage: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     menuExpose: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
   });
@@ -253,6 +383,40 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
 
     setMenuDetail(data);
   }, [data]);
+
+  const onSettingMenu = () => {
+    const menuInfo = {
+      name: menuName,
+      description: "",
+      externalUrl: "",
+      urlId: menuID,
+      access: {
+        option: "",
+        roles: [],
+      },
+      expose: {
+        option: selectedRole.option,
+        roles: selectedRole.roles.map((v) => v.roleId),
+      },
+      manage: {
+        option: "",
+        roles: [],
+      },
+      write: {
+        option: "",
+        roles: [],
+      },
+    };
+
+    postMenuInfoMutate(
+      { categoryId: menuId, data: menuInfo },
+      {
+        onSuccess: () => {
+          infoRefetch();
+        },
+      }
+    );
+  };
 
   return (
     <Box>
@@ -312,6 +476,8 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
               <ExposureTargetAuthoritySetting
                 authority={info.menuExpose}
                 roleList={roleList}
+                selectedRole={selectedRole}
+                setSelectedRole={setSelectedRole}
               />
 
               <Divider borderColor="gray.6" my="0.5rem" />
@@ -319,7 +485,13 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
               <MenuAdd />
 
               <Box textAlign="right">
-                <Button variant="primary" mr={{ md: "1rem" }}>
+                <Button
+                  variant="primary"
+                  mr={{ md: "1rem" }}
+                  onClick={onSettingMenu}
+                  isLoading={isLoading}
+                  loadingText="저장 중"
+                >
                   저장
                 </Button>
               </Box>
@@ -342,6 +514,7 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
                 menu.type,
                 menu.subMenu,
                 menuDetail,
+                menuDetailRefetch,
                 roleList
               )}
             </TabPanel>
@@ -352,20 +525,30 @@ const GroupSetting = ({ subMenu, info, roleList }: GroupSettingProps) => {
   );
 };
 
-function creationComponent(type: string, roleList: Role[]) {
+function creationComponent(
+  type: string,
+  roleList: Role[],
+  infoRefetch: () => void
+) {
   switch (type) {
     case "GROUP":
-      return <GroupCreation roleList={roleList} />;
+      return <GroupCreation roleList={roleList} infoRefetch={infoRefetch} />;
     case "BOARD":
-      return <BoardCreation roleList={roleList} />;
+      return <BoardCreation roleList={roleList} infoRefetch={infoRefetch} />;
     case "EXTERNAL":
-      return <ExternalCreation roleList={roleList} />;
+      return <ExternalCreation roleList={roleList} infoRefetch={infoRefetch} />;
     default:
       return <></>;
   }
 }
 
-const MenuCreation = ({ roleList }: { roleList: Role[] }) => {
+const MenuCreation = ({
+  roleList,
+  infoRefetch,
+}: {
+  roleList: Role[];
+  infoRefetch: () => void;
+}) => {
   const [value, setValue] = useState("GROUP");
 
   return (
@@ -386,7 +569,7 @@ const MenuCreation = ({ roleList }: { roleList: Role[] }) => {
           </Stack>
         </RadioGroup>
       </Box>
-      {creationComponent(value, roleList)}
+      {creationComponent(value, roleList, infoRefetch)}
     </Box>
   );
 };
@@ -396,19 +579,40 @@ function settingComponent(
   type: string,
   subMenu: MenuInfomation[],
   info: DetailMenuInfo,
+  infoRefetch: () => void,
   roleList: Role[]
 ) {
   switch (type) {
     case "BOARD":
-      return <BoardSetting menuId={menuId} info={info} roleList={roleList} />;
+      return (
+        <BoardSetting
+          menuId={menuId}
+          info={info}
+          roleList={roleList}
+          infoRefetch={infoRefetch}
+        />
+      );
     case "EXTERNAL":
-      return <ExternalSetting info={info} roleList={roleList} />;
+      return (
+        <ExternalSetting
+          menuId={menuId}
+          info={info}
+          roleList={roleList}
+          infoRefetch={infoRefetch}
+        />
+      );
     case "MENU":
       return (
-        <GroupSetting subMenu={subMenu || []} info={info} roleList={roleList} />
+        <GroupSetting
+          menuId={menuId}
+          subMenu={subMenu || []}
+          info={info}
+          roleList={roleList}
+          infoRefetch={infoRefetch}
+        />
       );
     case "ADD":
-      return <MenuCreation roleList={roleList} />;
+      return <MenuCreation roleList={roleList} infoRefetch={infoRefetch} />;
   }
 }
 
@@ -417,7 +621,7 @@ interface MenuSettingProps {
 }
 
 export const MenuSetting = ({ menuInfo }: MenuSettingProps) => {
-  const { data } = useGetMenuInfo(menuInfo.menuId);
+  const { data, refetch: infoRefetch } = useGetMenuInfo(menuInfo.menuId);
   const { data: RoleList } = useGetRoleInfos();
 
   const [info, setInfo] = useState<DetailMenuInfo>({
@@ -426,19 +630,19 @@ export const MenuSetting = ({ menuInfo }: MenuSettingProps) => {
     externalUrl: "",
     urlId: "",
     access: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     write: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     manage: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
     menuExpose: {
-      option: "ALL",
+      option: "",
       roles: [],
     },
   });
@@ -463,6 +667,7 @@ export const MenuSetting = ({ menuInfo }: MenuSettingProps) => {
         menuInfo.type,
         menuInfo.subMenu,
         info,
+        infoRefetch,
         roleList
       )}
     </Box>

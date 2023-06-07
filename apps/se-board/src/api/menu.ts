@@ -3,6 +3,7 @@ import {
   Menu,
   MenuInfo,
   MenuList,
+  PostMenuInfo,
   SelectedMainPageMenus,
   SubMenus,
 } from "@types";
@@ -77,5 +78,57 @@ export const getMenuInfo = (categoryId: number) => {
     },
     url: `/admin/authorization/category/${categoryId}`,
     method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const postMenuInfo = (categoryId: number, data: PostMenuInfo) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/authorization/category/${categoryId}`,
+    method: HTTP_METHODS.POST,
+    data,
+  }).then((res) => res.data);
+};
+
+export const deleteCategory = (categoryId: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu/${categoryId}`,
+    method: HTTP_METHODS.DELETE,
+  }).then((res) => res.data);
+};
+
+export const postMoveCategory = (
+  fromCategoryId: number,
+  toCategoryId: number
+) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/posts/migrate`,
+    method: HTTP_METHODS.POST,
+    data: {
+      fromCategoryId,
+      toCategoryId,
+    },
+  }).then((res) => res.data);
+};
+
+export const postAddCategory = (
+  categoryType: string,
+  data: { superCategoryId: number | null } & PostMenuInfo
+) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu?categoryType=${categoryType}`,
+    method: HTTP_METHODS.POST,
+    data,
   }).then((res) => res.data);
 };

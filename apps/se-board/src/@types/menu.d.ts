@@ -83,4 +83,27 @@ declare module "@types" {
     manage: MenuSettingRole;
     menuExpose: MenuSettingRole;
   }
+
+  interface PostMenuInfo {
+    name: string;
+    description: string;
+    externalUrl: string;
+    urlId: string;
+    access: {
+      option: string;
+      roles: number[];
+    };
+    write: {
+      option: string;
+      roles: number[];
+    };
+    manage: {
+      option: string;
+      roles: number[];
+    };
+    expose: {
+      option: string;
+      roles: number[];
+    };
+  }
 }
