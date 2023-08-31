@@ -14,6 +14,7 @@ declare module "@types" {
   }
 
   interface MenuSettingRole {
+    name: string;
     option: string;
     roles: string[];
   }

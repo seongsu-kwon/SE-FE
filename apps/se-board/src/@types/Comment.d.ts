@@ -1,4 +1,4 @@
-import { AuthorDTO, DateType, Pageable } from "@types";
+import { AuthorDTO, DateType, Pageable, PageableInfo } from "@types";
 
 declare module "@types" {
   interface SubComment {
@@ -115,35 +115,15 @@ declare module "@types" {
       urlId: string;
     };
     postId: number;
-    author: {
-      loginId: string;
-      name: string;
-    };
+    author: AuthorDTO;
     contents: string;
-    createdAt: string;
-    modifiedAt: string;
+    createdAt: DateType;
+    modifiedAt: DateType;
     isReported: boolean;
     isReadOnlyAuthor: boolean;
   }
 
-  interface AllComments {
-    totalPages: number; // 전체 페이지
-    totalElements: number; // 전체 댓글 갯수
-    numberOfElements: number; // 현재 페이지 댓글 갯수
-    pageable: {
-      pageSize: number; // 페이지당 댓글 갯수
-      pageNumber: number; //현재 페이지
-      unpaged: boolean;
-      paged: boolean;
-      sort: Sort;
-      offset: number;
-    };
-    sort: Sort;
-    first: boolean;
-    last: boolean;
-    size: number;
+  interface AllComments extends PageableInfo {
     content: AdminCommentContent[];
-    number: number;
-    empty: boolean;
   }
 }

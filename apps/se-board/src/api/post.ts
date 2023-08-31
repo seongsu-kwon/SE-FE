@@ -1,4 +1,5 @@
 import {
+  DeletedPostList,
   FetchCommentListResponse,
   FetchPostListParams,
   FetchPostListResponse,
@@ -199,4 +200,36 @@ export const fetchBookmarkListByLoginId = ({
     headers: { ...getJWTHeader() },
     params: { page, perPage },
   });
+};
+
+export const getDeletedPosts = (page: number = 0, perPage: number = 25) => {
+  return _axios<DeletedPostList>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/posts/deleted?page=${page}&perPage=${perPage}`,
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const restorePosts = (postIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/posts/restore",
+    method: HTTP_METHODS.POST,
+    data: postIds,
+  }).then((res) => res.data);
+};
+
+export const permanentlyDeletePosts = (postIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/posts/permanent",
+    method: HTTP_METHODS.DELETE,
+    data: postIds,
+  }).then((res) => res.data);
 };

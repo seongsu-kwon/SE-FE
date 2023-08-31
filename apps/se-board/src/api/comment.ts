@@ -147,3 +147,35 @@ export const deleteCommentList = (commentIds: number[]) => {
     data: { commentIds },
   }).then((res) => res.data);
 };
+
+export const getDeletedComments = (page: number = 0, perPage: number = 25) => {
+  return _axios<AllComments>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/comments/deleted?page=${page}&perPage=${perPage}`,
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const restoreComments = (commentIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/comments/restore",
+    method: HTTP_METHODS.POST,
+    data: { commentIds },
+  }).then((res) => res.data);
+};
+
+export const permanentlyDeleteComments = (commentIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/comments/permanent",
+    method: HTTP_METHODS.DELETE,
+    data: { commentIds },
+  }).then((res) => res.data);
+};
