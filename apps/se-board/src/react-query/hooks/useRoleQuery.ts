@@ -11,6 +11,8 @@ export const useGetRoleInfos = (page = 0, perPage = 0) => {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
+      staleTime: 1000 * 60 * 10, // 10분
+      cacheTime: 1000 * 60 * 11, // 11분
       onError: (err) => {
         errorHandle(err);
       },
