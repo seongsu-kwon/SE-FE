@@ -23,6 +23,7 @@ import {
   RecycleBinPage,
   SEMenuEditPage,
 } from "./pages/admin";
+import { PostManagePage } from "./pages/admin/post/PostManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
 import { MainPage } from "./pages/main/MainPage";
 import { PageNotFound } from "./pages/PageNotFound";
@@ -127,9 +128,14 @@ const MenuRouter = () => {
           path: "/profile/:userId/comments",
           element: <ProfilePostListPage />,
         },
+
         {
           path: "/profile/bookmark",
           element: <BookmarkPage />,
+        },
+        {
+          path: "/profile/bookmark/:postId",
+          element: <PostPage />,
         },
         {
           path: "/profile/edit",
@@ -186,12 +192,20 @@ const MenuRouter = () => {
           element: <GeneralSetting />,
         },
         {
+          path: "postManage",
+          element: <PostManagePage />,
+        },
+        {
           path: "commentManage",
           element: <CommentManage />,
         },
         {
           path: "mainPageSetting",
           element: <MainPageSetting />,
+        },
+        {
+          path: "*",
+          element: <PageNotFound />,
         },
       ],
     },

@@ -31,7 +31,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
           _hover={{ cursor: "pointer" }}
           onClick={() => onClickBanner(banner)}
           w="full"
-          objectFit="cover"
+          objectFit="contain"
           key={i}
           display={viewIndex === i ? "block" : "none"}
           src={`${process.env.REACT_APP_FILE_ENDPOINT}/${banner.fileMetaData.url}`}

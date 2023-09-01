@@ -39,6 +39,7 @@ import {
   BsWrenchAdjustable,
 } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
 import { user } from "@/store/user";
@@ -98,22 +99,26 @@ export const AdminLayout = () => {
   };
 
   return (
-    <Box minH="100vh" bgColor="gray.1">
+    <Box minH="100vh" bgColor="gray.0">
       <Show above="md">
         <DesktopAdminLayout onChange={onChange} />
       </Show>
       <Hide above="md">
         <MobileAdminLayout />
       </Hide>
-      <Box
-        ml={{ md: "280px" }}
-        pt={{ base: "56px", md: "0" }}
-        pb="2rem"
-        h="full"
-        textAlign="center"
-        px={{ base: "16px", md: isFullWidth ? "12px" : "120px" }}
-      >
-        <Outlet />
+      <Box ml={{ md: "280px" }}>
+        <Box
+          pt={{ base: "56px", md: "0" }}
+          pb="2rem"
+          mx="auto"
+          h="full"
+          textAlign="center"
+          transition="all 0.2s"
+          maxW={isFullWidth ? "100%" : "container.lg"}
+          px={{ base: "1rem" }}
+        >
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
@@ -137,7 +142,7 @@ const MobileAdminLayout = () => {
         <Button px="8px" bgColor="white" onClick={onOpen}>
           <BsList fontSize="32px" />
         </Button>
-        <Link href="/admin" _hover={{ textDecoration: "none" }}>
+        <Link as={RouterLink} to="/admin" _hover={{ textDecoration: "none" }}>
           <Box display="inline-block" textAlign="center" boxSize="3rem">
             <SELogo width="100%" height="100%" fill={semanticColors.primary} />
             <Text mt="-8px" fontSize="sm" color={semanticColors.primary}>
@@ -189,7 +194,6 @@ const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
         borderBottom={`1px solid ${openColors.gray[3]}`}
         justifyContent="flex-end"
         alignItems="center"
-        shadow="md"
       >
         <FormControl
           display="flex"
@@ -203,8 +207,9 @@ const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
           <Switch onChange={onChange} id="full-width" />
         </FormControl>
         <Link
+          as={RouterLink}
           mr="12px"
-          href="/"
+          to="/"
           color="blue.5"
           fontSize="2xl"
           fontWeight="semibold"
@@ -247,7 +252,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
       textAlign="center"
     >
       <Box display={{ base: "none", md: "block" }} my="20px">
-        <Link href="/admin" _hover={{ textDecoration: "none" }}>
+        <Link as={RouterLink} to="/admin" _hover={{ textDecoration: "none" }}>
           <Box display="inline-block" textAlign="center" boxSize="3.5rem">
             <SELogo width="100%" height="100%" fill={semanticColors.primary} />
             <Text mt="-6px" fontSize="16px" color={semanticColors.primary}>
@@ -284,7 +289,8 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
               {subCategoryItems.map((subCategoryItem) =>
                 subCategoryItem[item.key]?.map((subItem) => (
                   <Link
-                    href={`${subItem.url}`}
+                    as={RouterLink}
+                    to={`${subItem.url}`}
                     w="full"
                     fontSize="1rem"
                     _hover={{ textDecoration: "none" }}

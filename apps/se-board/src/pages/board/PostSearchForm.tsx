@@ -31,12 +31,12 @@ export const PostSearchForm = () => {
   const search = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!query) {
+    if (!inputs.query) {
       deleteQueryParam();
       deleteSearchOptionParam();
       deletePageParam();
     } else {
-      setSearchOptionParam(inputs.searchOption);
+      setSearchOptionParam(inputs.searchOption || "ALL");
       setQueryParam(inputs.query);
       deletePageParam();
     }
