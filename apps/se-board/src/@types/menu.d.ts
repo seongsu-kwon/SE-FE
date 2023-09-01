@@ -106,4 +106,23 @@ declare module "@types" {
       roles: number[];
     };
   }
+
+  interface MenuRoleInfo {
+    access: {
+      option: string;
+      roles: number[];
+    };
+    write: {
+      option: string;
+      roles: number[];
+    };
+    manage: {
+      option: string;
+      roles: number[];
+    };
+    expose: {
+      option: string;
+      roles: number[];
+    };
+  }
 }

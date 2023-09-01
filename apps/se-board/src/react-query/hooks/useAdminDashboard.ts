@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AdminSettingRole } from "@types";
 
-import { getAdminDashboard } from "@/api/admin";
+import { getAdminDashboard, postAdminMenuRollSetting } from "@/api/admin";
 import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetAdminDashboard = () => {
@@ -12,4 +13,15 @@ export const useGetAdminDashboard = () => {
       errorHandle(err);
     },
   });
+};
+
+export const usePostAdminMenuRollSetting = () => {
+  return useMutation(
+    (data: AdminSettingRole) => postAdminMenuRollSetting(data),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
 };

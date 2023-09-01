@@ -10,38 +10,30 @@ import {
 import { MenuInfomation } from "@types";
 import { useEffect, useState } from "react";
 import { BsChevronDown, BsPlusCircle } from "react-icons/bs";
+import { useSetRecoilState } from "recoil";
 
 import { PageHeaderTitle } from "@/components/admin";
-import { MenuSetting } from "@/components/admin/menuSettings";
+import { AddMenu, MenuEdit } from "@/components/admin/menuSettings";
 import { useGetMenuList } from "@/react-query/hooks/useMenu";
+import { boardMenuListState } from "@/store/menu";
+import { getBoardMenuList } from "@/utils/menuUtils";
 
-const AddMenu: MenuInfomation = {
-  menuId: -1,
-  name: "메뉴 추가",
-  urlId: "",
-  externalUrl: "",
-  type: "ADD",
-  subMenu: [],
-};
-
-export const SEMenuEdit = () => {
-  const { data } = useGetMenuList();
+export const SEMenuEditPage = () => {
+  const { data, refetch } = useGetMenuList();
 
   const [menuList, setMenuList] = useState<MenuInfomation[]>([]);
-  const [menuInfo, setMenuInfo] = useState<MenuInfomation>({
-    menuId: -1,
-    name: "",
-    urlId: "",
-    externalUrl: "",
-    type: "NULL",
-    subMenu: [],
-  });
+  const [selectedMenu, setSelectedMenu] = useState<
+    MenuInfomation | undefined
+  >();
+
+  const setBoardMenuList = useSetRecoilState(boardMenuListState);
 
   useEffect(() => {
     if (!data) return;
 
     setMenuList(data.menus);
-    setMenuInfo(data.menus[0]);
+    setSelectedMenu(data.menus[0]);
+    setBoardMenuList(getBoardMenuList(data.menus));
   }, [data]);
 
   return (
@@ -51,18 +43,19 @@ export const SEMenuEdit = () => {
         <MenuButton
           as={Button}
           rightIcon={<BsChevronDown />}
+          fontSize="lg"
           bg="white"
-          _hover={{ bg: "gray.0" }}
+          _hover={{ bg: "gray.3" }}
         >
-          {menuInfo.name === "" ? "설정 메뉴" : menuInfo.name}
+          {selectedMenu?.name || "메뉴 목록"}
         </MenuButton>
-        <MenuList paddingBottom="0">
+        <MenuList paddingBottom="0" shadow="2xl">
           {menuList.map((menu) => (
             <MenuItem
               id={menu.menuId + menu.type}
               key={menu.menuId}
               _hover={{ bg: "gray.1" }}
-              onClick={() => setMenuInfo(menu)}
+              onClick={() => setSelectedMenu(menu)}
             >
               {menu.name}
             </MenuItem>
@@ -73,15 +66,27 @@ export const SEMenuEdit = () => {
             borderColor="gray.3"
             bgColor="white"
             _hover={{ bg: "gray.1" }}
-            onClick={() => setMenuInfo(AddMenu)}
+            onClick={() =>
+              setSelectedMenu({
+                menuId: -1,
+                name: "메뉴 추가",
+                urlId: "",
+                externalUrl: "",
+                type: "ADD",
+                subMenu: [],
+              })
+            }
           >
             <Icon as={BsPlusCircle} mr="4px" />
             메뉴 추가
           </MenuItem>
         </MenuList>
       </Menu>
-
-      <MenuSetting menuInfo={menuInfo} />
+      {selectedMenu?.type !== "ADD" ? (
+        <MenuEdit menuInfo={selectedMenu} />
+      ) : (
+        <AddMenu />
+      )}
     </Box>
   );
 };

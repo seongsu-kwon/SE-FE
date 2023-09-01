@@ -79,7 +79,7 @@ const subCategoryItems: SubCategoryItemsProps[] = [
       { name: "게시글 관리", url: "/admin/postManage" },
       { name: "댓글 관리", url: "/admin/commentManage" },
       { name: "첨부파일 관리", url: "/admin/attachmentManage" },
-      { name: "휴지통", url: "/admin/trash" },
+      { name: "휴지통", url: "/admin/recycleBin" },
     ],
   },
   {

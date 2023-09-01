@@ -20,7 +20,8 @@ import {
   MainPageSetting,
   MemberGroupManage,
   MemberPolicy,
-  SEMenuEdit,
+  RecycleBinPage,
+  SEMenuEditPage,
 } from "./pages/admin";
 import { BoardPage } from "./pages/board/BoardPage";
 import { MainPage } from "./pages/main/MainPage";
@@ -162,7 +163,7 @@ const MenuRouter = () => {
       children: [
         {
           path: "seMenu",
-          element: <SEMenuEdit />,
+          element: <SEMenuEditPage />,
         },
         {
           path: "adminMenu",
@@ -175,6 +176,10 @@ const MenuRouter = () => {
         {
           path: "memberGroup",
           element: <MemberGroupManage />,
+        },
+        {
+          path: "recycleBin",
+          element: <RecycleBinPage />,
         },
         {
           path: "general",
