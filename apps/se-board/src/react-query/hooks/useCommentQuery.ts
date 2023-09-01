@@ -7,10 +7,13 @@ import {
   deleteReply,
   fetchComments,
   getAdminComments,
+  getDeletedComments,
+  permanentlyDeleteComments,
   postComment,
   postReply,
   putComment,
   putReply,
+  restoreComments,
 } from "@/api/comment";
 import { errorHandle } from "@/utils/errorHandling";
 
@@ -81,6 +84,42 @@ export const useGetAdminCommmentQuery = (
 export const useDeleteCommentListMutation = () => {
   return useMutation(
     (commentIdList: number[]) => deleteCommentList(commentIdList),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const useGetDeleteCommentsQuery = (page?: number, perPage?: number) => {
+  return useQuery(
+    ["deleteComments", page, perPage],
+    () => getDeletedComments(page, perPage),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 61,
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const usePostRestoreCommentsQuery = () => {
+  return useMutation((commentIds: number[]) => restoreComments(commentIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const usePermanentlyDeleteCommentsQuery = () => {
+  return useMutation(
+    (commentIds: number[]) => permanentlyDeleteComments(commentIds),
     {
       onError: (err) => {
         errorHandle(err);

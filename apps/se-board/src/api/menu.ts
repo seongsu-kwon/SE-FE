@@ -71,7 +71,7 @@ export const putMainPageMenus = (menuIds: number[]) => {
   }).then((res) => res.data);
 };
 
-export const getMenuInfo = (categoryId: number) => {
+export const getMenuInfo = (categoryId: number | undefined) => {
   return _axios<MenuInfo>({
     headers: {
       ...getJWTHeader(),

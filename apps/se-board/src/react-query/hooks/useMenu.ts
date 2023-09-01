@@ -44,6 +44,8 @@ export const useGetMenuList = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    staleTime: 1000 * 60 * 20,
+    cacheTime: 1000 * 60 * 21,
     onError: (err) => {
       errorHandle(err);
     },
@@ -58,7 +60,8 @@ export const useGetCategory = (categoryId: number) => {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
-      enabled: categoryId !== -1,
+      staleTime: 1000 * 60 * 20,
+      cacheTime: 1000 * 60 * 21,
       onError: (err) => {
         errorHandle(err);
       },
@@ -100,11 +103,14 @@ export const usePutMainPageMenus = () => {
   });
 };
 
-export const useGetMenuInfo = (categoryId: number) => {
-  return useQuery(["menuInfo", categoryId], () => getMenuInfo(categoryId), {
+export const useGetMenuRoleInfo = (categoryId: number | undefined) => {
+  return useQuery(["menuRoleInfo", categoryId], () => getMenuInfo(categoryId), {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    staleTime: 1000 * 60 * 20, // 20분
+    cacheTime: 1000 * 60 * 21, // 21분
+    enabled: !!categoryId,
     onError: (err) => {
       errorHandle(err);
     },
