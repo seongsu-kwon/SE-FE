@@ -71,7 +71,9 @@ export const SignupForm = () => {
         clearErrors("authCode");
       })
       .catch((err) => {
-        if (err.code === 111)
+        if (err.code === 110) {
+          setError("email", { message: "이미 사용중인 메일입니다" });
+        } else if (err.code === 111)
           setError("email", { message: "잘못된 이메일 형식입니다" });
       });
   };
