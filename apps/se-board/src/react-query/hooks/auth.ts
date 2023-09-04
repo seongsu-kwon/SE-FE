@@ -191,6 +191,8 @@ export const useReissueToken = () => {
     onError: () => {
       localStorage.removeItem("refresh_token");
       sessionStorage.removeItem("refresh_token");
+      window.alert("로그인이 만료되었습니다.");
+      window.location.href = "/";
     },
   });
 };
