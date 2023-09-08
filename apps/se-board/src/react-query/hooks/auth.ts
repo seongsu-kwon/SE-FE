@@ -31,11 +31,11 @@ import { fetchUserSimpleInfo } from "@/api/profile";
 import {
   getStoredRefreshToken,
   isMaintainLogin,
-  removeBearerToken,
+  setStoredAccessToken,
   setStoredRefreshToken,
 } from "@/api/storage";
 import { useNavigatePage } from "@/hooks";
-import { roleNames, user, userState } from "@/store/user";
+import { roleNames, userState } from "@/store/user";
 
 export const useRequestEmailAuthCode = () => {
   return useMutation((email: string) => requestEmailAuthCode(email));
@@ -94,21 +94,15 @@ export const useLogin = (maintainLogin: boolean = false) => {
   >((data: LoginFormFileds) => login(convertLoginFormFiledsToLoginDTO(data)), {
     onSuccess: (res) => {
       if (maintainLogin) {
+        setStoredAccessToken(res.data.accessToken, true);
         setStoredRefreshToken(res.data.refreshToken, true);
       } else {
+        setStoredAccessToken(res.data.accessToken);
         setStoredRefreshToken(res.data.refreshToken);
       }
-      user.setAccessToken(removeBearerToken(res.data.accessToken));
-      setUserState((prev) => ({
-        ...prev,
-        accessToken: removeBearerToken(res.data.accessToken),
-      }));
 
       fetchUserSimpleInfo().then((res) => {
         const { nickname, email, roles } = res.data;
-        user.setNickname(nickname);
-        user.setEmail(email);
-        user.setRoles(roles.map((v) => roleNames[v as keyof typeof roleNames]));
         setUserState((prev) => ({
           ...prev,
           nickname,
@@ -128,13 +122,9 @@ export const useKakaoLogin = async (id: string) => {
   const { goToMainPage } = useNavigatePage();
   return loginWithKakao(id).then((res) => {
     setStoredRefreshToken(res.data.refreshToken);
-    user.setAccessToken(removeBearerToken(res.data.accessToken));
 
     fetchUserSimpleInfo().then((res) => {
       const { nickname, email, roles } = res.data;
-      user.setNickname(nickname);
-      user.setEmail(email);
-      user.setRoles(roles);
       setUserState((prev) => ({
         ...prev,
         nickname,
@@ -167,19 +157,17 @@ export const useReissueToken = () => {
 
   return useMutation(() => reissueToken("Bearer " + getStoredRefreshToken()!), {
     onSuccess: (res) => {
-      user.setAccessToken(removeBearerToken(res.data.accessToken));
       setUserState((prev) => ({ ...prev, accessToken: res.data.accessToken }));
       if (isMaintainLogin()) {
+        setStoredAccessToken(res.data.accessToken, true);
         setStoredRefreshToken(res.data.refreshToken, true);
       } else {
+        setStoredAccessToken(res.data.accessToken);
         setStoredRefreshToken(res.data.refreshToken);
       }
 
       fetchUserSimpleInfo().then((res) => {
         const { nickname, email, roles } = res.data;
-        user.setNickname(nickname);
-        user.setEmail(email);
-        user.setRoles(roles);
         setUserState((prev) => ({
           ...prev,
           nickname,

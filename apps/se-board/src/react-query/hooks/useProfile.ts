@@ -14,9 +14,27 @@ import {
   fetchUserSimpleInfo,
   updateUserProfile,
 } from "@/api/profile";
-import { roleNames, user, userState } from "@/store/user";
+import { getStoredAccessToken } from "@/api/storage";
+import { roleNames, userState } from "@/store/user";
 
 import { queryKeys } from "../queryKeys";
+
+export const useFetchUserSimpleInfo = () => {
+  const setUserState = useSetRecoilState(userState);
+
+  return useQuery([queryKeys.profile], () => fetchUserSimpleInfo(), {
+    enabled: !!getStoredAccessToken(),
+    onSuccess: (res) => {
+      const { nickname, email, roles } = res.data;
+      setUserState((prev) => ({
+        ...prev,
+        nickname,
+        email,
+        roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
+      }));
+    },
+  });
+};
 
 export const useFetchUserProfile = (userId: string) => {
   return useQuery([queryKeys.profile, userId], () => fetchUserProfile(userId), {
@@ -30,9 +48,6 @@ export const useUpdateUserProfile = () => {
     onSuccess: () => {
       fetchUserSimpleInfo().then((res) => {
         const { nickname, email, roles } = res.data;
-        user.setNickname(nickname);
-        user.setEmail(email);
-        user.setRoles(roles.map((v) => roleNames[v as keyof typeof roleNames]));
         setUserState((prev) => ({
           ...prev,
           nickname,

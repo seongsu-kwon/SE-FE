@@ -1,17 +1,16 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { user } from "@/store/user";
-
 import { reissueToken } from "./auth";
 import {
+  getStoredAccessToken,
   getStoredRefreshToken,
   isMaintainLogin,
-  removeBearerToken,
+  setStoredAccessToken,
   setStoredRefreshToken,
 } from "./storage";
 
 export const getJWTHeader = () => {
-  const accessToken = user.getAccessToken();
+  const accessToken = getStoredAccessToken();
   return { Authorization: accessToken ? `Bearer ${accessToken}` : "" };
 };
 
@@ -68,11 +67,12 @@ instance.interceptors.response.use(
       const {
         data: { accessToken, refreshToken },
       } = await reissueToken(getStoredRefreshToken()!);
-      user.setAccessToken(removeBearerToken(accessToken));
       if (isMaintainLogin()) {
         setStoredRefreshToken(refreshToken, true);
+        setStoredAccessToken(accessToken, true);
       } else {
         setStoredRefreshToken(refreshToken);
+        setStoredAccessToken(accessToken);
       }
       error.config.headers = { ...error.config.headers, ...getJWTHeader() };
       return instance(error.config);

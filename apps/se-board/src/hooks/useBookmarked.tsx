@@ -5,10 +5,11 @@ import {
   useBookmarkDeleteMutation,
   useBookmarkPostMutation,
 } from "@/react-query/hooks";
-import { user } from "@/store/user";
+import { useUserState } from "@/store/user";
 
 export const useBookmarked = (postId: number, bookmarked: boolean) => {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
+  const { hasAuth } = useUserState();
   const { isLoading: deleteIsLoading, mutate: bookmarkDeleteMutate } =
     useBookmarkDeleteMutation();
   const { isLoading: enrollIsLoading, mutate: bookmarkPostMutate } =
@@ -21,7 +22,7 @@ export const useBookmarked = (postId: number, bookmarked: boolean) => {
   }, [bookmarked]);
 
   const toggleBookmark = () => {
-    if (!user.hasAuth()) {
+    if (hasAuth) {
       toast({
         title: "로그인 후 북마크 가능해요!",
         status: "error",

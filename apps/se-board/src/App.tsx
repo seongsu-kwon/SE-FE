@@ -4,7 +4,6 @@ import { useRecoilValue } from "recoil";
 
 import { AdminLayout, MainLayout } from "@/components/layouts";
 
-import { getStoredRefreshToken } from "./api/storage";
 import {
   LoginPage,
   NoticeWrite,
@@ -36,8 +35,8 @@ import { PasswordChangepage } from "./pages/profile/PasswordChangePage";
 import { ProfilePostListPage } from "./pages/profile/PostListPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { WithdrawalPage } from "./pages/profile/WithdrawalPage";
-import { useReissueToken } from "./react-query/hooks/auth";
 import { useFetchMenuList } from "./react-query/hooks/useMenu";
+import { useFetchUserSimpleInfo } from "./react-query/hooks/useProfile";
 import { menuListState } from "./store/menu";
 
 interface RoutesObject {
@@ -233,11 +232,7 @@ const MenuRouter = () => {
 };
 
 export const App = () => {
-  const { mutate: reissue } = useReissueToken();
-
-  useEffect(() => {
-    if (getStoredRefreshToken()) reissue();
-  }, []);
+  useFetchUserSimpleInfo();
 
   return (
     <BrowserRouter>
