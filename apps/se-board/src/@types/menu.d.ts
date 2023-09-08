@@ -44,20 +44,17 @@ declare module "@types" {
     subMenu: MenuInfomation[];
   }
 
-  interface MenuList {
-    menus: MenuInfomation[];
-  }
+  type MenuList = MenuInfomation[];
 
-  interface MainPageMenus {
-    menus: MainPageMenu[];
-  }
+  type MainPageMenus = MainPageMenu[];
 
-  interface SelectedMainPageMenus {
-    mainPageMenus: {
-      id: number;
-      menuId: number;
-    }[];
-  }
+  type SelectedMainPageMenus = {
+    id: number;
+    menuId: number;
+    name: string;
+    url: string;
+    description: string;
+  }[];
 
   interface MainPageMenu {
     categoryId: number;
