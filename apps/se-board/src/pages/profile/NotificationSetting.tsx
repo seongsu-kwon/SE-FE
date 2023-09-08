@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { useDebouncedCallback } from "use-debounce";
 
 import { useSignup } from "@/react-query/hooks/auth";
-import { user, userState } from "@/store/user";
+import { userState } from "@/store/user";
 
 export const NotificationSettingPage = () => {
   const [nicknameValid, setNicknameValid] = useState(false);
@@ -25,7 +25,7 @@ export const NotificationSettingPage = () => {
   const { checkDuplicatedNicnameMutation } = useSignup();
 
   const checkDuplicatedNickname = () => {
-    if (getValues("nickname") === user.getNickname()) return;
+    if (getValues("nickname") === userInfo.nickname) return;
     checkDuplicatedNicnameMutation
       .mutateAsync(getValues("nickname"))
       .then((res) => {

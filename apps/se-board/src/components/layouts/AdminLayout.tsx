@@ -42,7 +42,7 @@ import { Outlet } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
-import { user } from "@/store/user";
+import { useUserState } from "@/store/user";
 import { openColors, semanticColors } from "@/styles";
 
 interface LinkItemProps {
@@ -126,6 +126,7 @@ export const AdminLayout = () => {
 
 const MobileAdminLayout = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { hasAuth } = useUserState();
   const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (
     <>
@@ -163,7 +164,7 @@ const MobileAdminLayout = () => {
           />
           <MenuList>
             <MenuItem _hover={{ bgColor: "blue.1" }}>내 계정 조회</MenuItem>
-            {user.hasAuth() && (
+            {hasAuth && (
               <MenuItem _hover={{ bgColor: "blue.1" }}>로그아웃</MenuItem>
             )}
           </MenuList>
@@ -184,6 +185,7 @@ const MobileAdminLayout = () => {
 };
 
 const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
+  const { hasAuth } = useUserState();
   return (
     <>
       <SidebarContent />
@@ -230,7 +232,7 @@ const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
           />
           <MenuList>
             <MenuItem _hover={{ bgColor: "blue.1" }}>내 계정 조회</MenuItem>
-            {user.hasAuth() && (
+            {hasAuth && (
               <MenuItem _hover={{ bgColor: "blue.1" }}>로그아웃</MenuItem>
             )}
           </MenuList>

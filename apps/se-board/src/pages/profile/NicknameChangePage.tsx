@@ -21,7 +21,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { useNavigatePage } from "@/hooks";
 import { useSignup } from "@/react-query/hooks/auth";
 import { useUpdateUserProfile } from "@/react-query/hooks/useProfile";
-import { user, userState } from "@/store/user";
+import { userState } from "@/store/user";
 
 export const NickNameChangePage = () => {
   const [nicknameValid, setNicknameValid] = useState(false);
@@ -43,7 +43,7 @@ export const NickNameChangePage = () => {
   const { checkDuplicatedNicnameMutation } = useSignup();
 
   const checkDuplicatedNickname = () => {
-    if (getValues("nickname") === user.getNickname()) return;
+    if (getValues("nickname") === userInfo.nickname) return;
     checkDuplicatedNicnameMutation
       .mutateAsync(getValues("nickname"))
       .then((res) => {

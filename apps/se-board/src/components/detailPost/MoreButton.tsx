@@ -32,7 +32,7 @@ import {
   useDeleteReplyMutation,
 } from "@/react-query/hooks";
 import { refetchCommentState } from "@/store/CommentState";
-import { user } from "@/store/user";
+import { useUserState } from "@/store/user";
 import { openColors } from "@/styles";
 import { errorHandle } from "@/utils/errorHandling";
 interface MoreButtonProps {
@@ -230,6 +230,7 @@ export const PostMoreButton = ({
   isEditable: boolean;
 }) => {
   const toast = useToast();
+  const { hasAuth } = useUserState();
 
   const onShareClick = () => {
     const url = window.location.href;
@@ -276,7 +277,7 @@ export const PostMoreButton = ({
         ) : (
           <>
             <PostShareMenuItem onShareClick={onShareClick} />
-            {user.hasAuth() && <PostReportAlert />}
+            {hasAuth && <PostReportAlert />}
           </>
         )}
       </MenuList>
@@ -375,10 +376,11 @@ const CommentDeleteAlert = ({
 
 const CommentReportAlert = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { hasAuth } = useUserState();
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
   const commentReportClick = () => {
     // TODO: 댓글 신고
-    if (!user.hasAuth()) {
+    if (!hasAuth) {
       onClose();
       alert("로그인 후 신고가능합니다.");
       console.log("로그인 후 신고가능합니다.");
