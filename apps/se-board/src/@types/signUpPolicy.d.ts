@@ -1,6 +1,6 @@
 declare module "@types" {
   interface Nicknames {
-    nicknames: BannedNickname[];
+    content: BannedNickname[];
   }
 
   interface BannedNickname {
@@ -9,7 +9,7 @@ declare module "@types" {
   }
 
   interface BannedIds {
-    bannedIds: BannedId[];
+    content: BannedId[];
   }
 
   interface BannedId {
