@@ -89,7 +89,7 @@ export const MemberGroupTable = ({
   useEffect(() => {
     if (!data) return;
 
-    setRoleList(data.roles);
+    setRoleList(data);
   }, [data]);
 
   const columns = useMemo<ColumnDef<Role, any>[]>(

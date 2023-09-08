@@ -1,10 +1,10 @@
-import { RoleList } from "@types";
+import { Role } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const getRoleInfos = (page = 0, perPage = 0) => {
-  return _axios<RoleList>({
+  return _axios<Role[]>({
     headers: {
       ...getJWTHeader(),
     },

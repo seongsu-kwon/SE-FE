@@ -31,9 +31,20 @@ export const SEMenuEditPage = () => {
   useEffect(() => {
     if (!data) return;
 
-    setMenuList(data.menus);
-    setSelectedMenu(data.menus[0]);
-    setBoardMenuList(getBoardMenuList(data.menus));
+    setMenuList(data);
+    setSelectedMenu(
+      data.length > 0
+        ? data[0]
+        : {
+            menuId: -1,
+            name: "메뉴 추가",
+            urlId: "",
+            externalUrl: "",
+            type: "ADD",
+            subMenu: [],
+          }
+    );
+    setBoardMenuList(getBoardMenuList(data));
   }, [data]);
 
   return (
