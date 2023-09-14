@@ -26,7 +26,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
-import { useDeletePostMutation } from "@/react-query/hooks";
+import { useDeletePostMutation, useReportPost } from "@/react-query/hooks";
 import {
   useDeleteCommentMutation,
   useDeleteReplyMutation,
@@ -175,12 +175,27 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
   );
 };
 
-export const PostReportAlert = () => {
+export const PostReportAlert = ({ postId }: { postId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { mutate, isLoading } = useReportPost();
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
+
+  const toast = useToast();
+
   const commentReportClick = () => {
-    // TODO: 작성글 신고
-    onClose();
+    mutate(postId, {
+      onSuccess: () => {
+        onClose();
+
+        toast({
+          title: "게시글 신고",
+          description: "해당 게시글을 신고했어요!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+    });
   };
 
   return (
@@ -203,7 +218,13 @@ export const PostReportAlert = () => {
               <Button ref={reportAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentReportClick} ml="8px">
+              <Button
+                variant="danger"
+                onClick={commentReportClick}
+                isLoading={isLoading}
+                loadingText="신고 중"
+                ml="8px"
+              >
                 신고
               </Button>
             </AlertDialogFooter>
@@ -277,7 +298,7 @@ export const PostMoreButton = ({
         ) : (
           <>
             <PostShareMenuItem onShareClick={onShareClick} />
-            {hasAuth && <PostReportAlert />}
+            {hasAuth && <PostReportAlert postId={postId} />}
           </>
         )}
       </MenuList>

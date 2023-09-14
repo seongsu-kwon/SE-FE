@@ -10,6 +10,7 @@ import {
   permanentlyDeletePosts,
   postPost,
   putPost,
+  reportPost,
   restorePosts,
   secretPost,
 } from "@/api/post";
@@ -94,6 +95,14 @@ export const usePostRestorePostQuery = () => {
 
 export const usePermanentlyDeletePostQuery = () => {
   return useMutation((postIds: number[]) => permanentlyDeletePosts(postIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useReportPost = () => {
+  return useMutation((postId: number) => reportPost(postId), {
     onError: (err) => {
       errorHandle(err);
     },
