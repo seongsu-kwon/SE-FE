@@ -1,10 +1,10 @@
-import { Ips } from "@types";
+import { IpInfo } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const getBannedIp = () => {
-  return _axios<Ips>({
+  return _axios<IpInfo[]>({
     headers: {
       ...getJWTHeader(),
     },

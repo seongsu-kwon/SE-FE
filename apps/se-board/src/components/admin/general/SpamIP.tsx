@@ -24,7 +24,7 @@ export const SpamIP = () => {
   useEffect(() => {
     if (!data) return;
 
-    setBannedIps(data.content);
+    setBannedIps(data);
   }, [data]);
 
   const deleteOnClick = (ipAddress: string) => {
