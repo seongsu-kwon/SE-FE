@@ -16,7 +16,7 @@ export const BannerManage = () => {
   useEffect(() => {
     if (!data) return;
 
-    setBanners(data.content);
+    setBanners(data);
   }, [data]);
 
   return (
