@@ -34,7 +34,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
           objectFit="contain"
           key={i}
           display={viewIndex === i ? "block" : "none"}
-          src={`${process.env.REACT_APP_FILE_ENDPOINT}/${banner.fileMetaData.url}`}
+          src={`${process.env.REACT_APP_API_FILE_ENDPOINT}/${banner.fileMetaData.url}`}
         />
       ))}
     </Flex>

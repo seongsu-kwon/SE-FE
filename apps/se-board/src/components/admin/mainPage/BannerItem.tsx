@@ -113,7 +113,8 @@ export const BannerItem = ({
       {
         onSuccess: () => {
           setIsModify(false);
-          bannerDeleteMutate(fileMetaData.fileMetaDataId);
+          newFileMetaData?.fileMetaDataId !== fileMetaData.fileMetaDataId &&
+            bannerDeleteMutate(fileMetaData.fileMetaDataId);
           refetch();
         },
         onError: (error) => {
