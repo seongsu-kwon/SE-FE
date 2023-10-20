@@ -1,9 +1,9 @@
-import { SubComment } from "@types";
+import { SubCommentContent } from "@types";
 
 export const getTagName = (
-  comment: SubComment,
+  comment: SubCommentContent,
   superComment: { authorName: string; commentId: number },
-  subComments: SubComment[]
+  subComments: SubCommentContent[]
 ) => {
   if (comment.tag === null) {
     return undefined;

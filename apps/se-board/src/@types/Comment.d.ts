@@ -1,29 +1,11 @@
 import { AuthorDTO, DateType, Pageable, PageableInfo } from "@types";
-
+import { CommentPaginationInfo } from "@types";
 declare module "@types" {
-  interface SubComment {
-    commentId: number;
-    tag: number;
-    author: {
-      loginId: string | null;
-      name: string;
-    };
-    createdAt: string;
-    modifiedAt: string;
-    contents: string;
-    isEditable: boolean;
-    isActive: boolean;
-    isReadOnlyAuthor: boolean;
+  interface Comment extends CommentContent {
+    subComments: SubCommentContent[];
   }
 
-  interface PaginationInfo {
-    totalAllSize: number;
-    totalCommentSize: number;
-    last: boolean;
-    pageNum: number;
-  }
-
-  interface Content {
+  interface CommentContent {
     commentId: number;
     author: {
       loginId: string;
@@ -35,12 +17,15 @@ declare module "@types" {
     isEditable: boolean;
     isActive: boolean;
     isReadOnlyAuthor: boolean;
-    subComments: SubComment[];
   }
 
-  interface Comment {
-    paginationInfo: PaginationInfo;
-    content: Content[];
+  interface SubCommentContent extends CommentContent {
+    tag: number;
+  }
+
+  interface CommentsData {
+    paginationInfo: CommentPaginationInfo;
+    content: Comment[];
   }
 
   interface SubCommentInfoType {

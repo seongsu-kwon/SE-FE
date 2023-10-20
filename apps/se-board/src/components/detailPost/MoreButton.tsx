@@ -14,6 +14,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { IconType } from "react-icons";
 import {
@@ -24,14 +25,12 @@ import {
   BsTrash3,
 } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
 
 import { useDeletePostMutation, useReportPost } from "@/react-query/hooks";
 import {
   useDeleteCommentMutation,
   useDeleteReplyMutation,
 } from "@/react-query/hooks";
-import { refetchCommentState } from "@/store/CommentState";
 import { useUserState } from "@/store/user";
 import { openColors } from "@/styles";
 import { errorHandle } from "@/utils/errorHandling";
@@ -324,7 +323,7 @@ const CommentDeleteAlert = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const setRefetchCommentState = useSetRecoilState(refetchCommentState);
+  const queryClient = useQueryClient();
 
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
 
@@ -339,20 +338,14 @@ const CommentDeleteAlert = ({
         onSuccess: () => {
           onClose();
 
-          setRefetchCommentState(true);
-        },
-        onError: (error) => {
-          errorHandle(error);
+          queryClient.invalidateQueries(["comments", postId]);
         },
       });
     } else {
       deleteReplyMutate(commentId, {
         onSuccess: () => {
           onClose();
-          setRefetchCommentState(true);
-        },
-        onError: (error) => {
-          errorHandle(error);
+          queryClient.invalidateQueries(["comments", postId]);
         },
       });
     }

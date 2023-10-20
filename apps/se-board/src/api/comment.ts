@@ -1,6 +1,6 @@
 import {
   AllComments,
-  Comment,
+  CommentsData,
   FetchCommentListResponse,
   PostCommentData,
   PostReplyData,
@@ -14,7 +14,7 @@ export const fetchComments = (
   postId: string | undefined,
   pageParam: number
 ) => {
-  return _axios<Comment>({
+  return _axios<CommentsData>({
     headers: {
       ...getJWTHeader(),
     },

@@ -28,4 +28,11 @@ declare module "@types" {
     empty: boolean;
     last: boolean;
   }
+
+  interface CommentPaginationInfo {
+    totalAllSize: number;
+    totalCommentSize: number;
+    last: boolean;
+    pageNum: number;
+  }
 }
