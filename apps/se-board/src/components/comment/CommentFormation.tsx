@@ -12,6 +12,8 @@ import { CommentContent } from "@types";
 import React, { useRef, useState } from "react";
 import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
+import { useNavigatePage } from "@/hooks";
+import { useUserState } from "@/store/user";
 import { openColors } from "@/styles";
 import { toYYYYMMDDHHhh } from "@/utils/dateUtils";
 
@@ -127,6 +129,9 @@ const AuthorInfoMenuList = ({
   name: string;
   authorId: string | null;
 }) => {
+  const { hasAuth } = useUserState();
+  const { goToMyPage } = useNavigatePage();
+
   return (
     <Menu autoSelect={false}>
       <MenuButton cursor={authorId === null ? "not-allowed" : "pointer"}>
@@ -137,11 +142,20 @@ const AuthorInfoMenuList = ({
           </Text>
         </Box>
       </MenuButton>
-      {authorId !== null && (
-        <MenuList>
-          <MenuItem>본인이면 마이페이지 아니면 작성글 보기</MenuItem> //TODO
-        </MenuList>
-      )}
+      {authorId !== null &&
+        (hasAuth ? (
+          <MenuList>
+            <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToMyPage}>
+              내 계정 조회
+            </MenuItem>
+          </MenuList>
+        ) : (
+          <MenuList>
+            <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToMyPage}>
+              작성글 보기 만들어야됨
+            </MenuItem>
+          </MenuList>
+        ))}
     </Menu>
   );
 };
