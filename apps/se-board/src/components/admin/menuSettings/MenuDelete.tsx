@@ -9,12 +9,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useRecoilValue } from "recoil";
 
 import {
   useDeleteCategory,
-  usePostMoveCategory,
+  usePostMoveBoardMenu,
 } from "@/react-query/hooks/useMenu";
 import { boardMenuListState } from "@/store/menu";
 import { semanticColors } from "@/styles";
@@ -33,11 +33,17 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
     mutate: moveMutate,
     isLoading: moveIsLoading,
     isSuccess: moveIsSuccess,
-  } = usePostMoveCategory();
+    reset: moveReset,
+  } = usePostMoveBoardMenu();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     useDeleteCategory();
 
   const toMenuIdRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (!menuId) return;
+    moveReset();
+  }, [menuId]);
 
   function onPostsMoveClick() {
     if (!menuId) return alert("현재 게시판을 삭제할 수 없습니다.");
@@ -47,8 +53,8 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
 
     moveMutate(
       {
-        fromCategoryId: menuId,
-        toCategoryId: toMenuIdRef.current,
+        fromBoardMenuId: menuId,
+        toBoardMenuId: toMenuIdRef.current,
       },
       {
         onSuccess: () => {
@@ -58,6 +64,7 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
             duration: 5000,
             isClosable: true,
           });
+          queryClient.invalidateQueries(["adminMenuList"]);
         },
       }
     );
@@ -69,6 +76,7 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
     deleteMutate(menuId, {
       onSuccess: () => {
         queryClient.invalidateQueries(["adminMenuList"]);
+        moveReset();
       },
     });
   }

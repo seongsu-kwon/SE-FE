@@ -19,37 +19,36 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CategoryInfomation, MenuRoleInfo } from "@types";
+import { CategoryInfomation, MenuInfomation, MenuRoleInfo } from "@types";
 import { useEffect, useRef, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
   useDeleteCategory,
-  useGetCategory,
-  usePostAddCategory,
-  usePostMenuInfo,
+  usePostAddMenuOrCategory,
   usePostMoveCategory,
+  usePutCategory,
 } from "@/react-query/hooks/useMenu";
 import { categoryListState } from "@/store/categoryState";
+import { newSEMenuState } from "@/store/menu";
 
 import { AuthorityMenu } from "./AuthorityMenu";
 
 interface CategoryManageProps {
   menuId: number;
+  subMenus: MenuInfomation[];
 }
 
-export const CategoryManage = ({ menuId }: CategoryManageProps) => {
-  const { data } = useGetCategory(menuId);
-
+export const CategoryManage = ({ menuId, subMenus }: CategoryManageProps) => {
   const setCategoryList = useSetRecoilState(categoryListState(menuId));
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (!data) return;
+    if (!subMenus) return;
 
-    setCategoryList(data.subMenus);
-  }, [data]);
+    setCategoryList(subMenus);
+  }, [subMenus]);
 
   return (
     <Box
@@ -68,11 +67,13 @@ export const CategoryManage = ({ menuId }: CategoryManageProps) => {
         border="2px solid"
         borderColor="gray.3"
         wordBreak="keep-all"
+        overflow="auto"
       >
         <SimpleGrid
           columns={5}
           textAlign="center"
           fontSize={{ base: "16px", md: "18px" }}
+          fontWeight="semibold"
         >
           <Box py="0.375rem" borderBottom="1px solid" borderColor="gray.5">
             카테고리 이름
@@ -90,7 +91,7 @@ export const CategoryManage = ({ menuId }: CategoryManageProps) => {
             수정 / 삭제
           </Box>
         </SimpleGrid>
-        {data?.subMenus.map((category) => (
+        {subMenus.map((category) => (
           <CategoryManageItem category={category} menuId={menuId} />
         ))}
       </Box>
@@ -112,9 +113,17 @@ export const CategoryManage = ({ menuId }: CategoryManageProps) => {
 };
 
 interface CategoryManageItemProps {
-  category: CategoryInfomation;
+  category: MenuInfomation;
   menuId: number;
 }
+
+const categoryRoleList = [
+  { value: "all", label: "모든 사용자" },
+  { value: "overUser", label: "준회원이상" },
+  { value: "overKumoh", label: "정회원이상" },
+  { value: "onlyAdmin", label: "관리자만" },
+  { value: "select", label: "선택 사용자" },
+];
 
 const CategoryManageItem = ({ category, menuId }: CategoryManageItemProps) => {
   const {
@@ -141,10 +150,13 @@ const CategoryManageItem = ({ category, menuId }: CategoryManageItemProps) => {
       <Box my="auto">{category.name}</Box>
       <Box my="auto">{category.urlId}</Box>
       <Box my="auto" maxH="2.5rem" overflow="auto" wordBreak="keep-all">
-        관리 권한
+        {
+          categoryRoleList.find((v) => v.value === category.manage.option)
+            ?.label
+        }
       </Box>
       <Box my="auto" maxH="2.5rem" overflow="auto" wordBreak="keep-all">
-        작성 권한
+        {categoryRoleList.find((v) => v.value === category.write.option)?.label}
       </Box>
       <ButtonGroup spacing="0.25rem" mx="auto" my="0.5rem" size="sm">
         <Button variant="primary" onClick={modifyOnOpen}>
@@ -174,20 +186,23 @@ interface AlertProps {
   isOpen: boolean;
   onClose: () => void;
   menuId: number;
-  category: CategoryInfomation;
+  category: MenuInfomation;
 }
 
 const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const queryClient = useQueryClient();
 
   const categoryList = useRecoilValue(categoryListState(menuId));
+  const [curSEMenu, setCurSEMenu] = useRecoilState(newSEMenuState);
 
-  const { mutate: moveMutate, isLoading: moveIsLoading } =
-    usePostMoveCategory();
+  const {
+    mutate: moveMutate,
+    isLoading: moveIsLoading,
+    isSuccess: moveIsSuccess,
+    reset: moveReset,
+  } = usePostMoveCategory();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     useDeleteCategory();
-
-  const [isMoved, setIsMoved] = useState<boolean>(false);
 
   const cancelRef = useRef<HTMLButtonElement>(null);
   const fromCategoryIdRef = useRef<number>(category.menuId);
@@ -197,25 +212,19 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
     if (!toCategoryIdRef.current)
       return alert("이동할 카테고리를 선택해주세요.");
 
-    moveMutate(
-      {
-        fromCategoryId: fromCategoryIdRef.current,
-        toCategoryId: toCategoryIdRef.current,
-      },
-      {
-        onSuccess: () => {
-          setIsMoved(true);
-        },
-      }
-    );
+    moveMutate({
+      fromCategoryId: fromCategoryIdRef.current,
+      toCategoryId: toCategoryIdRef.current,
+    });
   }
 
   function onCategoryDeleteClick() {
     deleteMutate(fromCategoryIdRef.current, {
       onSuccess: () => {
         onClose();
-        queryClient.invalidateQueries(["adminCategory", menuId]);
-        setIsMoved(false);
+        setCurSEMenu(curSEMenu);
+        queryClient.invalidateQueries(["adminMenuList"]);
+        moveReset();
       },
     });
   }
@@ -269,6 +278,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
                   onClick={onCategoryMoveClick}
                   isLoading={moveIsLoading}
                   loadingText="이동 중"
+                  isDisabled={moveIsSuccess}
                 >
                   이동
                 </Button>
@@ -283,7 +293,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
               </Button>
               <Button
                 variant="danger"
-                isDisabled={!isMoved}
+                isDisabled={!moveIsSuccess}
                 onClick={onCategoryDeleteClick}
                 isLoading={deleteIsLoading}
                 loadingText="삭제 중"
@@ -300,10 +310,9 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
 
 const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading } = usePostMenuInfo();
+  const { mutate, isLoading } = usePutCategory();
 
-  const [categoryInfo, setCategoryInfo] =
-    useState<CategoryInfomation>(category);
+  const [categoryInfo, setCategoryInfo] = useState<MenuInfomation>(category);
   const [roles, setRoles] = useState<MenuRoleInfo>({
     access: {
       option: "",
@@ -335,14 +344,8 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
           description: "",
           externalUrl: "",
           access: { option: "", roles: [] },
-          write: {
-            option: roles.write.option,
-            roles: roles.write.option === "select" ? roles.write.roles : [],
-          },
-          manage: {
-            option: roles.manage.option,
-            roles: roles.manage.option === "select" ? roles.manage.roles : [],
-          },
+          write: roles.write,
+          manage: roles.manage,
           expose: { option: "", roles: [] },
         },
       },
@@ -353,6 +356,11 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
         },
       }
     );
+  }
+
+  function onCancelClick() {
+    setCategoryInfo(category);
+    onClose();
   }
 
   return (
@@ -415,7 +423,8 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
               <AuthorityMenu
                 roleType="manage"
                 setRoles={setRoles}
-                defaultRoles={categoryInfo.manageRole}
+                defaultOption={category.manage?.option || ""}
+                defaultRoles={category.manage?.roles || []}
               />
             </FormControl>
             <FormControl display="flex" alignItems="center" mt="0.75rem">
@@ -425,21 +434,19 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
               <AuthorityMenu
                 roleType="write"
                 setRoles={setRoles}
-                defaultRoles={categoryInfo.writeRole}
+                defaultOption={category.write?.option || ""}
+                defaultRoles={category.write?.roles || []}
               />
             </FormControl>
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <ButtonGroup>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onCancelClick}>
                 취소
               </Button>
               <Button
                 variant="primary"
-                isDisabled={
-                  JSON.stringify(categoryInfo) === JSON.stringify(category)
-                }
                 onClick={onCategoryModifyClick}
                 isLoading={isLoading}
                 loadingText="수정 중"
@@ -463,7 +470,7 @@ interface EnrollAlertProps {
 const EnrollAlert = ({ isOpen, onClose, menuId }: EnrollAlertProps) => {
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = usePostAddCategory();
+  const { mutate, isLoading, reset } = usePostAddMenuOrCategory();
 
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfomation>({
     name: "",
@@ -504,21 +511,42 @@ const EnrollAlert = ({ isOpen, onClose, menuId }: EnrollAlertProps) => {
           description: "",
           externalUrl: "",
           access: { option: "", roles: [] },
-          write: {
-            option: "",
-            roles: roles.write.option === "select" ? roles.write.roles : [],
-          },
-          manage: {
-            option: "",
-            roles: roles.manage.option === "select" ? roles.manage.roles : [],
-          },
+          write: roles.write,
+          manage: roles.manage,
           expose: { option: "", roles: [] },
         },
       },
       {
         onSuccess: () => {
           onClose();
-          queryClient.invalidateQueries(["adminCategory", menuId]);
+          queryClient.invalidateQueries(["adminMenuList"]);
+          reset();
+
+          setCategoryInfo({
+            name: "",
+            urlId: "",
+            menuId: 0,
+            writeRole: [],
+            manageRole: [],
+          });
+          setRoles({
+            access: {
+              option: "",
+              roles: [],
+            },
+            write: {
+              option: "",
+              roles: [],
+            },
+            manage: {
+              option: "",
+              roles: [],
+            },
+            expose: {
+              option: "",
+              roles: [],
+            },
+          });
         },
       }
     );

@@ -2,9 +2,10 @@
 
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/react";
 import { AdminSettingRole, MenuInfomation, MenuSettingRole } from "@types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useMenuInfo } from "@/hooks";
+import { adminMenuRoleList } from "@/utils/menuUtils";
 
 import { AdminAuthorityMenu } from "./AuthorityMenu";
 import { CategoryManage } from "./CategoryManage";
@@ -21,9 +22,7 @@ export const MenuEdit = ({ menuInfo }: MenuEditProps) => {
   useEffect(() => {
     if (!menuInfo) return;
     setMenuName(menuInfo.name);
-    setMenuID(
-      menuInfo.type !== "EXTERNAL" ? menuInfo.urlId : menuInfo.externalUrl
-    );
+    setMenuID(menuInfo.urlId);
   }, [menuInfo]);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,15 +36,14 @@ export const MenuEdit = ({ menuInfo }: MenuEditProps) => {
   return (
     <Box>
       <MenuInfo
-        menuType={menuInfo?.type}
-        id={menuInfo?.menuId}
+        menuInfo={menuInfo}
         menuName={menuName}
         menuID={menuID}
         onNameChange={onNameChange}
         onIDChange={onIDChange}
       />
       {menuInfo?.type === "BOARD" && (
-        <CategoryManage menuId={menuInfo.menuId} />
+        <CategoryManage menuId={menuInfo.menuId} subMenus={menuInfo.subMenus} />
       )}
       <MenuDelete menuType={menuInfo?.type} menuId={menuInfo?.menuId} />
     </Box>
@@ -58,7 +56,7 @@ export const AddMenu = () => {
   return (
     <Box>
       <AddMenuInfo
-        menuType="ADD"
+        menuInfo={undefined}
         menuName={menuName}
         menuID={menuID}
         onNameChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,16 +79,30 @@ export const AddMenu = () => {
 interface AdminMenuContainerProps {
   heading: string;
   menu: MenuSettingRole[];
-  setAdminMenuList: React.Dispatch<
-    React.SetStateAction<AdminSettingRole | undefined>
-  >;
+  adminMenuRoleListRef: React.MutableRefObject<AdminSettingRole | undefined>;
 }
 
 export const AdminMenuContainer = ({
   heading,
   menu,
+  adminMenuRoleListRef,
 }: AdminMenuContainerProps) => {
-  // const [menuInfo, setMenuInfo] = useState<MenuSettingRole>
+  const [menuInfo, setMenuInfo] = useState<MenuSettingRole[]>(menu);
+
+  useEffect(() => {
+    setMenuInfo(menu);
+  }, [menu]);
+
+  useEffect(() => {
+    if (!adminMenuRoleListRef.current) return;
+
+    const newRoleList = {
+      ...adminMenuRoleListRef.current,
+      ...adminMenuRoleList(heading, menuInfo),
+    };
+
+    adminMenuRoleListRef.current = newRoleList;
+  }, [menuInfo]);
 
   return (
     <Box w="100%" wordBreak="keep-all">
@@ -107,6 +119,8 @@ export const AdminMenuContainer = ({
               {item.name}
             </Text>
             <AdminAuthorityMenu
+              index={index}
+              setMenuInfo={setMenuInfo}
               defaultOption={item.option}
               defaultRoles={item.roles}
             />

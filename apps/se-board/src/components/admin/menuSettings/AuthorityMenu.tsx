@@ -45,9 +45,19 @@ export const AuthorityMenu = ({
   );
 
   useEffect(() => {
-    if (!defaultOption || !data || !defaultRoles) return;
+    if (!defaultOption) return;
+
     setSelectedOption(defaultOption);
+
+    if (!defaultRoles) return;
+
     setSelectedRoles(defaultRoles);
+  }, [defaultOption, defaultRoles]);
+
+  useEffect(() => {
+    if (!data) return;
+    setSelectedOption(defaultOption || "");
+    setSelectedRoles(defaultRoles || []);
 
     if (defaultOption === "select") {
       setRoles((prev) => ({
@@ -55,13 +65,14 @@ export const AuthorityMenu = ({
         [roleType]: {
           ...prev[roleType],
           option: defaultOption,
-          roles: data
-            .filter((role) => defaultRoles.includes(role.name))
-            .map((role) => role.roleId),
+          roles:
+            data
+              .filter((role) => defaultRoles?.includes(role.name))
+              .map((role) => role.roleId) || [],
         },
       }));
     }
-  }, [data, defaultOption, defaultRoles]);
+  }, [data]);
 
   const onChange = (value: string | string[]) => {
     setSelectedOption(value);
@@ -86,7 +97,7 @@ export const AuthorityMenu = ({
         ...prev[roleType],
         option: "select",
         roles: data
-          ?.filter((role) => value.includes(role.name))
+          ?.filter((role) => value.includes(role.alias))
           .map((role) => role.roleId),
       },
     }));
@@ -101,8 +112,7 @@ export const AuthorityMenu = ({
         <MenuOptionGroup
           title="단일 선택"
           type="radio"
-          value={selectedOption}
-          defaultValue={defaultOption || selectedOption}
+          defaultValue={defaultOption}
           onChange={onChange}
         >
           {defaultRoleList.map((role, i) => (
@@ -123,7 +133,7 @@ export const AuthorityMenu = ({
           title="선택 사용자"
           type="checkbox"
           value={selectedRoles}
-          defaultValue={defaultRoles || selectedRoles}
+          defaultValue={defaultRoles}
           onChange={onCheckBoxChange}
         >
           {data?.map((role) => (
@@ -212,7 +222,7 @@ export const AdminAuthorityMenu = ({
           title="단일 선택"
           type="radio"
           value={selectedOption}
-          defaultValue={defaultOption || selectedOption}
+          defaultValue={defaultOption}
           onChange={onChange}
         >
           {defaultRoleList.map((role, i) => (
@@ -233,7 +243,7 @@ export const AdminAuthorityMenu = ({
           title="선택 사용자"
           type="checkbox"
           value={selectedRoles}
-          defaultValue={defaultRoles || selectedRoles}
+          defaultValue={defaultRoles}
           onChange={onCheckBoxChange}
         >
           {data?.map((role) => (

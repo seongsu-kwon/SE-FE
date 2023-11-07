@@ -11,9 +11,11 @@ import {
   getMenuInfo,
   getMenuList,
   getSelectedMainPageMenus,
-  postAddCategory,
+  postAddMenuOrCategory,
   postMenuInfo,
+  postMoveBoardMenu,
   postMoveCategory,
+  putCategory,
   putMainPageMenus,
 } from "@/api/menu";
 import { menuListState } from "@/store/menu";
@@ -129,12 +131,36 @@ export const usePostMenuInfo = () => {
   );
 };
 
+export const usePutCategory = () => {
+  return useMutation(
+    (param: { categoryId: number; data: PostMenuInfo }) =>
+      putCategory(param.categoryId, param.data),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
 export const useDeleteCategory = () => {
   return useMutation((categoryId: number) => deleteCategory(categoryId), {
     onError: (err) => {
       errorHandle(err);
     },
   });
+};
+
+export const usePostMoveBoardMenu = () => {
+  return useMutation(
+    (param: { fromBoardMenuId: number; toBoardMenuId: number }) =>
+      postMoveBoardMenu(param.fromBoardMenuId, param.toBoardMenuId),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
 };
 
 export const usePostMoveCategory = () => {
@@ -149,12 +175,12 @@ export const usePostMoveCategory = () => {
   );
 };
 
-export const usePostAddCategory = () => {
+export const usePostAddMenuOrCategory = () => {
   return useMutation(
     (param: {
       categoryType: string;
       data: { superCategoryId: number | null } & PostMenuInfo;
-    }) => postAddCategory(param.categoryType, param.data),
+    }) => postAddMenuOrCategory(param.categoryType, param.data),
     {
       onError: (err) => {
         errorHandle(err);

@@ -9,15 +9,19 @@ import {
   Radio,
   RadioGroup,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { MenuRoleInfo } from "@types";
+import { MenuInfomation, MenuRoleInfo } from "@types";
 import React, { useCallback, useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
 
+import { useGetRoleInfos } from "@/react-query/hooks";
 import {
-  useGetMenuRoleInfo,
-  usePostMenuInfo,
+  usePostAddMenuOrCategory,
+  usePutCategory,
 } from "@/react-query/hooks/useMenu";
+import { newSEMenuState } from "@/store/menu";
 
 import { AuthorityMenu } from "./AuthorityMenu";
 
@@ -43,8 +47,7 @@ const ValueInput = ({ value, placeholder, onChange, w }: ValueInputProps) => {
 };
 
 interface MenuInfoProps {
-  menuType: string | undefined;
-  id?: number | undefined;
+  menuInfo: MenuInfomation | undefined;
   menuName: string;
   onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   menuID: string;
@@ -52,15 +55,14 @@ interface MenuInfoProps {
 }
 
 export const MenuInfo = ({
-  menuType = "",
-  id,
+  menuInfo,
   menuName,
   onNameChange,
   menuID,
   onIDChange,
 }: MenuInfoProps) => {
-  const { data } = useGetMenuRoleInfo(id);
-  const { mutate, isLoading } = usePostMenuInfo();
+  const { mutate, isLoading } = usePutCategory();
+  const { data: roleList } = useGetRoleInfos();
 
   const queryClient = useQueryClient();
 
@@ -84,63 +86,69 @@ export const MenuInfo = ({
   });
 
   useEffect(() => {
-    if (!data) return;
+    if (!menuInfo) return;
 
     setRoles({
       access: {
-        option: data.access.option,
-        roles: [],
+        option: menuInfo.access?.option || "",
+        roles:
+          roleList
+            ?.filter((role) => menuInfo.access?.roles.includes(role.name))
+            .map((role) => role.roleId) || [],
       },
       write: {
-        option: data.write.option,
-        roles: [],
+        option: menuInfo.write?.option || "",
+        roles:
+          roleList
+            ?.filter((role) => menuInfo.write?.roles.includes(role.name))
+            .map((role) => role.roleId) || [],
       },
       manage: {
-        option: data.manage.option,
-        roles: [],
+        option: menuInfo.manage?.option || "",
+        roles:
+          roleList
+            ?.filter((role) => menuInfo.manage?.roles.includes(role.name))
+            .map((role) => role.roleId) || [],
       },
       expose: {
-        option: data.menuExpose.option,
-        roles: [],
+        option: menuInfo.expose?.option || "",
+        roles:
+          roleList
+            ?.filter((role) => menuInfo.expose?.roles.includes(role.name))
+            .map((role) => role.roleId) || [],
       },
     });
-  }, [data]);
+  }, [menuInfo]);
 
   function onModifyMenuInfo() {
-    if (!id) return alert("존재하지 않는 메뉴입니다.");
+    if (!menuInfo?.menuId) return alert("존재하지 않는 메뉴입니다.");
 
     if (!roles) return alert("권한 설정을 해주세요.");
 
     mutate(
       {
-        categoryId: id,
+        categoryId: menuInfo.menuId,
         data: {
           name: menuName,
           description: "",
-          externalUrl: menuType === "EXTERNAL" ? menuID : "",
-          urlId: menuType !== "EXTERNAL" ? menuID : "",
-          access: {
-            option: roles.access.option,
-            roles: roles.access.option === "select" ? roles.access.roles : [],
-          },
+          externalUrl: menuInfo.type === "EXTERNAL" ? menuID : "",
+          urlId: menuInfo.type !== "EXTERNAL" ? menuID : "",
+          access: roles.access,
           write: roles.write,
           manage: roles.manage,
-          expose: {
-            option: roles.expose.option,
-            roles: roles.expose.option === "select" ? roles.expose.roles : [],
-          },
+          expose: roles.expose,
         },
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(["menuRoleInfo", id]);
+          queryClient.invalidateQueries(["adminMenuList"]);
         },
       }
     );
   }
 
   const settingMenu = useCallback(() => {
-    switch (menuType) {
+    switch (menuInfo?.type) {
       case "MENU":
         return {
           menuType: "GROUP",
@@ -166,7 +174,7 @@ export const MenuInfo = ({
           authority: [],
         };
     }
-  }, [menuType]);
+  }, [menuInfo]);
 
   return (
     <Box
@@ -204,7 +212,7 @@ export const MenuInfo = ({
             onChange={onIDChange}
             placeholder={settingMenu().menuID}
             w={
-              menuType === "EXTERNAL"
+              menuInfo?.type === "EXTERNAL"
                 ? { base: "14rem", md: "16rem" }
                 : undefined
             }
@@ -223,10 +231,12 @@ export const MenuInfo = ({
               roleType={index === 0 ? "expose" : "access"}
               setRoles={setRoles}
               defaultOption={
-                index === 0 ? data?.menuExpose.option : data?.access.option
+                index === 0
+                  ? menuInfo?.expose?.option
+                  : menuInfo?.access?.option
               }
               defaultRoles={
-                index === 0 ? data?.menuExpose.roles : data?.access.roles
+                index === 0 ? menuInfo?.expose?.roles : menuInfo?.access?.roles
               }
             />
           </Flex>
@@ -252,6 +262,10 @@ export const AddMenuInfo = ({
   menuID,
   onIDChange,
 }: MenuInfoProps) => {
+  const { mutate, isLoading } = usePostAddMenuOrCategory();
+
+  const queryClient = useQueryClient();
+
   const [menu, setMenu] = useState<string>("GROUP");
   const [roles, setRoles] = useState<MenuRoleInfo>({
     access: {
@@ -271,6 +285,10 @@ export const AddMenuInfo = ({
       roles: [],
     },
   });
+
+  const setNewSEMenuState = useSetRecoilState(newSEMenuState);
+
+  const toast = useToast();
 
   const settingMenu = useCallback(() => {
     switch (menu) {
@@ -297,6 +315,42 @@ export const AddMenuInfo = ({
         };
     }
   }, [menu]);
+
+  function onMenuAddClick() {
+    mutate(
+      {
+        categoryType: menu === "GROUP" ? "MENU" : menu,
+        data: {
+          superCategoryId: null,
+          name: menuName,
+          urlId: menu === "GROUP" || menu === "BOARD" ? menuID : "",
+          description: "",
+          externalUrl: menu === "EXTERNAL" ? menuID : "",
+          access: roles.access,
+          write: roles.write,
+          manage: roles.manage,
+          expose: roles.expose,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "메뉴 생성 완료",
+            description: (
+              <Box>
+                <Text>{menuName} 메뉴가 생성되었어요!</Text>
+              </Box>
+            ),
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          queryClient.invalidateQueries(["adminMenuList"]);
+          setNewSEMenuState(menuName);
+        },
+      }
+    );
+  }
 
   return (
     <Box
@@ -358,8 +412,8 @@ export const AddMenuInfo = ({
       <Box textAlign="right">
         <Button
           variant="primary"
-          // onClick={onSettingMenu}
-          // isLoading={isLoading}
+          onClick={onMenuAddClick}
+          isLoading={isLoading}
           loadingText="저장 중"
         >
           저장

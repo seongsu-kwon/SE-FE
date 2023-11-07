@@ -39,7 +39,6 @@ export const MenuItemManage = () => {
         selectedMenu.find((menu) => menu.menuId === value.categoryId) !==
         undefined,
     }));
-
     setMenuList(newMenuList);
   }, [data, selectedMenu]);
 

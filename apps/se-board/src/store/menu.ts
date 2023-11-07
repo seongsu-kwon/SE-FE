@@ -10,3 +10,8 @@ export const boardMenuListState = atom<MenuInfomation[]>({
   key: "boardMenuListState",
   default: [],
 });
+
+export const newSEMenuState = atom<string>({
+  key: "newSEMenuState",
+  default: "",
+});

@@ -39,9 +39,12 @@ declare module "@types" {
     menuId: number;
     name: string;
     urlId: string;
-    externalUrl: string;
     type: MenuType | "ADD" | "NULL";
-    subMenu: MenuInfomation[];
+    access: MenuSettingRole;
+    write: MenuSettingRole;
+    manage: MenuSettingRole;
+    expose: MenuSettingRole;
+    subMenus: MenuInfomation[];
   }
 
   type MenuList = MenuInfomation[];
