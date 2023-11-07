@@ -62,8 +62,6 @@ export const PostPage = () => {
       setEnabledOption(true);
     }
 
-    // if (!isError) refetch(); // TODO: 연속 refetch 수정
-
     return mobileHeaderOpen;
   }, [data]);
 
@@ -124,7 +122,6 @@ export const PostPage = () => {
       ) : (
         <Content contents={postData?.contents || "<p>내용 무</p>"} />
       )}
-
       <CommentSection postId={postId} />
     </Box>
   );

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Flex, Grid, useToast } from "@chakra-ui/react";
 import { AdminSettingRole } from "@types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { PageHeaderTitle } from "@/components/admin";
 import { AdminMenuContainer } from "@/components/admin/menuSettings";
@@ -16,6 +16,8 @@ export const AdminMenuEdit = () => {
 
   const [adminMenuList, setAdminMenuList] = useState<AdminSettingRole>();
 
+  const adminMenuRoleListRef = useRef<AdminSettingRole>();
+
   const menuDataList = getAdminMenuArray(data);
 
   const { mutate, isLoading } = usePostAdminMenuRollSetting();
@@ -24,12 +26,13 @@ export const AdminMenuEdit = () => {
     if (!data) return;
 
     setAdminMenuList(data);
+    adminMenuRoleListRef.current = data;
   }, [data]);
 
   function onEnrollClick() {
-    if (!adminMenuList) return;
+    if (!adminMenuRoleListRef.current) return;
 
-    mutate(adminMenuList, {
+    mutate(adminMenuRoleListRef.current, {
       onSuccess: () => {
         refetch();
         toast({
@@ -58,7 +61,7 @@ export const AdminMenuEdit = () => {
               <AdminMenuContainer
                 heading={menuData.heading}
                 menu={menuData.list}
-                setAdminMenuList={setAdminMenuList}
+                adminMenuRoleListRef={adminMenuRoleListRef}
               />
               <Divider border="1px solid" borderColor="gray.4" />
             </Box>

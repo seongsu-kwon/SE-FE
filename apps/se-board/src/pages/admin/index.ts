@@ -1,3 +1,4 @@
+export * from "./AdminMainPage";
 export * from "./AdminMenuEditPage";
 export * from "./CommentManage";
 export * from "./GeneralSetting";

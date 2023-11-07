@@ -42,6 +42,8 @@ import { Outlet } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
+import { useNavigatePage } from "@/hooks";
+import { useLogout } from "@/react-query/hooks/auth";
 import { useUserState } from "@/store/user";
 import { openColors, semanticColors } from "@/styles";
 
@@ -53,7 +55,7 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { key: "menu", name: "메뉴 관리", icon: BsFolder },
   { key: "person", name: "회원 관리", icon: BsPersonLinesFill },
-  { key: "content", name: "컨텐츠 관리", icon: BsCollection },
+  { key: "content", name: "콘텐츠 관리", icon: BsCollection },
   { key: "setting", name: "설정", icon: BsWrenchAdjustable },
 ];
 
@@ -127,6 +129,10 @@ export const AdminLayout = () => {
 const MobileAdminLayout = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { hasAuth } = useUserState();
+
+  const { mutate: logout } = useLogout();
+  const { goToLoginPage, goToMyPage } = useNavigatePage();
+
   const [isLargerThanMD] = useMediaQuery("(min-width: 768px)");
   return (
     <>
@@ -163,9 +169,22 @@ const MobileAdminLayout = () => {
             _hover={{ bgColor: "white" }}
           />
           <MenuList>
-            <MenuItem _hover={{ bgColor: "blue.1" }}>내 계정 조회</MenuItem>
-            {hasAuth && (
-              <MenuItem _hover={{ bgColor: "blue.1" }}>로그아웃</MenuItem>
+            {hasAuth ? (
+              <>
+                <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToMyPage}>
+                  내 계정 조회
+                </MenuItem>
+                <MenuItem
+                  _hover={{ bgColor: "blue.1" }}
+                  onClick={() => logout()}
+                >
+                  로그아웃
+                </MenuItem>
+              </>
+            ) : (
+              <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToLoginPage}>
+                로그인
+              </MenuItem>
             )}
           </MenuList>
         </Menu>
@@ -186,6 +205,8 @@ const MobileAdminLayout = () => {
 
 const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
   const { hasAuth } = useUserState();
+  const { mutate: logout } = useLogout();
+  const { goToLoginPage, goToMyPage } = useNavigatePage();
   return (
     <>
       <SidebarContent />
@@ -231,9 +252,22 @@ const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
             _hover={{ bgColor: "white" }}
           />
           <MenuList>
-            <MenuItem _hover={{ bgColor: "blue.1" }}>내 계정 조회</MenuItem>
-            {hasAuth && (
-              <MenuItem _hover={{ bgColor: "blue.1" }}>로그아웃</MenuItem>
+            {hasAuth ? (
+              <>
+                <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToMyPage}>
+                  내 계정 조회
+                </MenuItem>
+                <MenuItem
+                  _hover={{ bgColor: "blue.1" }}
+                  onClick={() => logout()}
+                >
+                  로그아웃
+                </MenuItem>
+              </>
+            ) : (
+              <MenuItem _hover={{ bgColor: "blue.1" }} onClick={goToLoginPage}>
+                로그인
+              </MenuItem>
             )}
           </MenuList>
         </Menu>

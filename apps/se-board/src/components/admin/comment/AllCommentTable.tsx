@@ -16,6 +16,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ColumnDef,
   createColumnHelper,
@@ -48,6 +49,8 @@ export const AllCommentTable = ({
   refetch,
 }: AllCommentTableProps) => {
   const { mutate, isLoading } = useDeleteCommentListMutation();
+
+  const queryClient = useQueryClient();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
@@ -161,6 +164,7 @@ export const AllCommentTable = ({
         setIsAllChecked(false);
         setCheckBoxes(new Array(commentList.length).fill(false));
         refetch();
+        queryClient.invalidateQueries(["deletedComments", 0, 25]);
       },
       onError: (error) => {
         errorHandle(error);

@@ -1,6 +1,6 @@
 declare module "@types" {
   interface Ips {
-    ips: IpInfo[];
+    content: IpInfo[];
   }
 
   interface IpInfo {

@@ -1,8 +1,8 @@
-import { CategoryInfomation } from "@types";
+import { MenuInfomation } from "@types";
 import { atom } from "recoil";
 
 export const categoryListState = (menuId: number) =>
-  atom<CategoryInfomation[]>({
+  atom<MenuInfomation[]>({
     key: `categoryListState-${menuId}`,
     default: [],
   });

@@ -33,14 +33,12 @@ export const MenuItemManage = () => {
   useEffect(() => {
     if (!data || !selectedMenu) return;
 
-    const newMenuList = data.menus.map((value) => ({
+    const newMenuList = data.map((value) => ({
       ...value,
       isChecked:
-        selectedMenu.mainPageMenus.find(
-          (menu) => menu.menuId === value.categoryId
-        ) !== undefined,
+        selectedMenu.find((menu) => menu.menuId === value.categoryId) !==
+        undefined,
     }));
-
     setMenuList(newMenuList);
   }, [data, selectedMenu]);
 

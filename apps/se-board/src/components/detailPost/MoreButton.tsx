@@ -14,6 +14,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { IconType } from "react-icons";
 import {
@@ -24,14 +25,12 @@ import {
   BsTrash3,
 } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
 
-import { useDeletePostMutation } from "@/react-query/hooks";
+import { useDeletePostMutation, useReportPost } from "@/react-query/hooks";
 import {
   useDeleteCommentMutation,
   useDeleteReplyMutation,
 } from "@/react-query/hooks";
-import { refetchCommentState } from "@/store/CommentState";
 import { useUserState } from "@/store/user";
 import { openColors } from "@/styles";
 import { errorHandle } from "@/utils/errorHandling";
@@ -175,12 +174,27 @@ const PostDeleteAlert = ({ postId }: { postId: number }) => {
   );
 };
 
-export const PostReportAlert = () => {
+export const PostReportAlert = ({ postId }: { postId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { mutate, isLoading } = useReportPost();
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
+
+  const toast = useToast();
+
   const commentReportClick = () => {
-    // TODO: 작성글 신고
-    onClose();
+    mutate(postId, {
+      onSuccess: () => {
+        onClose();
+
+        toast({
+          title: "게시글 신고",
+          description: "해당 게시글을 신고했어요!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+    });
   };
 
   return (
@@ -203,7 +217,13 @@ export const PostReportAlert = () => {
               <Button ref={reportAlertRef} onClick={onClose}>
                 취소
               </Button>
-              <Button variant="danger" onClick={commentReportClick} ml="8px">
+              <Button
+                variant="danger"
+                onClick={commentReportClick}
+                isLoading={isLoading}
+                loadingText="신고 중"
+                ml="8px"
+              >
                 신고
               </Button>
             </AlertDialogFooter>
@@ -277,7 +297,7 @@ export const PostMoreButton = ({
         ) : (
           <>
             <PostShareMenuItem onShareClick={onShareClick} />
-            {hasAuth && <PostReportAlert />}
+            {hasAuth && <PostReportAlert postId={postId} />}
           </>
         )}
       </MenuList>
@@ -303,7 +323,7 @@ const CommentDeleteAlert = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const setRefetchCommentState = useSetRecoilState(refetchCommentState);
+  const queryClient = useQueryClient();
 
   const deleteAlertRef = React.useRef<HTMLButtonElement>(null);
 
@@ -318,20 +338,14 @@ const CommentDeleteAlert = ({
         onSuccess: () => {
           onClose();
 
-          setRefetchCommentState(true);
-        },
-        onError: (error) => {
-          errorHandle(error);
+          queryClient.invalidateQueries(["comments", postId]);
         },
       });
     } else {
       deleteReplyMutate(commentId, {
         onSuccess: () => {
           onClose();
-          setRefetchCommentState(true);
-        },
-        onError: (error) => {
-          errorHandle(error);
+          queryClient.invalidateQueries(["comments", postId]);
         },
       });
     }

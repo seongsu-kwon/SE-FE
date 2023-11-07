@@ -8,7 +8,7 @@ export const getDeletedAccounts = (page: number = 0, perPage: number = 25) => {
     headers: {
       ...getJWTHeader(),
     },
-    url: `/admin/accounts/deleted?page=${page}&perPage=${perPage}`,
+    url: `/admin/accounts?status=TEMP_DELETED&page=${page}&perPage=${perPage}`,
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };

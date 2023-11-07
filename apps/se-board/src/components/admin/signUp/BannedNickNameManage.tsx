@@ -25,7 +25,7 @@ export const BannedNickNameManage = () => {
   useEffect(() => {
     if (!data) return;
 
-    setBannedNicknames(data.nicknames);
+    setBannedNicknames(data.content);
   }, [data]);
 
   const deleteOnClick = (name: string) => {

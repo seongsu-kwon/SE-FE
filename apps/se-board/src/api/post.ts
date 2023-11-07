@@ -233,3 +233,13 @@ export const permanentlyDeletePosts = (postIds: number[]) => {
     data: postIds,
   }).then((res) => res.data);
 };
+
+export const reportPost = (postId: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `posts/${postId}/report`,
+    method: HTTP_METHODS.POST,
+  }).then((res) => res.data);
+};

@@ -7,7 +7,7 @@ import {
   MenuList,
   MenuOptionGroup,
 } from "@chakra-ui/react";
-import { MenuRoleInfo } from "@types";
+import { MenuRoleInfo, MenuSettingRole } from "@types";
 import { useEffect, useState } from "react";
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
@@ -45,9 +45,19 @@ export const AuthorityMenu = ({
   );
 
   useEffect(() => {
-    if (!defaultOption || !data || !defaultRoles) return;
+    if (!defaultOption) return;
+
     setSelectedOption(defaultOption);
+
+    if (!defaultRoles) return;
+
     setSelectedRoles(defaultRoles);
+  }, [defaultOption, defaultRoles]);
+
+  useEffect(() => {
+    if (!data) return;
+    setSelectedOption(defaultOption || "");
+    setSelectedRoles(defaultRoles || []);
 
     if (defaultOption === "select") {
       setRoles((prev) => ({
@@ -55,13 +65,14 @@ export const AuthorityMenu = ({
         [roleType]: {
           ...prev[roleType],
           option: defaultOption,
-          roles: data.roles
-            .filter((role) => defaultRoles.includes(role.name))
-            .map((role) => role.roleId),
+          roles:
+            data
+              .filter((role) => defaultRoles?.includes(role.name))
+              .map((role) => role.roleId) || [],
         },
       }));
     }
-  }, [data, defaultOption, defaultRoles]);
+  }, [data]);
 
   const onChange = (value: string | string[]) => {
     setSelectedOption(value);
@@ -69,11 +80,12 @@ export const AuthorityMenu = ({
     setRoles((prev) => ({
       ...prev,
       [roleType]: {
-        ...prev[roleType],
-        option: value,
-        roles: [],
+        option: value as string,
+        roles: value === "select" ? selectedRoles : [],
       },
     }));
+
+    if (value !== "select") setSelectedRoles([]);
   };
 
   const onCheckBoxChange = (value: string | string[]) => {
@@ -84,8 +96,8 @@ export const AuthorityMenu = ({
       [roleType]: {
         ...prev[roleType],
         option: "select",
-        roles: data?.roles
-          .filter((role) => value.includes(role.name))
+        roles: data
+          ?.filter((role) => value.includes(role.alias))
           .map((role) => role.roleId),
       },
     }));
@@ -100,8 +112,7 @@ export const AuthorityMenu = ({
         <MenuOptionGroup
           title="단일 선택"
           type="radio"
-          value={selectedOption}
-          defaultValue={defaultOption || selectedOption}
+          defaultValue={defaultOption}
           onChange={onChange}
         >
           {defaultRoleList.map((role, i) => (
@@ -122,10 +133,10 @@ export const AuthorityMenu = ({
           title="선택 사용자"
           type="checkbox"
           value={selectedRoles}
-          defaultValue={defaultRoles || selectedRoles}
+          defaultValue={defaultRoles}
           onChange={onCheckBoxChange}
         >
-          {data?.roles.map((role) => (
+          {data?.map((role) => (
             <MenuItemOption
               key={role.roleId}
               value={role.alias}
@@ -147,11 +158,15 @@ export const AuthorityMenu = ({
 };
 
 interface AdminAuthorityMenuProps {
+  index: number;
+  setMenuInfo: React.Dispatch<React.SetStateAction<MenuSettingRole[]>>;
   defaultOption?: string;
   defaultRoles?: string[];
 }
 
 export const AdminAuthorityMenu = ({
+  index,
+  setMenuInfo,
   defaultOption,
   defaultRoles,
 }: AdminAuthorityMenuProps) => {
@@ -167,6 +182,16 @@ export const AdminAuthorityMenu = ({
   function onChange(value: string | string[]) {
     setSelectedOption(value);
 
+    setMenuInfo((prev) => {
+      const newMenuInfo = [...prev];
+      newMenuInfo[index] = {
+        name: prev[index].name,
+        option: value as string,
+        roles: value === "select" ? selectedRoles : [],
+      };
+      return newMenuInfo;
+    });
+
     if (value !== "select") {
       setSelectedRoles([]);
     }
@@ -174,6 +199,17 @@ export const AdminAuthorityMenu = ({
 
   function onCheckBoxChange(value: string | string[]) {
     setSelectedRoles(value as string[]);
+
+    setMenuInfo((prev) => {
+      const newMenuInfo = [...prev];
+
+      newMenuInfo[index] = {
+        name: prev[index].name,
+        option: "select",
+        roles: value as string[],
+      };
+      return newMenuInfo;
+    });
   }
 
   return (
@@ -186,7 +222,7 @@ export const AdminAuthorityMenu = ({
           title="단일 선택"
           type="radio"
           value={selectedOption}
-          defaultValue={defaultOption || selectedOption}
+          defaultValue={defaultOption}
           onChange={onChange}
         >
           {defaultRoleList.map((role, i) => (
@@ -207,13 +243,13 @@ export const AdminAuthorityMenu = ({
           title="선택 사용자"
           type="checkbox"
           value={selectedRoles}
-          defaultValue={defaultRoles || selectedRoles}
+          defaultValue={defaultRoles}
           onChange={onCheckBoxChange}
         >
-          {data?.roles.map((role) => (
+          {data?.map((role) => (
             <MenuItemOption
               key={role.roleId}
-              value={role.alias}
+              value={role.roleId.toString()}
               isChecked={selectedRoles.includes(role.alias)}
               defaultChecked={defaultRoles?.includes(role.alias)}
               h="28px"
