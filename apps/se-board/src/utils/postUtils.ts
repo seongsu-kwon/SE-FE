@@ -15,19 +15,21 @@ export const isWritePostActive = (
   postData: PostMutate,
   isModified: boolean
 ) => {
-  if (isModified) {
-    return (
-      postData.title !== "" &&
-      postData.contents !== "" &&
-      postData.categoryId !== -1 &&
-      postData.exposeOption.name !== ""
-    );
-  } else {
-    return (
-      postData.title !== "" &&
-      postData.contents !== "" &&
-      postData.categoryId !== -1 &&
-      postData.exposeOption.name !== ""
-    );
+  if (postData.title === "") {
+    return "제목을 입력해주세요.";
   }
+
+  if (postData.contents === "") {
+    return "내용을 입력해주세요.";
+  }
+
+  if (postData.categoryId === -1) {
+    return "카테고리를 선택해주세요.";
+  }
+
+  if (postData.exposeOption.name === "") {
+    return "공개 설정을 선택해주세요.";
+  }
+
+  return null;
 };
