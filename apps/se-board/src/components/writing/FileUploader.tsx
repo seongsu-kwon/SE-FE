@@ -28,7 +28,7 @@ export const DesktopFileUploader = ({
     <Box
       margin="0 auto"
       maxWidth="full"
-      minH="64px"
+      minH="80px"
       backgroundColor="gray.0"
       borderBottom={`1px solid ${openColors.gray[3]}`}
       onDragOver={handleDragOver}
@@ -37,7 +37,7 @@ export const DesktopFileUploader = ({
       <FormControl>
         <Flex
           justifyContent="center"
-          h="50px"
+          h="70px"
           borderBottom={`1px solid ${openColors.gray[3]}`}
         >
           <FormLabel
@@ -117,7 +117,7 @@ export const MobileFileUploader = ({
   );
 
   return (
-    <FormControl borderY={`1px solid ${openColors.gray[3]}`}>
+    <FormControl borderY={`1px solid ${openColors.gray[3]}`} minH="3.5rem">
       <FormLabel
         w="100%"
         fontSize="lg"
@@ -126,7 +126,7 @@ export const MobileFileUploader = ({
         htmlFor="file-input"
         color={openColors.gray[6]}
       >
-        <Flex w="100%" justifyContent="center">
+        <Flex w="100%" justifyContent="center" h="3.5rem" alignItems="center">
           <Icon as={BsPaperclip} w="20px" h="20px" mb="-0.5" />
           <Text w="fit-content" fontSize="md" my="auto">
             파일 첨부를 하려면 해당 영역을 터치 하세요.
@@ -146,7 +146,7 @@ export const MobileFileUploader = ({
 
       <Box>
         {files.length > 0 && (
-          <Box ml="15px">
+          <Box ml="15px" borderTop={`1px solid ${openColors.gray[3]}`}>
             <Text fontSize="md" w="fit-content" mx="auto" my="3px">
               추가된 파일
             </Text>
@@ -163,6 +163,7 @@ export const MobileFileUploader = ({
                     variant="danger"
                     size="xs"
                     my="auto"
+                    ml="3px"
                     onClick={() => handleRemove(file.fileMetaDataId)}
                   >
                     삭제
