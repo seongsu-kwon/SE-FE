@@ -22,7 +22,7 @@ export const useBookmarked = (postId: number, bookmarked: boolean) => {
   }, [bookmarked]);
 
   const toggleBookmark = () => {
-    if (hasAuth) {
+    if (!hasAuth) {
       toast({
         title: "로그인 후 북마크 가능해요!",
         status: "error",
