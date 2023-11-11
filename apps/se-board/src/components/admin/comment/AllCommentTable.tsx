@@ -4,10 +4,6 @@ import {
   Flex,
   Icon,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Table,
   Tbody,
   Td,
@@ -31,6 +27,8 @@ import { BsRecord, BsTrash3, BsXLg } from "react-icons/bs";
 import { useDeleteCommentListMutation } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 import { errorHandle } from "@/utils/errorHandling";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 interface AllCommentTableProps {
   commentList: AdminCommentContent[];
@@ -86,22 +84,7 @@ export const AllCommentTable = ({
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          if (info.row.original.author.loginId === null) {
-            return (
-              <Text cursor="not-allowed">{info.row.original.author.name}</Text>
-            );
-          } else {
-            return (
-              <Menu>
-                <MenuButton _hover={{ textDecoration: "underline" }}>
-                  {info.row.original.author.name}
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>계정 정보 보기</MenuItem>
-                </MenuList>
-              </Menu>
-            );
-          }
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {

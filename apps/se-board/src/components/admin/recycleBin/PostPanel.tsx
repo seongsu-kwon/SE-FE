@@ -30,6 +30,8 @@ import {
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 
+import { MemberProfileButton } from "../MemberProfileButton";
+
 const columnWidth = {
   base: ["3rem", "8rem", "3rem", "4rem", "3rem", "2rem"],
   md: ["4rem", "4rem", "14rem", "4rem", "6rem", "4rem"],
@@ -72,7 +74,7 @@ export const PostPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          return <Text>{info.row.original.author.name}</Text>;
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {

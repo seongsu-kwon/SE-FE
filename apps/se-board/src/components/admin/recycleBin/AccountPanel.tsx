@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
+import { useNavigatePage } from "@/hooks";
 import {
   useGetDeleteAccountsQuery,
   usePermanentlyDeleteAccountsQuery,
@@ -49,6 +50,8 @@ export const AccountPanel = () => {
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteAccountsQuery();
 
+  const { goToProfilePage } = useNavigatePage();
+
   const columns = useMemo<ColumnDef<AccountContent, any>[]>(
     () => [
       columnHelper.accessor("accountId", {
@@ -60,7 +63,14 @@ export const AccountPanel = () => {
       columnHelper.accessor("name", {
         header: "이름",
         cell: (info) => {
-          return <Text>{info.row.original.name}</Text>;
+          return (
+            <Text
+              color="blue.7"
+              onClick={() => goToProfilePage(info.row.original.loginId)}
+            >
+              {info.row.original.name}
+            </Text>
+          );
         },
       }),
       columnHelper.accessor("nickname", {

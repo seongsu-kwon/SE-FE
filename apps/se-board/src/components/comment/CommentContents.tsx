@@ -10,8 +10,8 @@ interface CommentContentsProps {
 export const CommentContents = ({ comments }: CommentContentsProps) => {
   return (
     <Box>
-      {comments.map((comment) => (
-        <CommentContent comment={comment} />
+      {comments.map((comment, idx) => (
+        <CommentContent key={idx} comment={comment} />
       ))}
     </Box>
   );

@@ -4,10 +4,6 @@ import {
   Checkbox,
   Flex,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Table,
   Tbody,
   Td,
@@ -34,6 +30,8 @@ import {
   usePostRestoreCommentsQuery,
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 const columnWidth = {
   base: ["3rem", "7rem", "2rem", "3rem", "3rem"],
@@ -84,22 +82,7 @@ export const CommentPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          if (info.row.original.author.loginId === null) {
-            return (
-              <Text cursor="not-allowed">{info.row.original.author.name}</Text>
-            );
-          } else {
-            return (
-              <Menu>
-                <MenuButton _hover={{ textDecoration: "underline" }}>
-                  {info.row.original.author.name}
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>계정 정보 보기</MenuItem>
-                </MenuList>
-              </Menu>
-            );
-          }
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {
