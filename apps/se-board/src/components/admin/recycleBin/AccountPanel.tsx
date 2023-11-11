@@ -20,6 +20,7 @@ import {
 } from "@tanstack/react-table";
 import { AccountContent } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
@@ -123,6 +124,30 @@ export const AccountPanel = () => {
     }
   };
 
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    accountId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, accountId];
+      } else {
+        return prev.filter((v) => v !== accountId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === data?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
+  };
+
   const onRestoreClick = () => {
     if (checkedList.length === 0) return alert("복원할 계정을 선택해주세요.");
 
@@ -208,23 +233,7 @@ export const AccountPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.accountId];
-                        } else {
-                          return prev.filter(
-                            (v) => v !== row.original.accountId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.accountId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (

@@ -22,6 +22,7 @@ import {
 } from "@tanstack/react-table";
 import { AdminCommentContent } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsRecord, BsTrash3, BsXLg } from "react-icons/bs";
 
 import { useDeleteCommentListMutation } from "@/react-query/hooks";
@@ -138,6 +139,30 @@ export const AllCommentTable = ({
     }
   };
 
+  const handleCkeckBox = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i: number,
+    commentId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, index) => (index === i ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, commentId];
+      } else {
+        return prev.filter((prevCommentId) => prevCommentId !== commentId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === commentList.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
+  };
+
   const onDeleteCommentList = () => {
     if (checkedList.length === 0) return alert("삭제할 댓글을 선택해주세요.");
 
@@ -212,23 +237,9 @@ export const AllCommentTable = ({
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.commentId];
-                        } else {
-                          return prev.filter(
-                            (commentId) => commentId !== row.original.commentId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) =>
+                      handleCkeckBox(e, i, row.original.commentId)
+                    }
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (

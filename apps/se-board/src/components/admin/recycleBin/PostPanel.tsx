@@ -20,6 +20,7 @@ import {
 } from "@tanstack/react-table";
 import { DeletedPost } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
@@ -115,6 +116,30 @@ export const PostPanel = () => {
     }
   };
 
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    postId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, postId];
+      } else {
+        return prev.filter((v) => v !== postId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === data?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
+  };
+
   const onRestoreClick = () => {
     if (checkedList.length === 0) return alert("복원할 게시글을 선택해주세요.");
 
@@ -194,23 +219,7 @@ export const PostPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.postId];
-                        } else {
-                          return prev.filter(
-                            (id) => id !== row.original.postId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.postId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (
