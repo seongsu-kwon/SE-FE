@@ -1,11 +1,19 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
   Button,
+  ButtonGroup,
   Divider,
   Flex,
   Heading,
   Select,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,8 +43,8 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
     isSuccess: moveIsSuccess,
     reset: moveReset,
   } = usePostMoveBoardMenu();
-  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
-    useDeleteCategory();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toMenuIdRef = useRef<number | undefined>(undefined);
 
@@ -68,17 +76,6 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
         },
       }
     );
-  }
-
-  function onMenuDeleteClick() {
-    if (!menuId) return alert("현재 게시판을 삭제할 수 없습니다.");
-
-    deleteMutate(menuId, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["adminMenuList"]);
-        moveReset();
-      },
-    });
   }
 
   return (
@@ -151,14 +148,87 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
             ml="1rem"
             size="sm"
             isDisabled={menuType === "BOARD" ? !moveIsSuccess : false}
-            onClick={onMenuDeleteClick}
-            isLoading={deleteIsLoading}
-            loadingText="삭제 중"
+            onClick={onOpen}
           >
             삭제
           </Button>
         </Flex>
       </Box>
+      <DeleteAlert
+        menuId={menuId}
+        isOpen={isOpen}
+        onClose={onClose}
+        moveReset={moveReset}
+      />
     </Box>
+  );
+};
+
+interface DeleteAlertProps {
+  menuId: number | undefined;
+  isOpen: boolean;
+  onClose: () => void;
+  moveReset: () => void;
+}
+
+const DeleteAlert = ({
+  menuId,
+  isOpen,
+  onClose,
+  moveReset,
+}: DeleteAlertProps) => {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
+    useDeleteCategory();
+
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  function onMenuDeleteClick() {
+    if (!menuId) return alert("현재 게시판을 삭제할 수 없습니다.");
+
+    deleteMutate(menuId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["adminMenuList"]);
+        moveReset();
+      },
+    });
+  }
+
+  return (
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+    >
+      <AlertDialogOverlay>
+        <AlertDialogContent>
+          <AlertDialogHeader fontSize="xl" fontWeight="bold">
+            메뉴 삭제
+          </AlertDialogHeader>
+
+          <AlertDialogBody>
+            <Text>메뉴 삭제 시 복구가 불가능 합니다.</Text>
+            <Text>정말 삭제하시겠습니까?</Text>
+          </AlertDialogBody>
+
+          <AlertDialogFooter>
+            <ButtonGroup>
+              <Button ref={cancelRef} onClick={onClose}>
+                취소
+              </Button>
+              <Button
+                variant="danger"
+                onClick={onMenuDeleteClick}
+                isLoading={deleteIsLoading}
+                loadingText="삭제 중"
+              >
+                삭제
+              </Button>
+            </ButtonGroup>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
+    </AlertDialog>
   );
 };
