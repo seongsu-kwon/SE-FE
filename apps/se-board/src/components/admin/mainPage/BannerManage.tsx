@@ -66,6 +66,7 @@ export const BannerManage = () => {
               w="100%"
               h="12rem"
               color="gray.5"
+              display={isAdd ? "none" : "flex"}
             >
               <Text fontSize="lg">배너를 등록해주세요.</Text>
             </Flex>
