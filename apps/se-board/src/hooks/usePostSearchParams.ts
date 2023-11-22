@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const SEARCH_OPTIONS = [
@@ -11,68 +10,71 @@ const SEARCH_OPTIONS = [
 
 export const usePostSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [params, setParams] = useState({
-    page: 0,
-    searchOption: "",
-    query: "",
-  });
 
-  useEffect(() => {
+  // 페이지
+  const getPage = () => {
     const page = Number(searchParams.get("page"));
     if (Number.isInteger(page) && page > 0) {
-      console.log("page : ", page);
-
-      setParams((prev) => ({ ...prev, page: page - 1 }));
-    } else {
-      setParams((prev) => ({ ...prev, page: 0 }));
+      return page;
     }
-  }, [searchParams.get("page")]);
+    return 0;
+  };
 
-  useEffect(() => {
+  // 검색 옵션
+  const getSearchOption = () => {
     const option = searchParams.get("searchOption");
-
     if (option && SEARCH_OPTIONS.includes(option)) {
-      setParams((prev) => ({
-        ...prev,
-        searchOption: option,
-        page: 0,
-      }));
+      return option;
     }
-  }, [searchParams.get("searchOption")]);
+    return "";
+  };
 
-  useEffect(() => {
-    if (searchParams.has("query")) {
-      setParams((prev) => ({
-        ...prev,
-        query: searchParams.get("query") ?? "",
-        page: 0,
-      }));
-    }
-  }, [searchParams.get("query")]);
+  // 검색어
+  const getQuery = () => {
+    return searchParams.get("query") ?? "";
+  };
+
+  const getCategory = () => {
+    return searchParams.get("category") ?? "";
+  };
 
   return {
-    ...params,
+    page: getPage(),
+    searchOption: getSearchOption(),
+    query: getQuery(),
+    category: getCategory(),
     setPageSearchParam(page: number) {
       searchParams.set("page", page.toString());
       setSearchParams(searchParams);
     },
-    setSearchOptionParam(option: string) {
-      searchParams.set("searchOption", option);
-      setSearchParams(searchParams);
+    search(option: string, query: string) {
+      if (query === "") {
+        searchParams.delete("searchOption");
+        searchParams.delete("query");
+        setSearchParams(searchParams);
+      } else if (!SEARCH_OPTIONS.includes(option)) {
+        searchParams.set("searchOption", "ALL");
+        searchParams.set("query", query);
+        searchParams.set("page", "0");
+        setSearchParams(searchParams);
+      } else {
+        searchParams.set("searchOption", option);
+        searchParams.set("query", query);
+        searchParams.set("page", "0");
+        setSearchParams(searchParams);
+      }
     },
-    setQueryParam(query: string) {
-      searchParams.set("query", query);
-      setSearchParams(searchParams);
-    },
-    deletePageParam() {
-      searchParams.delete("page");
-      setSearchParams(searchParams);
-    },
-    deleteSearchOptionParam() {
+    changeCategory(category: string) {
+      searchParams.set("category", category);
+      searchParams.set("page", "0");
       searchParams.delete("searchOption");
+      searchParams.delete("query");
       setSearchParams(searchParams);
     },
-    deleteQueryParam() {
+    deleteCategory() {
+      searchParams.delete("category");
+      searchParams.set("page", "0");
+      searchParams.delete("searchOption");
       searchParams.delete("query");
       setSearchParams(searchParams);
     },
