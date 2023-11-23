@@ -82,10 +82,10 @@ export const useDeleteReplyMutation = (postId?: string) => {
 };
 
 export const useGetAdminCommmentQuery = (
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null,
   page?: number,
-  perPage?: number,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  perPage?: number
 ) => {
   return useQuery(
     ["adminComments"],

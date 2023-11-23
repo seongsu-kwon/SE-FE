@@ -12,26 +12,29 @@ import { AllComments } from "@types";
 import { useEffect, useState } from "react";
 
 import { Pagination } from "@/components/Pagination";
+import { useCommentSearchParams } from "@/hooks/useCommentSearchParams";
 import { useGetAdminCommmentQuery } from "@/react-query/hooks";
 
 import { AllCommentTable } from "./AllCommentTable";
 
 export const CommentContainer = () => {
   const [comments, setComments] = useState<AllComments>();
-  const [selectedTab, setSelectedTab] = useState<{
-    isReadOnlyAuthor?: boolean;
-    isReported?: boolean;
-  }>({
-    isReadOnlyAuthor: undefined,
-    isReported: undefined,
-  });
-  const [page, setPage] = useState<number>(0);
+  const {
+    page,
+    searchOption,
+    query,
+    isReadOnlyAuthor,
+    isReported,
+    setPageSearchParam,
+    setSearchOptionAndQuery,
+    setClassific,
+  } = useCommentSearchParams();
 
   const { data, refetch } = useGetAdminCommmentQuery(
+    isReadOnlyAuthor,
+    isReported,
     page,
-    25,
-    selectedTab.isReadOnlyAuthor,
-    selectedTab.isReported
+    25
   );
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export const CommentContainer = () => {
 
   useEffect(() => {
     refetch();
-  }, [selectedTab, page]);
+  }, [page, searchOption, query, isReadOnlyAuthor, isReported]);
 
   return (
     <Box
@@ -55,40 +58,10 @@ export const CommentContainer = () => {
     >
       <Tabs variant="unstyled">
         <TabList>
-          <Tab
-            onClick={() =>
-              setSelectedTab({
-                isReadOnlyAuthor: undefined,
-                isReported: undefined,
-              })
-            }
-          >
-            전체
-          </Tab>
-          <Tab
-            onClick={() =>
-              setSelectedTab({
-                isReadOnlyAuthor: false,
-                isReported: undefined,
-              })
-            }
-          >
-            공개
-          </Tab>
-          <Tab
-            onClick={() =>
-              setSelectedTab({ isReadOnlyAuthor: true, isReported: undefined })
-            }
-          >
-            비밀
-          </Tab>
-          <Tab
-            onClick={() =>
-              setSelectedTab({ isReadOnlyAuthor: undefined, isReported: true })
-            }
-          >
-            신고
-          </Tab>
+          <Tab onClick={() => setClassific(undefined, undefined)}>전체</Tab>
+          <Tab onClick={() => setClassific(false, undefined)}>공개</Tab>
+          <Tab onClick={() => setClassific(true, undefined)}>비밀</Tab>
+          <Tab onClick={() => setClassific(undefined, true)}>신고</Tab>
         </TabList>
         <TabIndicator mt="-1.5px" h="2px" bg="blue.5" borderRadius="2px" />
         <TabPanels>
@@ -123,7 +96,7 @@ export const CommentContainer = () => {
           currentPage={comments?.pageable.pageNumber || 0}
           totalPage={comments?.totalPages || 1}
           onChangePage={(page: number) => {
-            setPage(page);
+            setPageSearchParam(page);
             window.scrollTo(0, 0);
           }}
         />

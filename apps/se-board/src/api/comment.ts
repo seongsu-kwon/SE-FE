@@ -115,16 +115,16 @@ export const fetchCommentListByLoginId = ({
 export const getAdminComments = (
   page: number = 0,
   perPage: number = 25,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null
 ) => {
   let url = "/admin/comments?";
 
-  if (isReadOnlyAuthor !== undefined) {
+  if (isReadOnlyAuthor !== null) {
     url += `isReadOnlyAuthor=${isReadOnlyAuthor}&`;
   }
 
-  if (isReported !== undefined) {
+  if (isReported !== null) {
     url += `isReported=${isReported}&`;
   }
 
