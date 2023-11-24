@@ -1,23 +1,60 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import React from "react";
+
+import { Pagination } from "@/components";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
+import {
+  useGetDeleteCommentsQuery,
+  useGetDeletedPostQuery,
+} from "@/react-query/hooks";
+import { useGetDeleteAccountsQuery } from "@/react-query/hooks/useAccountQuery";
 
 import { AccountPanel } from "./AccountPanel";
 import { CommentPanel } from "./CommentPanel";
 import { PostPanel } from "./PostPanel";
 
 export const RecycleBinContainer = () => {
-  const [buttonState, setButtonState] = React.useState("member");
+  const {
+    classification,
+    page,
+    setPageSearchParam,
+    setClassificationSearchParam,
+  } = useRecycleBinParams();
+
+  const { data: deletedAccountList, refetch: deletedAccountListRefetch } =
+    useGetDeleteAccountsQuery(page, 25);
+  const { data: deletedPostList, refetch: deletedPostListRefetch } =
+    useGetDeletedPostQuery(page, 25);
+  const { data: deletedCommentList, refetch: deletedCommentListRefetch } =
+    useGetDeleteCommentsQuery(page, 25);
 
   const viewPanel = () => {
-    switch (buttonState) {
+    switch (classification) {
       case "member":
-        return <AccountPanel />;
+        return (
+          <AccountPanel
+            data={deletedAccountList}
+            refetch={deletedAccountListRefetch}
+          />
+        );
       case "post":
-        return <PostPanel />;
+        return (
+          <PostPanel data={deletedPostList} refetch={deletedPostListRefetch} />
+        );
       case "comment":
-        return <CommentPanel />;
+        return (
+          <CommentPanel
+            data={deletedCommentList}
+            refetch={deletedCommentListRefetch}
+          />
+        );
       default:
-        return <AccountPanel />;
+        return (
+          <AccountPanel
+            data={deletedAccountList}
+            refetch={deletedAccountListRefetch}
+          />
+        );
     }
   };
 
@@ -38,33 +75,59 @@ export const RecycleBinContainer = () => {
       >
         <Button
           variant="ghost"
-          color={buttonState === "member" ? "primary" : ""}
+          color={
+            classification === "member" || classification === ""
+              ? "primary"
+              : ""
+          }
           onClick={() => {
-            setButtonState("member");
+            setClassificationSearchParam("member");
           }}
         >
           회원
         </Button>
         <Button
           variant="ghost"
-          color={buttonState === "post" ? "primary" : ""}
+          color={classification === "post" ? "primary" : ""}
           onClick={() => {
-            setButtonState("post");
+            setClassificationSearchParam("post");
           }}
         >
           게시글
         </Button>
         <Button
           variant="ghost"
-          color={buttonState === "comment" ? "primary" : ""}
+          color={classification === "comment" ? "primary" : ""}
           onClick={() => {
-            setButtonState("comment");
+            setClassificationSearchParam("comment");
           }}
         >
           댓글
         </Button>
       </HStack>
       {viewPanel()}
+      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
+        <Pagination
+          currentPage={
+            classification === "member"
+              ? deletedAccountList?.pageable.pageNumber || 0
+              : classification === "post"
+              ? 0
+              : deletedCommentList?.pageable.pageNumber || 0
+          }
+          totalPage={
+            classification === "member"
+              ? deletedAccountList?.totalPages || 1
+              : classification === "post"
+              ? 0
+              : deletedCommentList?.totalPages || 1
+          }
+          onChangePage={(page: number) => {
+            setPageSearchParam(page);
+            window.scrollTo(0, 0);
+          }}
+        />
+      </Flex>
     </Box>
   );
 };

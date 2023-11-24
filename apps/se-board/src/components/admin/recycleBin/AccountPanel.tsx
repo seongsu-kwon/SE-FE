@@ -18,15 +18,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AccountContent } from "@types";
+import { AccountContent, DeletedAccounts } from "@types";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
 import { useNavigatePage } from "@/hooks";
 import {
-  useGetDeleteAccountsQuery,
   usePermanentlyDeleteAccountsQuery,
   usePostRestoreAccountsQuery,
 } from "@/react-query/hooks/useAccountQuery";
@@ -37,15 +35,18 @@ const columnWidth = {
   md: ["6rem", "6rem", "6rem", "8rem", "10rem"],
 };
 
-export const AccountPanel = () => {
+interface AccountPanelProps {
+  data: DeletedAccounts | undefined;
+  refetch: () => void;
+}
+
+export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
   const columnHelper = createColumnHelper<AccountContent>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
 
-  const { data, refetch } = useGetDeleteAccountsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreAccountsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
@@ -277,16 +278,6 @@ export const AccountPanel = () => {
         >
           복원
         </Button>
-      </Flex>
-      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
-        <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
-          onChangePage={(page: number) => {
-            setPage(page);
-            window.scrollTo(0, 0);
-          }}
-        />
       </Flex>
     </Box>
   );

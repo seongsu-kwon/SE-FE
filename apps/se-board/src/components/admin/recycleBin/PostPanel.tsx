@@ -18,14 +18,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DeletedPost } from "@types";
+import { DeletedPost, DeletedPostList } from "@types";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
 import {
-  useGetDeletedPostQuery,
   usePermanentlyDeletePostQuery,
   usePostRestorePostQuery,
 } from "@/react-query/hooks";
@@ -38,15 +36,18 @@ const columnWidth = {
   md: ["4rem", "4rem", "14rem", "4rem", "6rem", "4rem"],
 };
 
-export const PostPanel = () => {
+interface PostPanelProps {
+  data: DeletedPostList | undefined;
+  refetch: () => void;
+}
+
+export const PostPanel = ({ data, refetch }: PostPanelProps) => {
   const columnHelper = createColumnHelper<DeletedPost>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
 
-  const { data, refetch } = useGetDeletedPostQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestorePostQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
@@ -263,16 +264,6 @@ export const PostPanel = () => {
         >
           복원
         </Button>
-      </Flex>
-      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
-        <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
-          onChangePage={(page: number) => {
-            setPage(page);
-            window.scrollTo(0, 0);
-          }}
-        />
       </Flex>
     </Box>
   );

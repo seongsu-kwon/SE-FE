@@ -19,13 +19,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AdminCommentContent } from "@types";
+import { AdminCommentContent, AllComments } from "@types";
 import React, { useEffect, useMemo, useState } from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
 import {
-  useGetDeleteCommentsQuery,
   usePermanentlyDeleteCommentsQuery,
   usePostRestoreCommentsQuery,
 } from "@/react-query/hooks";
@@ -38,15 +36,18 @@ const columnWidth = {
   md: ["7rem", "20rem", "4rem", "5rem", "5rem"],
 };
 
-export const CommentPanel = () => {
+interface CommentPanelProps {
+  data: AllComments | undefined;
+  refetch: () => void;
+}
+
+export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
   const columnHelper = createColumnHelper<AdminCommentContent>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
 
-  const { data, refetch } = useGetDeleteCommentsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreCommentsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
@@ -278,16 +279,6 @@ export const CommentPanel = () => {
         >
           복원
         </Button>
-      </Flex>
-      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
-        <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
-          onChangePage={(page: number) => {
-            setPage(page);
-            window.scrollTo(0, 0);
-          }}
-        />
       </Flex>
     </Box>
   );
