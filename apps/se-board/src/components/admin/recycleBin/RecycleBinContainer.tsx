@@ -1,18 +1,26 @@
-import {
-  Box,
-  Tab,
-  TabIndicator,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Box, Button, HStack } from "@chakra-ui/react";
+import React from "react";
 
 import { AccountPanel } from "./AccountPanel";
 import { CommentPanel } from "./CommentPanel";
 import { PostPanel } from "./PostPanel";
 
 export const RecycleBinContainer = () => {
+  const [buttonState, setButtonState] = React.useState("member");
+
+  const viewPanel = () => {
+    switch (buttonState) {
+      case "member":
+        return <AccountPanel />;
+      case "post":
+        return <PostPanel />;
+      case "comment":
+        return <CommentPanel />;
+      default:
+        return <AccountPanel />;
+    }
+  };
+
   return (
     <Box
       my="20px"
@@ -22,25 +30,41 @@ export const RecycleBinContainer = () => {
       rounded="3xl"
       overflowX="auto"
     >
-      <Tabs variant="unstyled">
-        <TabList>
-          <Tab onClick={() => {}}>회원</Tab>
-          <Tab onClick={() => {}}>게시글</Tab>
-          <Tab onClick={() => {}}>댓글</Tab>
-        </TabList>
-        <TabIndicator mt="-1.5px" h="2px" bg="blue.5" borderRadius="2px" />
-        <TabPanels>
-          <TabPanel>
-            <AccountPanel />
-          </TabPanel>
-          <TabPanel>
-            <PostPanel />
-          </TabPanel>
-          <TabPanel>
-            <CommentPanel />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <HStack
+        flexWrap="wrap"
+        py="0.25rem"
+        borderTop="1px solid"
+        borderColor="gray.3"
+      >
+        <Button
+          variant="ghost"
+          color={buttonState === "member" ? "primary" : ""}
+          onClick={() => {
+            setButtonState("member");
+          }}
+        >
+          회원
+        </Button>
+        <Button
+          variant="ghost"
+          color={buttonState === "post" ? "primary" : ""}
+          onClick={() => {
+            setButtonState("post");
+          }}
+        >
+          게시글
+        </Button>
+        <Button
+          variant="ghost"
+          color={buttonState === "comment" ? "primary" : ""}
+          onClick={() => {
+            setButtonState("comment");
+          }}
+        >
+          댓글
+        </Button>
+      </HStack>
+      {viewPanel()}
     </Box>
   );
 };

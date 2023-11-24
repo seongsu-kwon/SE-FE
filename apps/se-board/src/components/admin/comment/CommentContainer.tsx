@@ -1,13 +1,4 @@
-import {
-  Box,
-  Flex,
-  Tab,
-  TabIndicator,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import { AllComments } from "@types";
 import { useEffect, useState } from "react";
 
@@ -56,41 +47,51 @@ export const CommentContainer = () => {
       rounded="3xl"
       overflowX="auto"
     >
-      <Tabs variant="unstyled">
-        <TabList>
-          <Tab onClick={() => setClassific(undefined, undefined)}>전체</Tab>
-          <Tab onClick={() => setClassific(false, undefined)}>공개</Tab>
-          <Tab onClick={() => setClassific(true, undefined)}>비밀</Tab>
-          <Tab onClick={() => setClassific(undefined, true)}>신고</Tab>
-        </TabList>
-        <TabIndicator mt="-1.5px" h="2px" bg="blue.5" borderRadius="2px" />
-        <TabPanels>
-          <TabPanel>
-            <AllCommentTable
-              commentList={comments?.content || []}
-              refetch={refetch}
-            />
-          </TabPanel>
-          <TabPanel>
-            <AllCommentTable
-              commentList={comments?.content || []}
-              refetch={refetch}
-            />
-          </TabPanel>
-          <TabPanel>
-            <AllCommentTable
-              commentList={comments?.content || []}
-              refetch={refetch}
-            />
-          </TabPanel>
-          <TabPanel>
-            <AllCommentTable
-              commentList={comments?.content || []}
-              refetch={refetch}
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <HStack
+        flexWrap="wrap"
+        py="0.25rem"
+        borderTop="1px solid"
+        borderColor="gray.3"
+      >
+        <Button
+          variant="ghost"
+          color={
+            isReadOnlyAuthor === null && isReported === null ? "primary" : ""
+          }
+          onClick={() => setClassific(undefined, undefined)}
+        >
+          전체
+        </Button>
+        <Button
+          variant="ghost"
+          color={
+            isReadOnlyAuthor === false && isReported === null ? "primary" : ""
+          }
+          onClick={() => setClassific(false, undefined)}
+        >
+          공개
+        </Button>
+        <Button
+          variant="ghost"
+          color={
+            isReadOnlyAuthor === true && isReported === null ? "primary" : ""
+          }
+          onClick={() => setClassific(true, undefined)}
+        >
+          비밀
+        </Button>
+        <Button
+          variant="ghost"
+          color={isReadOnlyAuthor === null && isReported ? "primary" : ""}
+          onClick={() => setClassific(undefined, true)}
+        >
+          신고
+        </Button>
+      </HStack>
+      <AllCommentTable
+        commentList={comments?.content || []}
+        refetch={refetch}
+      />
       <Flex alignItems="center" justifyContent="center" mt="0.5rem">
         <Pagination
           currentPage={comments?.pageable.pageNumber || 0}
