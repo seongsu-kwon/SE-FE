@@ -6,7 +6,14 @@ import { Pagination } from "@/components/Pagination";
 import { useCommentSearchParams } from "@/hooks/useCommentSearchParams";
 import { useGetAdminCommmentQuery } from "@/react-query/hooks";
 
+import { SearchForm } from "../SearchForm";
 import { AllCommentTable } from "./AllCommentTable";
+
+const SearchOptions = [
+  { value: "ALL", label: "전체" },
+  { value: "CONTENT", label: "내용" },
+  { value: "AUTHOR", label: "작성자" },
+];
 
 export const CommentContainer = () => {
   const [comments, setComments] = useState<AllComments>();
@@ -25,7 +32,9 @@ export const CommentContainer = () => {
     isReadOnlyAuthor,
     isReported,
     page,
-    25
+    25,
+    searchOption,
+    query
   );
 
   useEffect(() => {
@@ -47,47 +56,56 @@ export const CommentContainer = () => {
       rounded="3xl"
       overflowX="auto"
     >
-      <HStack
-        flexWrap="wrap"
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
         py="0.25rem"
         borderTop="1px solid"
         borderColor="gray.3"
       >
-        <Button
-          variant="ghost"
-          color={
-            isReadOnlyAuthor === null && isReported === null ? "primary" : ""
-          }
-          onClick={() => setClassific(undefined, undefined)}
-        >
-          전체
-        </Button>
-        <Button
-          variant="ghost"
-          color={
-            isReadOnlyAuthor === false && isReported === null ? "primary" : ""
-          }
-          onClick={() => setClassific(false, undefined)}
-        >
-          공개
-        </Button>
-        <Button
-          variant="ghost"
-          color={
-            isReadOnlyAuthor === true && isReported === null ? "primary" : ""
-          }
-          onClick={() => setClassific(true, undefined)}
-        >
-          비밀
-        </Button>
-        <Button
-          variant="ghost"
-          color={isReadOnlyAuthor === null && isReported ? "primary" : ""}
-          onClick={() => setClassific(undefined, true)}
-        >
-          신고
-        </Button>
-      </HStack>
+        <HStack flexWrap="wrap">
+          <Button
+            variant="ghost"
+            color={
+              isReadOnlyAuthor === null && isReported === null ? "primary" : ""
+            }
+            onClick={() => setClassific(undefined, undefined)}
+          >
+            전체
+          </Button>
+          <Button
+            variant="ghost"
+            color={
+              isReadOnlyAuthor === false && isReported === null ? "primary" : ""
+            }
+            onClick={() => setClassific(false, undefined)}
+          >
+            공개
+          </Button>
+          <Button
+            variant="ghost"
+            color={
+              isReadOnlyAuthor === true && isReported === null ? "primary" : ""
+            }
+            onClick={() => setClassific(true, undefined)}
+          >
+            비밀
+          </Button>
+          <Button
+            variant="ghost"
+            color={isReadOnlyAuthor === null && isReported ? "primary" : ""}
+            onClick={() => setClassific(undefined, true)}
+          >
+            신고
+          </Button>
+        </HStack>
+        <SearchForm
+          searchOption={searchOption}
+          query={query}
+          setSearchOptionAndQuery={setSearchOptionAndQuery}
+          searchOptions={SearchOptions}
+        />
+      </Flex>
       <AllCommentTable
         commentList={comments?.content || []}
         refetch={refetch}

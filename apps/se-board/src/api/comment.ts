@@ -116,7 +116,9 @@ export const getAdminComments = (
   page: number = 0,
   perPage: number = 25,
   isReadOnlyAuthor: boolean | null,
-  isReported: boolean | null
+  isReported: boolean | null,
+  searchOption?: string,
+  query?: string
 ) => {
   let url = "/admin/comments?";
 
@@ -126,6 +128,10 @@ export const getAdminComments = (
 
   if (isReported !== null) {
     url += `isReported=${isReported}&`;
+  }
+
+  if (searchOption && query) {
+    url += `searchOption=${searchOption}&query=${query}&`;
   }
 
   return _axios<AllComments>({

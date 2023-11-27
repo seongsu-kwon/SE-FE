@@ -85,11 +85,21 @@ export const useGetAdminCommmentQuery = (
   isReadOnlyAuthor: boolean | null,
   isReported: boolean | null,
   page?: number,
-  perPage?: number
+  perPage?: number,
+  searchOption?: string,
+  query?: string
 ) => {
   return useQuery(
     ["adminComments"],
-    () => getAdminComments(page, perPage, isReadOnlyAuthor, isReported),
+    () =>
+      getAdminComments(
+        page,
+        perPage,
+        isReadOnlyAuthor,
+        isReported,
+        searchOption,
+        query
+      ),
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
