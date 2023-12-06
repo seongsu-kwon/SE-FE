@@ -352,7 +352,7 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
       {
         onSuccess: () => {
           onClose();
-          queryClient.invalidateQueries(["adminCategory", menuId]);
+          queryClient.invalidateQueries(["adminMenuList"]);
         },
       }
     );

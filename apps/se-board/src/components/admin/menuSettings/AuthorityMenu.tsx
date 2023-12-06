@@ -52,12 +52,18 @@ export const AuthorityMenu = ({
     if (!defaultRoles) return;
 
     setSelectedRoles(defaultRoles);
+
+    setRoles((prev) => ({
+      ...prev,
+      [roleType]: {
+        option: defaultOption,
+        roles: defaultOption === "select" ? defaultRoles : [],
+      },
+    }));
   }, [defaultOption, defaultRoles]);
 
   useEffect(() => {
     if (!data) return;
-    setSelectedOption(defaultOption || "");
-    setSelectedRoles(defaultRoles || []);
 
     if (defaultOption === "select") {
       setRoles((prev) => ({
@@ -71,6 +77,12 @@ export const AuthorityMenu = ({
               .map((role) => role.roleId) || [],
         },
       }));
+
+      setSelectedRoles(
+        data
+          .filter((role) => defaultRoles?.includes(role.name))
+          .map((role) => role.alias)
+      );
     }
   }, [data]);
 
@@ -112,6 +124,7 @@ export const AuthorityMenu = ({
         <MenuOptionGroup
           title="단일 선택"
           type="radio"
+          value={selectedOption}
           defaultValue={defaultOption}
           onChange={onChange}
         >
@@ -119,6 +132,7 @@ export const AuthorityMenu = ({
             <MenuItemOption
               key={i}
               value={role.value}
+              isChecked={selectedOption === role.value}
               h="28px"
               borderTop="1px solid"
               borderColor="gray.2"
@@ -132,16 +146,14 @@ export const AuthorityMenu = ({
         <MenuOptionGroup
           title="선택 사용자"
           type="checkbox"
-          value={selectedRoles}
-          defaultValue={defaultRoles}
           onChange={onCheckBoxChange}
+          value={selectedRoles}
         >
           {data?.map((role) => (
             <MenuItemOption
+              isChecked={selectedRoles.includes(role.alias)}
               key={role.roleId}
               value={role.alias}
-              isChecked={selectedRoles.includes(role.alias)}
-              defaultChecked={defaultRoles?.includes(role.alias)}
               h="28px"
               borderTop="1px solid"
               borderColor="gray.2"
