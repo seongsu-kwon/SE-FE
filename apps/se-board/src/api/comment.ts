@@ -95,6 +95,16 @@ export const deleteReply = async (replyId: number) => {
   });
 };
 
+export const reportComment = (commentId: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/comments/${commentId}/report`,
+    method: HTTP_METHODS.POST,
+  });
+};
+
 export const fetchCommentListByLoginId = ({
   loginId,
   page = 0,

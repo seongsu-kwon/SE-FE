@@ -13,6 +13,7 @@ import {
   postReply,
   putComment,
   putReply,
+  reportComment,
   restoreComments,
 } from "@/api/comment";
 import { errorHandle } from "@/utils/errorHandling";
@@ -56,6 +57,14 @@ export const usePutCommentMutation = (postId?: string) => {
 
 export const useDeleteCommentMutation = (postId?: string) => {
   return useMutation((commentId: number) => deleteComment(commentId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useReportCommentMutation = () => {
+  return useMutation((commentId: number) => reportComment(commentId), {
     onError: (err) => {
       errorHandle(err);
     },
