@@ -27,6 +27,7 @@ interface AuthorityMenuProps {
   setRoles: React.Dispatch<React.SetStateAction<MenuRoleInfo>>;
   defaultOption?: string;
   defaultRoles?: string[];
+  disabledList?: string[];
 }
 
 export const AuthorityMenu = ({
@@ -34,6 +35,7 @@ export const AuthorityMenu = ({
   setRoles,
   defaultOption,
   defaultRoles,
+  disabledList,
 }: AuthorityMenuProps) => {
   const { data } = useGetRoleInfos();
 
@@ -48,6 +50,14 @@ export const AuthorityMenu = ({
     if (!defaultOption) return;
 
     setSelectedOption(defaultOption);
+
+    setRoles((prev) => ({
+      ...prev,
+      [roleType]: {
+        option: defaultOption,
+        roles: defaultOption === "select" ? defaultRoles : [],
+      },
+    }));
 
     if (!defaultRoles) return;
 
@@ -132,6 +142,7 @@ export const AuthorityMenu = ({
             <MenuItemOption
               key={i}
               value={role.value}
+              isDisabled={disabledList?.includes(role.value)}
               isChecked={selectedOption === role.value}
               h="28px"
               borderTop="1px solid"

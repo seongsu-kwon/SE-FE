@@ -243,6 +243,16 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
 
           <AlertDialogBody>
             <Text>게시글 이동 후 카테고리 삭제 가능합니다.</Text>
+            <Text
+              display={categoryList.length === 1 ? "block" : "none"}
+              mt="-0.125rem"
+              color="red.5"
+              fontSize="14px"
+              wordBreak="keep-all"
+            >
+              카테고리가 1개 존재하는 경우, 메뉴 설정 하단의 메뉴 삭제에서
+              게시글을 이동시켜주세요.
+            </Text>
             <FormControl alignItems="center" mt="1rem">
               <FormLabel
                 fontWeight="bold"
@@ -258,6 +268,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
                   mr="4px"
                   border="1px"
                   borderColor="gray.4"
+                  disabled={categoryList.length === 1}
                   onChange={(e) =>
                     (toCategoryIdRef.current = Number(e.target.value))
                   }
@@ -278,7 +289,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
                   onClick={onCategoryMoveClick}
                   isLoading={moveIsLoading}
                   loadingText="이동 중"
-                  isDisabled={moveIsSuccess}
+                  isDisabled={categoryList.length === 1 || moveIsSuccess}
                 >
                   이동
                 </Button>
@@ -331,6 +342,12 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
       roles: [],
     },
   });
+
+  useEffect(() => {
+    if (!category) return;
+
+    setCategoryInfo(category);
+  }, [category]);
 
   const cancelRef = useRef<HTMLButtonElement>(null);
 
@@ -423,8 +440,9 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
               <AuthorityMenu
                 roleType="manage"
                 setRoles={setRoles}
-                defaultOption={category.manage?.option || ""}
+                defaultOption={category.manage?.option || "onlyAdmin"}
                 defaultRoles={category.manage?.roles || []}
+                disabledList={["all", "overUser", "overKumoh"]}
               />
             </FormControl>
             <FormControl display="flex" alignItems="center" mt="0.75rem">
@@ -609,7 +627,12 @@ const EnrollAlert = ({ isOpen, onClose, menuId }: EnrollAlertProps) => {
               <FormLabel fontWeight="bold" w="8.75rem" wordBreak="keep-all">
                 카테고리 관리 권한
               </FormLabel>
-              <AuthorityMenu roleType="manage" setRoles={setRoles} />
+              <AuthorityMenu
+                roleType="manage"
+                setRoles={setRoles}
+                defaultOption={"onlyAdmin"}
+                disabledList={["all", "overUser", "overKumoh"]}
+              />
             </FormControl>
             <FormControl display="flex" alignItems="center" mt="0.75rem">
               <FormLabel fontWeight="bold" w="8.75rem" wordBreak="keep-all">
