@@ -1,6 +1,15 @@
 import { AuthorDTO, CategoryDTO, DateType, Pageable, Sort } from "@types";
 
-declare module "@type" {
+declare module "@types" {
+  interface FetchAdminPostListParams {
+    page?: number;
+    perPage?: number;
+    categoryId?: number;
+    exposeOption?: string;
+    searchOption?: string;
+    query?: string;
+    isReported?: boolean;
+  }
   interface FetchAdminPostListResponse {
     content: AdminPost[];
     pageable: Pageable;
@@ -10,7 +19,7 @@ declare module "@type" {
     number: number;
     sort: Sort;
     totalelements: number;
-    totalpages: number;
+    totalPages: number;
   }
 
   interface AdminPost {

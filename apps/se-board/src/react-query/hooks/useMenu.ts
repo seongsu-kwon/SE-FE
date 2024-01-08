@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PostMenuInfo } from "@types";
+import { BannerDTO, PostMenuInfo } from "@types";
+import { AxiosError, AxiosResponse } from "axios";
 import { useSetRecoilState } from "recoil";
 
 import { fetchBanners } from "@/api/mainpage";
@@ -94,7 +95,13 @@ export const useGetSelectedMainPageMenus = () => {
 };
 
 export const useFetchBanners = () => {
-  return useQuery(["banners"], fetchBanners, {});
+  return useQuery<AxiosResponse<BannerDTO[]>, AxiosError, BannerDTO[]>(
+    ["banners"],
+    fetchBanners,
+    {
+      select: (res) => res.data,
+    }
+  );
 };
 
 export const usePutMainPageMenus = () => {
