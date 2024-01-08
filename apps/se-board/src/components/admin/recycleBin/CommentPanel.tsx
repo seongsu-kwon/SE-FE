@@ -4,10 +4,6 @@ import {
   Checkbox,
   Flex,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Table,
   Tbody,
   Td,
@@ -24,7 +20,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { AdminCommentContent } from "@types";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
@@ -34,6 +30,8 @@ import {
   usePostRestoreCommentsQuery,
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 const columnWidth = {
   base: ["3rem", "7rem", "2rem", "3rem", "3rem"],
@@ -84,22 +82,7 @@ export const CommentPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          if (info.row.original.author.loginId === null) {
-            return (
-              <Text cursor="not-allowed">{info.row.original.author.name}</Text>
-            );
-          } else {
-            return (
-              <Menu>
-                <MenuButton _hover={{ textDecoration: "underline" }}>
-                  {info.row.original.author.name}
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>계정 정보 보기</MenuItem>
-                </MenuList>
-              </Menu>
-            );
-          }
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {
@@ -141,6 +124,30 @@ export const CommentPanel = () => {
       setCheckedList(data?.content.map((comment) => comment.commentId) || []);
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    commentId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, commentId];
+      } else {
+        return prev.filter((v) => v !== commentId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === data?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -223,23 +230,7 @@ export const CommentPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.commentId];
-                        } else {
-                          return prev.filter(
-                            (v) => v !== row.original.commentId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.commentId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (

@@ -3,29 +3,25 @@ import { PostListItem as PostListItemType } from "@types";
 import { Fragment } from "react";
 
 import { Pagination, PostListItem } from "@/components";
-import { usePagination } from "@/hooks";
+import { usePostSearchParams } from "@/hooks/usePostSearchParams";
 
 export const PostList = ({
   data,
   totalItems = 0,
   perPage = 25,
-  onChange,
   page,
 }: {
   data?: PostListItemType[];
   totalItems?: number;
   perPage?: number;
   page?: number;
-  onChange?: (page: number) => void;
 }) => {
-  const { currentPage, totalPages, onChangePage } = usePagination(
-    totalItems,
-    perPage,
-    {
-      onChange,
-      current: page,
-    }
-  );
+  const { setPageSearchParam } = usePostSearchParams();
+  const onChange = (page: number) => {
+    setPageSearchParam(page);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <Flex direction="column" pt="56px" pb="54px" w="full">
       {data?.map((notice, i) => (
@@ -36,9 +32,9 @@ export const PostList = ({
       ))}
       <Flex w="full" justify="center" py="2rem">
         <Pagination
-          currentPage={currentPage}
-          totalPage={totalPages}
-          onChangePage={onChangePage}
+          currentPage={page || 0}
+          totalPage={Math.ceil(totalItems / perPage) || 1}
+          onChangePage={onChange}
           viewPage={5}
         />
       </Flex>

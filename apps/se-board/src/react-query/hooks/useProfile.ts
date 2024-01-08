@@ -188,8 +188,5 @@ export const useFetchProfileCommentList = ({
     commentList: comments,
     isLoading: postListLoading,
     totalItems,
-    onChangePage: (page: number) => {
-      window.scrollTo(0, 0);
-    },
   };
 };

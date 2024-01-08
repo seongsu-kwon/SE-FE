@@ -3,7 +3,7 @@ import { CommentListItemDTO } from "@types";
 import { Fragment } from "react";
 
 import { Pagination } from "@/components";
-import { usePagination } from "@/hooks";
+import { useMyCommentSearchParams } from "@/hooks";
 
 import { CommentListItem } from "./CommentListItem";
 
@@ -11,23 +11,18 @@ export const CommentList = ({
   data,
   totalItems = 0,
   perPage = 25,
-  onChange,
   page,
 }: {
   data?: CommentListItemDTO[];
   totalItems?: number;
   perPage?: number;
   page?: number;
-  onChange?: (page: number) => void;
 }) => {
-  const { currentPage, totalPages, onChangePage } = usePagination(
-    totalItems,
-    perPage,
-    {
-      onChange,
-      current: page,
-    }
-  );
+  const { setPageSearchParam } = useMyCommentSearchParams();
+  const onChange = (page: number) => {
+    setPageSearchParam(page);
+    window.scrollTo(0, 0);
+  };
   return (
     <Flex direction="column" pt="56px" pb="54px" w="full">
       {data?.map((item, i) => (
@@ -38,9 +33,9 @@ export const CommentList = ({
       ))}
       <Flex w="full" justify="center" py="2rem">
         <Pagination
-          currentPage={currentPage}
-          totalPage={totalPages}
-          onChangePage={onChangePage}
+          currentPage={page || 0}
+          totalPage={Math.ceil(totalItems / perPage) || 1}
+          onChangePage={onChange}
           viewPage={5}
         />
       </Flex>

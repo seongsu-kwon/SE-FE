@@ -20,6 +20,7 @@ import {
 } from "@tanstack/react-table";
 import { DeletedPost } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
@@ -29,6 +30,8 @@ import {
   usePostRestorePostQuery,
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 const columnWidth = {
   base: ["3rem", "8rem", "3rem", "4rem", "3rem", "2rem"],
@@ -72,7 +75,7 @@ export const PostPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          return <Text>{info.row.original.author.name}</Text>;
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {
@@ -110,6 +113,30 @@ export const PostPanel = () => {
       setCheckedList(data?.content.map((post) => post.postId) || []);
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    postId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, postId];
+      } else {
+        return prev.filter((v) => v !== postId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === data?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -192,23 +219,7 @@ export const PostPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.postId];
-                        } else {
-                          return prev.filter(
-                            (id) => id !== row.original.postId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.postId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (

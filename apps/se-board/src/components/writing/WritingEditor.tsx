@@ -79,7 +79,7 @@ export const WritingEditor = ({
           editor.editing.view.change((writer: any) => {
             writer.setStyle(
               "height",
-              "500px",
+              "45rem",
               editor.editing.view.document.getRoot()
             );
           });

@@ -22,6 +22,7 @@ const DesktopLayout = ({ menuList }: Props) => {
     for (let i = 0; i < 5; i++) {
       postTable.push(
         <Box
+          key={i}
           display="flex"
           w="full"
           h="1.75rem"
@@ -62,7 +63,9 @@ const DesktopLayout = ({ menuList }: Props) => {
           <Logo size="2rem" />
           <Flex justifyContent="space-between">
             {menuExample.map((menu) => (
-              <Text px={{ base: "0.25rem", md: "0.5rem" }}>{menu}</Text>
+              <Text key={menu} px={{ base: "0.25rem", md: "0.5rem" }}>
+                {menu}
+              </Text>
             ))}
           </Flex>
           <Box
@@ -104,7 +107,7 @@ const DesktopLayout = ({ menuList }: Props) => {
             {menuList.map(
               (v) =>
                 v.isChecked && (
-                  <GridItem w="full">
+                  <GridItem w="full" key={v.name}>
                     <Flex
                       w="full"
                       h="2rem"
@@ -142,6 +145,7 @@ export const MobileLayout = ({ menuList }: Props) => {
     for (let i = 0; i < 5; i++) {
       postTable.push(
         <Box
+          key={i}
           display="flex"
           w="full"
           h="1.75rem"
@@ -203,7 +207,7 @@ export const MobileLayout = ({ menuList }: Props) => {
             {menuList.map(
               (v) =>
                 v.isChecked && (
-                  <Box w="full" my="1rem">
+                  <Box w="full" my="1rem" key={v.name}>
                     <Flex
                       w="full"
                       h="2rem"

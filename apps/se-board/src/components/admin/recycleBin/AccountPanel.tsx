@@ -20,9 +20,11 @@ import {
 } from "@tanstack/react-table";
 import { AccountContent } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
 import { Pagination } from "@/components/Pagination";
+import { useNavigatePage } from "@/hooks";
 import {
   useGetDeleteAccountsQuery,
   usePermanentlyDeleteAccountsQuery,
@@ -49,6 +51,8 @@ export const AccountPanel = () => {
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteAccountsQuery();
 
+  const { goToProfilePage } = useNavigatePage();
+
   const columns = useMemo<ColumnDef<AccountContent, any>[]>(
     () => [
       columnHelper.accessor("accountId", {
@@ -60,7 +64,14 @@ export const AccountPanel = () => {
       columnHelper.accessor("name", {
         header: "이름",
         cell: (info) => {
-          return <Text>{info.row.original.name}</Text>;
+          return (
+            <Text
+              color="blue.7"
+              onClick={() => goToProfilePage(info.row.original.loginId)}
+            >
+              {info.row.original.name}
+            </Text>
+          );
         },
       }),
       columnHelper.accessor("nickname", {
@@ -110,6 +121,30 @@ export const AccountPanel = () => {
       setCheckedList(data?.content.map((account) => account.accountId) || []);
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    accountId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, accountId];
+      } else {
+        return prev.filter((v) => v !== accountId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === data?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -198,23 +233,7 @@ export const AccountPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.accountId];
-                        } else {
-                          return prev.filter(
-                            (v) => v !== row.original.accountId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.accountId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (

@@ -74,7 +74,6 @@ export const BookmarkPage = () => {
               data={postList}
               totalItems={totalItems}
               perPage={40}
-              onChange={onChangePage}
               page={page}
             />
           )}
@@ -107,7 +106,6 @@ export const BookmarkPage = () => {
             data={postList}
             totalItems={totalItems}
             perPage={40}
-            onChange={onChangePage}
             page={page}
           />
         )}
