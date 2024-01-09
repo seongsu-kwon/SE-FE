@@ -1,32 +1,39 @@
 import { Box, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import {
+  useDeleteAdminIPMutation,
+  useGetAdminIPsQuery,
+  usePostAdminIPMutation,
+} from "@/react-query/hooks";
+
 import { ItemInput } from "../ItemInput";
 import { ListContainer } from "../ListContainer";
-
-const data = {
-  sise: 7,
-  list: [
-    { id: 1, name: "192.0.12.24" },
-    { id: 2, name: "192.0.12.24" },
-    { id: 3, name: "192.0.12.24" },
-    { id: 4, name: "192.0.12.24" },
-    { id: 5, name: "192.0.12.24" },
-    { id: 6, name: "192.0.12.24" },
-    { id: 7, name: "192.0.12.24" },
-  ],
-};
 
 export const AdminIPManage = () => {
   const [ip, setIp] = useState<string>("");
 
-  const deleteOnClick = (name: string) => {
-    // TODO: delete Request
+  const { data, refetch } = useGetAdminIPsQuery();
+  const { mutate: postMutate, isLoading: postLoading } =
+    usePostAdminIPMutation();
+  const { mutate: deleteMutate, isLoading: deleteLoading } =
+    useDeleteAdminIPMutation();
+
+  const deleteOnClick = (ipAddress: string) => {
+    deleteMutate(ipAddress, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
   };
 
   const addOnClick = () => {
-    // TODO: add Request
-    setIp("");
+    postMutate(ip, {
+      onSuccess: () => {
+        refetch();
+        setIp("");
+      },
+    });
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,10 +59,10 @@ export const AdminIPManage = () => {
       </Text>
       <Box my="16px">
         <Text fontSize={{ base: "md" }} fontWeight="semibold" mb="8px">
-          관리자 IP 관리({data.sise}개)
+          관리자 IP 관리({data?.length || 0}개)
         </Text>
         <ListContainer
-          data={data.list}
+          data={data || []}
           deleteOnClick={deleteOnClick}
           isLoading={false}
         />

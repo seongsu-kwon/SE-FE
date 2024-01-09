@@ -1,14 +1,10 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { BannedId, BannedNickname, IpInfo } from "@types";
+import { BannedId, BannedNickname, IpInfo, SpamKeyword } from "@types";
 
 import { ListItem } from ".";
 
 interface ListContainerProps {
-  data:
-    | BannedNickname[]
-    | BannedId[]
-    | IpInfo[]
-    | { id: number; name: string }[];
+  data: BannedNickname[] | BannedId[] | IpInfo[] | SpamKeyword[];
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }
