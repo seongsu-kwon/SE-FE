@@ -49,7 +49,7 @@ export const CommentPanel = () => {
 
   const { page, setPageSearchParam } = useRecycleBinParams();
 
-  const { data, refetch } = useGetDeleteCommentsQuery(page, 2);
+  const { data, refetch } = useGetDeleteCommentsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreCommentsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
