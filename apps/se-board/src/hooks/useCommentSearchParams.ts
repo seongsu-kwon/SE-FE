@@ -40,7 +40,6 @@ export const useCommentSearchParams = () => {
   };
 
   const getIsReadOnlyAuthor = () => {
-    console.log(searchParams.get("isReadOnlyAuthor"));
     if (searchParams.get("isReadOnlyAuthor") === "true") {
       return true;
     } else if (searchParams.get("isReadOnlyAuthor") === "false") {

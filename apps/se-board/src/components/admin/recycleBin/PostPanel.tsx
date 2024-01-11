@@ -23,7 +23,10 @@ import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
+import { Pagination } from "@/components";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
+  useGetDeletedPostQuery,
   usePermanentlyDeletePostQuery,
   usePostRestorePostQuery,
 } from "@/react-query/hooks";
@@ -36,22 +39,30 @@ const columnWidth = {
   md: ["4rem", "4rem", "14rem", "4rem", "6rem", "4rem"],
 };
 
-interface PostPanelProps {
-  data: DeletedPostList | undefined;
-  refetch: () => void;
-}
-
-export const PostPanel = ({ data, refetch }: PostPanelProps) => {
+export const PostPanel = () => {
   const columnHelper = createColumnHelper<DeletedPost>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
+  const [posts, setPosts] = useState<DeletedPostList>();
 
+  const { page, setPageSearchParam } = useRecycleBinParams();
+
+  const { data, refetch } = useGetDeletedPostQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestorePostQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeletePostQuery();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setPosts(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<DeletedPost, any>[]>(
     () => [
@@ -96,14 +107,10 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
   );
 
   const table = useReactTable<DeletedPost>({
-    data: data?.content || [],
+    data: posts?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -111,7 +118,7 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((post) => post.postId) || []);
+      setCheckedList(posts?.content.map((post) => post.postId) || []);
     } else {
       setCheckedList([]);
     }
@@ -134,7 +141,7 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
       }
     });
 
-    if (isChecked && checkedList.length + 1 === data?.content.length) {
+    if (isChecked && checkedList.length + 1 === posts?.content.length) {
       setIsAllChecked(true);
     } else {
       setIsAllChecked(false);
@@ -148,7 +155,7 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(posts?.content.length).fill(false));
         refetch();
       },
     });
@@ -161,7 +168,7 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(posts?.content.length).fill(false));
         refetch();
       },
     });
@@ -264,6 +271,16 @@ export const PostPanel = ({ data, refetch }: PostPanelProps) => {
         >
           복원
         </Button>
+      </Flex>
+      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
+        <Pagination
+          currentPage={posts?.pageable.pageNumber || 0}
+          totalPage={posts?.totalPages || 1}
+          onChangePage={(page: number) => {
+            setPageSearchParam(page);
+            window.scrollTo(0, 0);
+          }}
+        />
       </Flex>
     </Box>
   );

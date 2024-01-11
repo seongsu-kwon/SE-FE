@@ -1,60 +1,22 @@
-import { Box, Button, Flex, HStack } from "@chakra-ui/react";
-import React from "react";
+import { Box, Button, HStack } from "@chakra-ui/react";
 
-import { Pagination } from "@/components";
 import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
-import {
-  useGetDeleteCommentsQuery,
-  useGetDeletedPostQuery,
-} from "@/react-query/hooks";
-import { useGetDeleteAccountsQuery } from "@/react-query/hooks/useAccountQuery";
 
 import { AccountPanel } from "./AccountPanel";
 import { CommentPanel } from "./CommentPanel";
 import { PostPanel } from "./PostPanel";
 
 export const RecycleBinContainer = () => {
-  const {
-    classification,
-    page,
-    setPageSearchParam,
-    setClassificationSearchParam,
-  } = useRecycleBinParams();
+  const { classification, setClassificationSearchParam } =
+    useRecycleBinParams();
 
-  const { data: deletedAccountList, refetch: deletedAccountListRefetch } =
-    useGetDeleteAccountsQuery(page, 25);
-  const { data: deletedPostList, refetch: deletedPostListRefetch } =
-    useGetDeletedPostQuery(page, 25);
-  const { data: deletedCommentList, refetch: deletedCommentListRefetch } =
-    useGetDeleteCommentsQuery(page, 25);
-
-  const viewPanel = () => {
-    switch (classification) {
-      case "member":
-        return (
-          <AccountPanel
-            data={deletedAccountList}
-            refetch={deletedAccountListRefetch}
-          />
-        );
-      case "post":
-        return (
-          <PostPanel data={deletedPostList} refetch={deletedPostListRefetch} />
-        );
-      case "comment":
-        return (
-          <CommentPanel
-            data={deletedCommentList}
-            refetch={deletedCommentListRefetch}
-          />
-        );
-      default:
-        return (
-          <AccountPanel
-            data={deletedAccountList}
-            refetch={deletedAccountListRefetch}
-          />
-        );
+  const getPanel = (classification: string) => {
+    if (classification === "member" || classification === "") {
+      return <AccountPanel />;
+    } else if (classification === "post") {
+      return <PostPanel />;
+    } else {
+      return <CommentPanel />;
     }
   };
 
@@ -105,29 +67,7 @@ export const RecycleBinContainer = () => {
           댓글
         </Button>
       </HStack>
-      {viewPanel()}
-      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
-        <Pagination
-          currentPage={
-            classification === "member"
-              ? deletedAccountList?.pageable.pageNumber || 0
-              : classification === "post"
-              ? 0
-              : deletedCommentList?.pageable.pageNumber || 0
-          }
-          totalPage={
-            classification === "member"
-              ? deletedAccountList?.totalPages || 1
-              : classification === "post"
-              ? 0
-              : deletedCommentList?.totalPages || 1
-          }
-          onChangePage={(page: number) => {
-            setPageSearchParam(page);
-            window.scrollTo(0, 0);
-          }}
-        />
-      </Flex>
+      {getPanel(classification)}
     </Box>
   );
 };

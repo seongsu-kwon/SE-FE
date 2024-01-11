@@ -23,7 +23,10 @@ import { AdminCommentContent, AllComments } from "@types";
 import React, { useEffect, useMemo, useState } from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
+import { Pagination } from "@/components";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
+  useGetDeleteCommentsQuery,
   usePermanentlyDeleteCommentsQuery,
   usePostRestoreCommentsQuery,
 } from "@/react-query/hooks";
@@ -36,22 +39,30 @@ const columnWidth = {
   md: ["7rem", "20rem", "4rem", "5rem", "5rem"],
 };
 
-interface CommentPanelProps {
-  data: AllComments | undefined;
-  refetch: () => void;
-}
-
-export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
+export const CommentPanel = () => {
   const columnHelper = createColumnHelper<AdminCommentContent>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
+  const [comments, setComments] = useState<AllComments>();
 
+  const { page, setPageSearchParam } = useRecycleBinParams();
+
+  const { data, refetch } = useGetDeleteCommentsQuery(page, 2);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreCommentsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteCommentsQuery();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setComments(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<AdminCommentContent, any>[]>(
     () => [
@@ -107,14 +118,10 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
   );
 
   const table = useReactTable<AdminCommentContent>({
-    data: data?.content || [],
+    data: comments?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -122,7 +129,9 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((comment) => comment.commentId) || []);
+      setCheckedList(
+        comments?.content.map((comment) => comment.commentId) || []
+      );
     } else {
       setCheckedList([]);
     }
@@ -145,7 +154,7 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
       }
     });
 
-    if (isChecked && checkedList.length + 1 === data?.content.length) {
+    if (isChecked && checkedList.length + 1 === comments?.content.length) {
       setIsAllChecked(true);
     } else {
       setIsAllChecked(false);
@@ -159,7 +168,7 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(comments?.content.length).fill(false));
         refetch();
       },
     });
@@ -172,7 +181,7 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(comments?.content.length).fill(false));
         refetch();
       },
     });
@@ -279,6 +288,16 @@ export const CommentPanel = ({ data, refetch }: CommentPanelProps) => {
         >
           복원
         </Button>
+      </Flex>
+      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
+        <Pagination
+          currentPage={comments?.pageable.pageNumber || 0}
+          totalPage={comments?.totalPages || 1}
+          onChangePage={(page: number) => {
+            setPageSearchParam(page);
+            window.scrollTo(0, 0);
+          }}
+        />
       </Flex>
     </Box>
   );

@@ -23,8 +23,11 @@ import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
+import { Pagination } from "@/components";
 import { useNavigatePage } from "@/hooks";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
+  useGetDeleteAccountsQuery,
   usePermanentlyDeleteAccountsQuery,
   usePostRestoreAccountsQuery,
 } from "@/react-query/hooks/useAccountQuery";
@@ -35,24 +38,32 @@ const columnWidth = {
   md: ["6rem", "6rem", "6rem", "8rem", "10rem"],
 };
 
-interface AccountPanelProps {
-  data: DeletedAccounts | undefined;
-  refetch: () => void;
-}
-
-export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
+export const AccountPanel = () => {
   const columnHelper = createColumnHelper<AccountContent>();
 
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
+  const [accounts, setAccounts] = useState<DeletedAccounts>();
 
+  const { page, setPageSearchParam } = useRecycleBinParams();
+
+  const { data, refetch } = useGetDeleteAccountsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreAccountsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteAccountsQuery();
 
   const { goToProfilePage } = useNavigatePage();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setAccounts(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<AccountContent, any>[]>(
     () => [
@@ -104,14 +115,10 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
   );
 
   const table = useReactTable<AccountContent>({
-    data: data?.content || [],
+    data: accounts?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -119,7 +126,9 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((account) => account.accountId) || []);
+      setCheckedList(
+        accounts?.content.map((account) => account.accountId) || []
+      );
     } else {
       setCheckedList([]);
     }
@@ -142,7 +151,7 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
       }
     });
 
-    if (isChecked && checkedList.length + 1 === data?.content.length) {
+    if (isChecked && checkedList.length + 1 === accounts?.content.length) {
       setIsAllChecked(true);
     } else {
       setIsAllChecked(false);
@@ -158,7 +167,7 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
         onSuccess: () => {
           setCheckedList([]);
           setIsAllChecked(false);
-          setCheckBoxes(Array(data?.content.length).fill(false));
+          setCheckBoxes(Array(accounts?.content.length).fill(false));
           refetch();
         },
       }
@@ -174,7 +183,7 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
         onSuccess: () => {
           setCheckedList([]);
           setIsAllChecked(false);
-          setCheckBoxes(Array(data?.content.length).fill(false));
+          setCheckBoxes(Array(accounts?.content.length).fill(false));
           refetch();
         },
       }
@@ -278,6 +287,16 @@ export const AccountPanel = ({ data, refetch }: AccountPanelProps) => {
         >
           복원
         </Button>
+      </Flex>
+      <Flex alignItems="center" justifyContent="center" mt="0.5rem">
+        <Pagination
+          currentPage={accounts?.pageable.pageNumber || 0}
+          totalPage={accounts?.totalPages || 1}
+          onChangePage={(page: number) => {
+            setPageSearchParam(page);
+            window.scrollTo(0, 0);
+          }}
+        />
       </Flex>
     </Box>
   );
