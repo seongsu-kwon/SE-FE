@@ -16,8 +16,12 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { PageHeaderTitle } from "@/components/admin";
 import { AddMenu, MenuEdit } from "@/components/admin/menuSettings";
 import { useGetMenuList } from "@/react-query/hooks/useMenu";
-import { boardMenuListState, newSEMenuState } from "@/store/menu";
-import { getBoardMenuList } from "@/utils/menuUtils";
+import {
+  allMenuListState,
+  boardMenuListState,
+  newSEMenuState,
+} from "@/store/menu";
+import { getAllMenuList, getBoardMenuList } from "@/utils/menuUtils";
 
 export const SEMenuEditPage = () => {
   const { data } = useGetMenuList();
@@ -29,20 +33,23 @@ export const SEMenuEditPage = () => {
 
   const [newSEMenu, setNewSEMenu] = useRecoilState(newSEMenuState);
   const setBoardMenuList = useSetRecoilState(boardMenuListState);
+  const setAllMenuList = useSetRecoilState(allMenuListState);
 
   useEffect(() => {
     if (!data) return;
 
-    setMenuList(data);
+    const allMenuList = getAllMenuList(data);
+    setMenuList(allMenuList);
+    setAllMenuList(data);
     setSelectedMenu(
-      data.length > 0
+      allMenuList.length > 0
         ? newSEMenu !== ""
-          ? data.filter((v) => v.name === newSEMenu)[0]
-          : data[0]
+          ? allMenuList.filter((v) => v.name === newSEMenu)[0]
+          : allMenuList[0]
         : undefined
     );
-    setBoardMenuList(getBoardMenuList(data));
-  }, [data]);
+    setBoardMenuList(getBoardMenuList(allMenuList));
+  }, [data, newSEMenu]);
 
   function onSelectMenu(menu: MenuInfomation | undefined) {
     if (menu === undefined) {

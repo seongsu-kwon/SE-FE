@@ -18,13 +18,13 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
   useDeleteCategory,
   usePostMoveBoardMenu,
 } from "@/react-query/hooks/useMenu";
-import { boardMenuListState } from "@/store/menu";
+import { boardMenuListState, newSEMenuState } from "@/store/menu";
 import { semanticColors } from "@/styles";
 
 interface MenuDeleteProps {
@@ -184,11 +184,14 @@ const DeleteAlert = ({
 
   const cancelRef = useRef<HTMLButtonElement>(null);
 
+  const setNewSEMenu = useSetRecoilState(newSEMenuState);
+
   function onMenuDeleteClick() {
     if (!menuId) return alert("현재 게시판을 삭제할 수 없습니다.");
 
     deleteMutate(menuId, {
       onSuccess: () => {
+        setNewSEMenu("");
         queryClient.invalidateQueries(["adminMenuList"]);
         moveReset();
       },
