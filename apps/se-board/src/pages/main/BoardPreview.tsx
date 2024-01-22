@@ -1,4 +1,12 @@
-import { Divider, Flex, Heading, Img, Skeleton, Stack } from "@chakra-ui/react";
+import {
+  Divider,
+  Flex,
+  Heading,
+  Img,
+  Skeleton,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -42,14 +50,23 @@ export const BoardPreview = ({
         />
       </Flex>
       <Flex direction="column" w="full">
-        <Divider />
-
-        {posts.map((post) => (
-          <Fragment key={post.postId}>
-            <PostListItem ellipsisLine={2} menuUrlId={menuUrlId} {...post} />
+        {posts.length === 0 ? (
+          <EmptyPost />
+        ) : (
+          <>
             <Divider />
-          </Fragment>
-        ))}
+            {posts.map((post) => (
+              <Fragment key={post.postId}>
+                <PostListItem
+                  ellipsisLine={2}
+                  menuUrlId={menuUrlId}
+                  {...post}
+                />
+                <Divider />
+              </Fragment>
+            ))}
+          </>
+        )}
       </Flex>
     </Stack>
   );
@@ -69,5 +86,13 @@ export const BoardPreviewSkeleton = () => {
       <Skeleton w="full" h="5rem" />
       <Skeleton w="full" h="5rem" />
     </Stack>
+  );
+};
+
+const EmptyPost = () => {
+  return (
+    <Flex w="full" h="10rem" alignItems="center" justify="center">
+      <Text>게시글이 없습니다</Text>
+    </Flex>
   );
 };

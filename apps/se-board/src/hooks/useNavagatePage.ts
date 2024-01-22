@@ -11,5 +11,10 @@ export const useNavigatePage = () => {
     goToMainPage: () => navigate("/"),
     goToWritePage: () => navigate("write"),
     goToMyPage: () => navigate(`/profile/${userInfo.email}`),
+    goToProfilePage: (email: string | null) => {
+      if (email === null) alert("존재하지 않는 사용자입니다.");
+
+      navigate(`/profile/${email}`);
+    },
   };
 };

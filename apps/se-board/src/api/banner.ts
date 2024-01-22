@@ -1,4 +1,4 @@
-import { AddBannerBody, BannerInfo } from "@types";
+import { AddBannerBody, Banner } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
@@ -9,7 +9,7 @@ export const getBanners = (isActive?: boolean) => {
       ? `/admin/banners?isActive=${isActive}`
       : `/admin/banners`;
 
-  return _axios<BannerInfo>({
+  return _axios<Banner[]>({
     headers: {
       ...getJWTHeader(),
     },

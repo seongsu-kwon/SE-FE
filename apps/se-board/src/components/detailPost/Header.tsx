@@ -14,7 +14,7 @@ import {
 import { DateType } from "@types";
 import { BsClock, BsFillEyeFill, BsPerson } from "react-icons/bs";
 
-import { useBookmarked } from "@/hooks";
+import { useBookmarked, useNavigatePage } from "@/hooks";
 import { openColors } from "@/styles";
 import { toYYYYMMDDHHhhss } from "@/utils/dateUtils";
 
@@ -40,9 +40,11 @@ interface HeaderProps {
 }
 
 const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
+  const { goToProfilePage } = useNavigatePage();
+
   return (
     <Menu autoSelect={false}>
-      <MenuButton>
+      <MenuButton cursor={id !== null ? "pointer" : "not-allowed"}>
         <Box display="flex" alignItems="center">
           <Icon
             as={BsPerson}
@@ -60,7 +62,9 @@ const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
       </MenuButton>
       {id !== null && (
         <MenuList maxW={{ base: "100px" }}>
-          <MenuItem w="100%">작성글 보기</MenuItem>
+          <MenuItem w="100%" onClick={() => goToProfilePage(id)}>
+            프로필 보기
+          </MenuItem>
         </MenuList>
       )}
     </Menu>

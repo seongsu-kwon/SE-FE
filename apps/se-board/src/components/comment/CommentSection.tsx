@@ -1,80 +1,40 @@
 import { Box } from "@chakra-ui/react";
-import { Comment, Content } from "@types";
+import { useQueryClient } from "@tanstack/react-query";
+import { Comment, CommentPaginationInfo } from "@types";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 
-import {
-  CommentBody,
-  CommentHeader,
-  CommentInput,
-  ShowMoreCommentButton,
-  SkeletonComment,
-} from "@/components/comment";
 import { useGetCommentQuery } from "@/react-query/hooks";
-import { refetchCommentState, writeCommentState } from "@/store/CommentState";
 import { openColors } from "@/styles";
-import { errorHandle } from "@/utils/errorHandling";
+
+import { CommentContents } from "./CommentContents";
+import { CommentHeader } from "./CommentHeader";
+import { CommentInput } from "./CommentInput";
+import { ShowMoreCommentButton } from "./ShowMoreCommentButton";
+import { SkeletonComment } from "./SkeletonComment";
 
 interface CommentSectionProps {
   postId: string | undefined;
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    refetch,
-  } = useGetCommentQuery(postId);
-  const [commentData, setCommentData] = useState<Comment | undefined>(
-    undefined
-  );
-  const [isWriteState, setIsWriteState] = useRecoilState(writeCommentState);
-  const [refetchComment, setRefetchComment] =
-    useRecoilState(refetchCommentState);
+  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
+    useGetCommentQuery(postId);
 
-  if (isError) {
-    errorHandle(error);
-  }
+  const queryClient = useQueryClient();
+
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [pagenationInfo, setPagenationInfo] = useState<CommentPaginationInfo>();
 
   useEffect(() => {
-    refetch();
-    return setRefetchComment(false);
-  }, [refetchComment]);
-
-  useEffect(() => {
-    if (!hasNextPage) {
-      refetch();
-    } else {
-      while (hasNextPage) {
-        fetchNextPage();
-      }
-    }
-
-    return setIsWriteState(false);
-  }, [isWriteState]);
+    queryClient.invalidateQueries(["comments", postId]);
+  }, []);
 
   useEffect(() => {
     if (!data) return;
 
-    const newContents: Content[] = [];
-
-    data.pages.map((page) => {
-      newContents.push(...page.content);
-    });
-
-    setCommentData({
-      paginationInfo: data.pages[data.pages.length - 1].paginationInfo,
-      content: newContents,
-    });
+    setPagenationInfo(data.pages[data.pages.length - 1].paginationInfo);
+    setComments(data.pages.map((page) => page.content).flat());
   }, [data]);
-
-  const moreCommentsOnClick = () => {
-    fetchNextPage();
-  };
 
   return (
     <Box
@@ -84,32 +44,18 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       mb="100px"
       textAlign="center"
     >
-      <CommentHeader
-        commentTotalSize={commentData?.paginationInfo.totalAllSize || 0}
-      />
+      <CommentHeader commentTotalSize={pagenationInfo?.totalAllSize || 0} />
       <CommentInput />
       {isLoading ? (
         <SkeletonComment />
       ) : (
-        commentData?.content.map((comment) => (
-          <CommentBody
-            commentId={comment.commentId}
-            author={{
-              loginId: comment.author.loginId, // loginId로 수정 필요
-              name: comment.author.name,
-            }}
-            createdAt={comment.createdAt}
-            modifiedAt={comment.modifiedAt}
-            contents={comment.contents}
-            isEditable={comment.isEditable}
-            isActive={comment.isActive}
-            isReadOnlyAuthor={comment.isReadOnlyAuthor}
-            subComments={comment.subComments}
-          />
-        ))
+        <CommentContents comments={comments} />
       )}
-      {commentData && !commentData.paginationInfo.last && (
-        <ShowMoreCommentButton onClick={moreCommentsOnClick} />
+      {!pagenationInfo?.last && (
+        <ShowMoreCommentButton
+          onClick={() => fetchNextPage()}
+          isFetchingNextPage={isFetchingNextPage}
+        />
       )}
     </Box>
   );

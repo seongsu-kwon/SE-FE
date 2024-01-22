@@ -1,4 +1,4 @@
-import { DateType, Pageable } from "@types";
+import { DateType, Pageable, PageableInfo } from "@types";
 
 declare module "@types" {
   type PostMutate = PostPut | PostCreate;
@@ -130,5 +130,26 @@ declare module "@types" {
   interface PostCreateRes {
     id: number;
     message: string;
+  }
+
+  interface DeletedPost {
+    postId: number;
+    title: string;
+    category: CategoryDTO;
+    menu: {
+      menuId: number;
+      name: string;
+      urlId: string;
+    };
+    author: Author;
+    views: number;
+    createdAt: DateType;
+    modifiedAt: DateType;
+    hasAttachment: boolean;
+    exposeOption: string;
+  }
+
+  interface DeletedPostList extends PageableInfo {
+    content: DeletedPost[];
   }
 }

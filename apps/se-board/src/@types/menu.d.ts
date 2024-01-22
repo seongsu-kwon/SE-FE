@@ -39,25 +39,25 @@ declare module "@types" {
     menuId: number;
     name: string;
     urlId: string;
-    externalUrl: string;
     type: MenuType | "ADD" | "NULL";
-    subMenu: MenuInfomation[];
+    access: MenuSettingRole;
+    write: MenuSettingRole;
+    manage: MenuSettingRole;
+    expose: MenuSettingRole;
+    subMenus: MenuInfomation[];
   }
 
-  interface MenuList {
-    menus: MenuInfomation[];
-  }
+  type MenuList = MenuInfomation[];
 
-  interface MainPageMenus {
-    menus: MainPageMenu[];
-  }
+  type MainPageMenus = MainPageMenu[];
 
-  interface SelectedMainPageMenus {
-    mainPageMenus: {
-      id: number;
-      menuId: number;
-    }[];
-  }
+  type SelectedMainPageMenus = {
+    id: number;
+    menuId: number;
+    name: string;
+    url: string;
+    description: string;
+  }[];
 
   interface MainPageMenu {
     categoryId: number;
@@ -101,6 +101,49 @@ declare module "@types" {
       option: string;
       roles: number[];
     };
+    expose: {
+      option: string;
+      roles: number[];
+    };
+  }
+
+  interface MenuRoleInfo {
+    access: {
+      option: string;
+      roles: number[];
+    };
+    write: {
+      option: string;
+      roles: number[];
+    };
+    manage: {
+      option: string;
+      roles: number[];
+    };
+    expose: {
+      option: string;
+      roles: number[];
+    };
+  }
+
+  interface PutSubMenu {
+    name: string;
+    superMenuId: number | null;
+    description: string;
+    urlId: string;
+    externalUrl: string;
+    access: {
+      option: string;
+      roles: number[];
+    } | null;
+    write: {
+      option: string;
+      roles: number[];
+    } | null;
+    manage: {
+      option: string;
+      roles: number[];
+    } | null;
     expose: {
       option: string;
       roles: number[];

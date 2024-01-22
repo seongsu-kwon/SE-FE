@@ -28,10 +28,10 @@ export const BoardPage = () => {
 
   const { getCurrentMenu, getCurrentMenuId } = useMenu();
   const { page, searchOption, query } = usePostSearchParams();
-  const { postList, totalItems, isLoading, onChangePage } = useFetchPostList({
+  const { postList, totalItems, isLoading } = useFetchPostList({
     categoryId: getCurrentMenuId()!,
     page,
-    perPage: 40,
+    perPage: 1,
     searchOption,
     query,
   });
@@ -102,7 +102,6 @@ export const BoardPage = () => {
               data={postList}
               totalItems={totalItems}
               perPage={40}
-              onChange={onChangePage}
               page={page}
             />
           )}
@@ -135,7 +134,6 @@ export const BoardPage = () => {
             data={postList}
             totalItems={totalItems}
             perPage={40}
-            onChange={onChangePage}
             page={page}
           />
         )}

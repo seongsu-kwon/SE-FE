@@ -4,6 +4,7 @@ import {
   MenuInfo,
   MenuList,
   PostMenuInfo,
+  PutSubMenu,
   SelectedMainPageMenus,
   SubMenus,
 } from "@types";
@@ -71,7 +72,7 @@ export const putMainPageMenus = (menuIds: number[]) => {
   }).then((res) => res.data);
 };
 
-export const getMenuInfo = (categoryId: number) => {
+export const getMenuInfo = (categoryId: number | undefined) => {
   return _axios<MenuInfo>({
     headers: {
       ...getJWTHeader(),
@@ -92,6 +93,17 @@ export const postMenuInfo = (categoryId: number, data: PostMenuInfo) => {
   }).then((res) => res.data);
 };
 
+export const putCategory = (categoryId: number, data: PostMenuInfo) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu/${categoryId}`,
+    method: HTTP_METHODS.PUT,
+    data,
+  }).then((res) => res.data);
+};
+
 export const deleteCategory = (categoryId: number) => {
   return _axios({
     headers: {
@@ -99,6 +111,23 @@ export const deleteCategory = (categoryId: number) => {
     },
     url: `/admin/menu/${categoryId}`,
     method: HTTP_METHODS.DELETE,
+  }).then((res) => res.data);
+};
+
+export const postMoveBoardMenu = (
+  fromBoardMenuId: number,
+  toBoardMenuId: number
+) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu/migrate`,
+    method: HTTP_METHODS.POST,
+    data: {
+      fromBoardMenuId,
+      toBoardMenuId,
+    },
   }).then((res) => res.data);
 };
 
@@ -119,7 +148,7 @@ export const postMoveCategory = (
   }).then((res) => res.data);
 };
 
-export const postAddCategory = (
+export const postAddMenuOrCategory = (
   categoryType: string,
   data: { superCategoryId: number | null } & PostMenuInfo
 ) => {
@@ -129,6 +158,17 @@ export const postAddCategory = (
     },
     url: `/admin/menu?categoryType=${categoryType}`,
     method: HTTP_METHODS.POST,
+    data,
+  }).then((res) => res.data);
+};
+
+export const putGroupSubMenu = (categoryId: number, data: PutSubMenu) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu/${categoryId}`,
+    method: HTTP_METHODS.PUT,
     data,
   }).then((res) => res.data);
 };

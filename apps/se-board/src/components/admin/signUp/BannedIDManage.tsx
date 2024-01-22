@@ -24,7 +24,7 @@ export const BannedIDManage = () => {
   useEffect(() => {
     if (!data) return;
 
-    setBannedIds(data.bannedIds);
+    setBannedIds(data.content);
   }, [data]);
 
   const deleteOnClick = (id: string) => {

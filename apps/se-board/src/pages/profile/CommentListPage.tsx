@@ -20,12 +20,11 @@ export const ProfileCommentListPage = () => {
   const { page } = useProfilePostSearchParams();
   const { userId } = useParams();
 
-  const { commentList, isLoading, totalItems, onChangePage } =
-    useFetchProfileCommentList({
-      loginId: userId!,
-      page,
-      perPage: 40,
-    });
+  const { commentList, isLoading, totalItems } = useFetchProfileCommentList({
+    loginId: userId!,
+    page,
+    perPage: 40,
+  });
 
   return (
     <>
@@ -71,7 +70,6 @@ export const ProfileCommentListPage = () => {
               data={commentList}
               totalItems={totalItems}
               perPage={40}
-              onChange={onChangePage}
               page={page}
             />
           )}
@@ -104,7 +102,6 @@ export const ProfileCommentListPage = () => {
             data={commentList}
             totalItems={totalItems}
             perPage={40}
-            onChange={onChangePage}
             page={page}
           />
         )}

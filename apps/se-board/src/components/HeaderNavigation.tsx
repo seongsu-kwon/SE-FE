@@ -30,7 +30,7 @@ import { useRecoilValue } from "recoil";
 import { useNavigatePage } from "@/hooks";
 import { useLogout } from "@/react-query/hooks/auth";
 import { mobileHeaderState } from "@/store/mobileHeaderState";
-import { userState } from "@/store/user";
+import { useUserState } from "@/store/user";
 
 import { Logo } from "./Logo";
 
@@ -66,7 +66,7 @@ export const DesktopHeaderNavigation = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { goToLoginPage, goToMyPage } = useNavigatePage();
   const { mutate: logout } = useLogout();
-  const userInfo = useRecoilValue(userState);
+  const { userInfo, hasAuth } = useUserState();
   return (
     <Center
       as="header"
@@ -93,7 +93,7 @@ export const DesktopHeaderNavigation = ({
             </Wrap>
           </Box>
           <ButtonGroup>
-            {userInfo.accessToken ? (
+            {hasAuth ? (
               <>
                 <Button onClick={goToMyPage} variant="link" color="gray.7">
                   {userInfo.nickname}
@@ -145,7 +145,7 @@ const DrawerNavigation = ({
 }: DrawerNavigationProps) => {
   const { goToLoginPage, goToMyPage } = useNavigatePage();
   const { mutate: logout } = useLogout();
-  const userInfo = useRecoilValue(userState);
+  const { userInfo, hasAuth } = useUserState();
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
@@ -154,7 +154,7 @@ const DrawerNavigation = ({
         <DrawerCloseButton />
         {/* 로그인 했을 때 DrawerHeader 보여주기 */}
         <DrawerHeader borderBottomWidth="1px">
-          {userInfo.accessToken ? (
+          {hasAuth ? (
             <Flex
               onClick={() => {
                 goToMyPage();
@@ -195,7 +195,7 @@ const DrawerNavigation = ({
           </Wrap>
         </DrawerBody>
         <DrawerFooter borderTopWidth="1px">
-          {userInfo.accessToken ? (
+          {hasAuth ? (
             <Button onClick={() => logout()} variant="primary" w="full">
               로그아웃
             </Button>
@@ -215,7 +215,7 @@ export const HeaderNavigation = () => {
 
   const { goToLoginPage } = useNavigatePage();
   const { mutate: logout } = useLogout();
-  const userInfo = useRecoilValue(userState);
+  const { userInfo, hasAuth } = useUserState();
 
   return (
     <Box display={open ? "block" : "none"}>
@@ -226,7 +226,7 @@ export const HeaderNavigation = () => {
         py="0.5rem"
       >
         <Logo size="3rem" />
-        {userInfo.accessToken ? (
+        {hasAuth ? (
           <Button
             onClick={() => logout()}
             variant="primary-outline"

@@ -23,6 +23,7 @@ import { CommentListItemDTO } from "@types";
 import { Link } from "react-router-dom";
 
 import { Pagination } from "@/components";
+import { useMyCommentSearchParams } from "@/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 
 const columnHelper = createColumnHelper<CommentListItemDTO>();
@@ -40,7 +41,7 @@ const columns: ColumnDef<CommentListItemDTO, any>[] = [
       const { postId } = info.row.original;
       return (
         <Flex alignItems="center">
-          <Link to={`posts/${postId}`}>
+          <Link to={`/posts/${postId}`}>
             <Text
               noOfLines={1}
               _hover={{
@@ -85,14 +86,12 @@ interface CommentTableProps {
   totalItems?: number;
   perPage: number;
   page?: number;
-  onChange: (page: number) => void;
 }
 
 export const CommentTable = ({
   data,
   totalItems = 0,
   perPage,
-  onChange,
   page,
 }: CommentTableProps) => {
   const table = useReactTable<CommentListItemDTO>({
@@ -100,6 +99,13 @@ export const CommentTable = ({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const { setPageSearchParam } = useMyCommentSearchParams();
+
+  const onChange = (page: number) => {
+    setPageSearchParam(page);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <Flex direction="column" alignItems="center" gap="2rem" w="full">

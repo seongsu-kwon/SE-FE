@@ -6,10 +6,15 @@ import {
   bookmarkPost,
   deletePost,
   fetchGetPost,
+  getDeletedPosts,
+  permanentlyDeletePosts,
   postPost,
   putPost,
+  reportPost,
+  restorePosts,
   secretPost,
 } from "@/api/post";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetPostQuery = (
   postId: string | undefined,
@@ -61,4 +66,45 @@ export const useSecretPostMutation = () => {
   return useMutation((param: { postId: number; password: string }) =>
     secretPost(param.postId, param.password)
   );
+};
+
+export const useGetDeletedPostQuery = (page?: number, perPage?: number) => {
+  return useQuery(
+    ["deletedPost", page, perPage],
+    () => getDeletedPosts(page, perPage),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 61,
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const usePostRestorePostQuery = () => {
+  return useMutation((postIds: number[]) => restorePosts(postIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const usePermanentlyDeletePostQuery = () => {
+  return useMutation((postIds: number[]) => permanentlyDeletePosts(postIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useReportPost = () => {
+  return useMutation((postId: number) => reportPost(postId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };

@@ -13,11 +13,11 @@ import { useSetRecoilState } from "recoil";
 
 import { loginWithKakao } from "@/api/auth";
 import { fetchUserSimpleInfo } from "@/api/profile";
-import { removeBearerToken, setStoredRefreshToken } from "@/api/storage";
+import { setStoredAccessToken, setStoredRefreshToken } from "@/api/storage";
 import { ReactComponent as KakaoSymbol } from "@/assets/images/kakao_symbol.svg";
 import { Logo } from "@/components";
 import { useNavigatePage } from "@/hooks";
-import { roleNames, user, userState } from "@/store/user";
+import { roleNames, userState } from "@/store/user";
 
 import { LoginForm } from "./LoginForm";
 
@@ -31,8 +31,7 @@ export const LoginPage = () => {
     if (id) {
       loginWithKakao(id).then((res) => {
         setStoredRefreshToken(res.data.refreshToken);
-        user.setAccessToken(removeBearerToken(res.data.accessToken));
-        setUserInfo((prev) => ({ ...prev, accessToken: res.data.accessToken }));
+        setStoredAccessToken(res.data.accessToken);
         fetchUserSimpleInfo().then((res) => {
           const { nickname, email, roles } = res.data;
           setUserInfo((prev) => ({

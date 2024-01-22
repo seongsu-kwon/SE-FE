@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { Comment, PutCommentData } from "@types";
+import { CommentsData, PutCommentData } from "@types";
 
 import {
   deleteComment,
@@ -7,10 +7,14 @@ import {
   deleteReply,
   fetchComments,
   getAdminComments,
+  getDeletedComments,
+  permanentlyDeleteComments,
   postComment,
   postReply,
   putComment,
   putReply,
+  reportComment,
+  restoreComments,
 } from "@/api/comment";
 import { errorHandle } from "@/utils/errorHandling";
 
@@ -19,17 +23,29 @@ export const useGetCommentQuery = (postId?: string) => {
     ["comments", postId],
     ({ pageParam = 0 }) => fetchComments(postId, pageParam),
     {
-      getNextPageParam: (lastPage: Comment) => {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      staleTime: 1000 * 60 * 5,
+      cacheTime: 1000 * 60 * 6,
+      getNextPageParam: (lastPage: CommentsData) => {
         return lastPage.paginationInfo.last
           ? undefined
           : lastPage.paginationInfo.pageNum + 1;
+      },
+      onError: (err) => {
+        errorHandle(err);
       },
     }
   );
 };
 
 export const usePostCommentMutation = (postId?: string) => {
-  return useMutation(postComment);
+  return useMutation(postComment, {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };
 
 export const usePutCommentMutation = (postId?: string) => {
@@ -40,7 +56,19 @@ export const usePutCommentMutation = (postId?: string) => {
 };
 
 export const useDeleteCommentMutation = (postId?: string) => {
-  return useMutation((commentId: number) => deleteComment(commentId));
+  return useMutation((commentId: number) => deleteComment(commentId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const useReportCommentMutation = () => {
+  return useMutation((commentId: number) => reportComment(commentId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };
 
 export const usePostReplyMutation = (postId?: string) => {
@@ -55,22 +83,38 @@ export const usePutReplyMutation = (postId?: string) => {
 };
 
 export const useDeleteReplyMutation = (postId?: string) => {
-  return useMutation((replyId: number) => deleteReply(replyId));
+  return useMutation((replyId: number) => deleteReply(replyId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };
 
 export const useGetAdminCommmentQuery = (
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null,
   page?: number,
   perPage?: number,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  searchOption?: string,
+  query?: string
 ) => {
   return useQuery(
     ["adminComments"],
-    () => getAdminComments(page, perPage, isReadOnlyAuthor, isReported),
+    () =>
+      getAdminComments(
+        page,
+        perPage,
+        isReadOnlyAuthor,
+        isReported,
+        searchOption,
+        query
+      ),
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 61,
       onError: (err) => {
         errorHandle(err);
       },
@@ -81,6 +125,42 @@ export const useGetAdminCommmentQuery = (
 export const useDeleteCommentListMutation = () => {
   return useMutation(
     (commentIdList: number[]) => deleteCommentList(commentIdList),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const useGetDeleteCommentsQuery = (page?: number, perPage?: number) => {
+  return useQuery(
+    ["deleteComments", page, perPage],
+    () => getDeletedComments(page, perPage),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 61,
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
+  );
+};
+
+export const usePostRestoreCommentsQuery = () => {
+  return useMutation((commentIds: number[]) => restoreComments(commentIds), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
+export const usePermanentlyDeleteCommentsQuery = () => {
+  return useMutation(
+    (commentIds: number[]) => permanentlyDeleteComments(commentIds),
     {
       onError: (err) => {
         errorHandle(err);

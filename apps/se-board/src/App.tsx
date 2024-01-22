@@ -4,7 +4,6 @@ import { useRecoilValue } from "recoil";
 
 import { AdminLayout, MainLayout } from "@/components/layouts";
 
-import { getStoredRefreshToken } from "./api/storage";
 import {
   LoginPage,
   NoticeWrite,
@@ -14,14 +13,17 @@ import {
   SignupPage,
 } from "./pages";
 import {
+  AdminMainPage,
   AdminMenuEdit,
   CommentManage,
   GeneralSetting,
   MainPageSetting,
   MemberGroupManage,
   MemberPolicy,
-  SEMenuEdit,
+  RecycleBinPage,
+  SEMenuEditPage,
 } from "./pages/admin";
+import PostManagePage from "./pages/admin/post/PostManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
 import { MainPage } from "./pages/main/MainPage";
 import { PageNotFound } from "./pages/PageNotFound";
@@ -34,8 +36,8 @@ import { PasswordChangepage } from "./pages/profile/PasswordChangePage";
 import { ProfilePostListPage } from "./pages/profile/PostListPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { WithdrawalPage } from "./pages/profile/WithdrawalPage";
-import { useReissueToken } from "./react-query/hooks/auth";
 import { useFetchMenuList } from "./react-query/hooks/useMenu";
+import { useFetchUserSimpleInfo } from "./react-query/hooks/useProfile";
 import { menuListState } from "./store/menu";
 
 interface RoutesObject {
@@ -126,9 +128,14 @@ const MenuRouter = () => {
           path: "/profile/:userId/comments",
           element: <ProfilePostListPage />,
         },
+
         {
           path: "/profile/bookmark",
           element: <BookmarkPage />,
+        },
+        {
+          path: "/profile/bookmark/:postId",
+          element: <PostPage />,
         },
         {
           path: "/profile/edit",
@@ -161,8 +168,12 @@ const MenuRouter = () => {
       element: <AdminLayout />,
       children: [
         {
+          path: "",
+          element: <AdminMainPage />,
+        },
+        {
           path: "seMenu",
-          element: <SEMenuEdit />,
+          element: <SEMenuEditPage />,
         },
         {
           path: "adminMenu",
@@ -177,8 +188,16 @@ const MenuRouter = () => {
           element: <MemberGroupManage />,
         },
         {
+          path: "recycleBin",
+          element: <RecycleBinPage />,
+        },
+        {
           path: "general",
           element: <GeneralSetting />,
+        },
+        {
+          path: "postManage",
+          element: <PostManagePage />,
         },
         {
           path: "commentManage",
@@ -187,6 +206,10 @@ const MenuRouter = () => {
         {
           path: "mainPageSetting",
           element: <MainPageSetting />,
+        },
+        {
+          path: "*",
+          element: <PageNotFound />,
         },
       ],
     },
@@ -214,11 +237,7 @@ const MenuRouter = () => {
 };
 
 export const App = () => {
-  const { mutate: reissue } = useReissueToken();
-
-  useEffect(() => {
-    if (getStoredRefreshToken()) reissue();
-  }, []);
+  useFetchUserSimpleInfo();
 
   return (
     <BrowserRouter>

@@ -1,6 +1,6 @@
 import {
   AllComments,
-  Comment,
+  CommentsData,
   FetchCommentListResponse,
   PostCommentData,
   PostReplyData,
@@ -14,7 +14,7 @@ export const fetchComments = (
   postId: string | undefined,
   pageParam: number
 ) => {
-  return _axios<Comment>({
+  return _axios<CommentsData>({
     headers: {
       ...getJWTHeader(),
     },
@@ -95,6 +95,16 @@ export const deleteReply = async (replyId: number) => {
   });
 };
 
+export const reportComment = (commentId: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/comments/${commentId}/report`,
+    method: HTTP_METHODS.POST,
+  });
+};
+
 export const fetchCommentListByLoginId = ({
   loginId,
   page = 0,
@@ -115,17 +125,23 @@ export const fetchCommentListByLoginId = ({
 export const getAdminComments = (
   page: number = 0,
   perPage: number = 25,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null,
+  searchOption?: string,
+  query?: string
 ) => {
   let url = "/admin/comments?";
 
-  if (isReadOnlyAuthor !== undefined) {
+  if (isReadOnlyAuthor !== null) {
     url += `isReadOnlyAuthor=${isReadOnlyAuthor}&`;
   }
 
-  if (isReported !== undefined) {
+  if (isReported !== null) {
     url += `isReported=${isReported}&`;
+  }
+
+  if (searchOption && query) {
+    url += `searchOption=${searchOption}&query=${query}&`;
   }
 
   return _axios<AllComments>({
@@ -143,6 +159,38 @@ export const deleteCommentList = (commentIds: number[]) => {
       ...getJWTHeader(),
     },
     url: "/admin/comments",
+    method: HTTP_METHODS.DELETE,
+    data: { commentIds },
+  }).then((res) => res.data);
+};
+
+export const getDeletedComments = (page: number = 0, perPage: number = 25) => {
+  return _axios<AllComments>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/comments/deleted?page=${page}&perPage=${perPage}`,
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const restoreComments = (commentIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/comments/restore",
+    method: HTTP_METHODS.POST,
+    data: { commentIds },
+  }).then((res) => res.data);
+};
+
+export const permanentlyDeleteComments = (commentIds: number[]) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/comments/permanent",
     method: HTTP_METHODS.DELETE,
     data: { commentIds },
   }).then((res) => res.data);

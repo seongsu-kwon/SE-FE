@@ -71,7 +71,6 @@ export const ProfilePostListPage = () => {
               data={postList}
               totalItems={totalItems}
               perPage={40}
-              onChange={onChangePage}
               page={page}
             />
           )}
@@ -104,7 +103,6 @@ export const ProfilePostListPage = () => {
             data={postList}
             totalItems={totalItems}
             perPage={40}
-            onChange={onChangePage}
             page={page}
           />
         )}

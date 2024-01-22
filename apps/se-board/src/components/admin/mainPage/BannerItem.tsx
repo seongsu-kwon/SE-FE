@@ -67,6 +67,12 @@ export const BannerItem = ({
     setNewLink(link);
   }, [startDate, endDate, link]);
 
+  useEffect(() => {
+    if (!fileMetaData) return;
+
+    setNewFileMetaData(fileMetaData);
+  }, [fileMetaData]);
+
   const bannerInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
@@ -86,7 +92,7 @@ export const BannerItem = ({
   };
 
   const onModify = () => {
-    if (!newFileMetaData) {
+    if (!newFileMetaData && !fileMetaData) {
       return alert("배너 이미지를 등록해주세요.");
     }
 
@@ -105,13 +111,21 @@ export const BannerItem = ({
           startDate: newStartDate,
           endDate: newEndDate,
           bannerUrl: newLink,
-          fileMetaDataId: newFileMetaData.fileMetaDataId,
+          fileMetaDataId:
+            newFileMetaData !== undefined
+              ? newFileMetaData.fileMetaDataId
+              : fileMetaData.fileMetaDataId,
         },
       },
       {
         onSuccess: () => {
           setIsModify(false);
-          bannerDeleteMutate(fileMetaData.fileMetaDataId);
+          if (
+            newFileMetaData &&
+            newFileMetaData?.fileMetaDataId !== fileMetaData.fileMetaDataId
+          ) {
+            bannerDeleteMutate(fileMetaData.fileMetaDataId);
+          }
           refetch();
         },
         onError: (error) => {

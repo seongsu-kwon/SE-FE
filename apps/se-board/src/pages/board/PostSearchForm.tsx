@@ -18,28 +18,11 @@ export const PostSearchForm = () => {
     searchOption: "ALL",
     query: "",
   });
-  const {
-    searchOption,
-    query,
-    setSearchOptionParam,
-    setQueryParam,
-    deleteQueryParam,
-    deleteSearchOptionParam,
-    deletePageParam,
-  } = usePostSearchParams();
+  const { searchOption, query, search } = usePostSearchParams();
 
-  const search = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!query) {
-      deleteQueryParam();
-      deleteSearchOptionParam();
-      deletePageParam();
-    } else {
-      setSearchOptionParam(inputs.searchOption);
-      setQueryParam(inputs.query);
-      deletePageParam();
-    }
+    search(inputs.searchOption, inputs.query);
   };
 
   useEffect(() => {
@@ -47,7 +30,7 @@ export const PostSearchForm = () => {
   }, [searchOption, query]);
 
   return (
-    <form onSubmit={search}>
+    <form onSubmit={onSearch}>
       <Flex gap="0.5rem" w="full">
         <Select
           value={inputs.searchOption}

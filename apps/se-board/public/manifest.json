@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SE Board",
+  "name": "금오공과대학교 컴퓨터소프트웨어공학과 커뮤니티",
   "icons": [
     {
       "src": "favicon.ico",

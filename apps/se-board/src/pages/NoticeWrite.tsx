@@ -95,8 +95,8 @@ export const NoticeWrite = () => {
   const onClickRegistrationInModify = () => {
     const correctPost = isWritePostActive(modifyPost, isModified.current);
 
-    if (!correctPost) {
-      alert("제목, 본문, 카테고리, 공개범위는 필수 입력 요소입니다!");
+    if (correctPost !== null) {
+      alert(correctPost);
       return;
     }
 
@@ -122,8 +122,8 @@ export const NoticeWrite = () => {
   const onClickRegistrationInWrite = () => {
     const correctPost = isWritePostActive(writePost, isModified.current);
 
-    if (!correctPost) {
-      alert("제목, 본문, 카테고리, 공개범위는 필수 입력 요소입니다!");
+    if (correctPost != null) {
+      alert(correctPost);
       return;
     }
     writePostMutate(writePost, {
