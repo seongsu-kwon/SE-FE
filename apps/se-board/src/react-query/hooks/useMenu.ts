@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PostMenuInfo } from "@types";
+import { PostMenuInfo, PutSubMenu } from "@types";
 import { useSetRecoilState } from "recoil";
 
 import { fetchBanners } from "@/api/mainpage";
@@ -16,6 +16,7 @@ import {
   postMoveBoardMenu,
   postMoveCategory,
   putCategory,
+  putGroupSubMenu,
   putMainPageMenus,
 } from "@/api/menu";
 import { menuListState } from "@/store/menu";
@@ -186,5 +187,11 @@ export const usePostAddMenuOrCategory = () => {
         errorHandle(err);
       },
     }
+  );
+};
+
+export const usePutGroupSubMenu = () => {
+  return useMutation((param: { categoryId: number; data: PutSubMenu }) =>
+    putGroupSubMenu(param.categoryId, param.data)
   );
 };

@@ -4,6 +4,7 @@ import {
   MenuInfo,
   MenuList,
   PostMenuInfo,
+  PutSubMenu,
   SelectedMainPageMenus,
   SubMenus,
 } from "@types";
@@ -157,6 +158,17 @@ export const postAddMenuOrCategory = (
     },
     url: `/admin/menu?categoryType=${categoryType}`,
     method: HTTP_METHODS.POST,
+    data,
+  }).then((res) => res.data);
+};
+
+export const putGroupSubMenu = (categoryId: number, data: PutSubMenu) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/menu/${categoryId}`,
+    method: HTTP_METHODS.PUT,
     data,
   }).then((res) => res.data);
 };

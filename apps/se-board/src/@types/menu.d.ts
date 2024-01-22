@@ -125,4 +125,28 @@ declare module "@types" {
       roles: number[];
     };
   }
+
+  interface PutSubMenu {
+    name: string;
+    superMenuId: number | null;
+    description: string;
+    urlId: string;
+    externalUrl: string;
+    access: {
+      option: string;
+      roles: number[];
+    } | null;
+    write: {
+      option: string;
+      roles: number[];
+    } | null;
+    manage: {
+      option: string;
+      roles: number[];
+    } | null;
+    expose: {
+      option: string;
+      roles: number[];
+    };
+  }
 }

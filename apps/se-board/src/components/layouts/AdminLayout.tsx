@@ -309,7 +309,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
       <Center w="full">
         <Accordion w="full" allowMultiple>
           {LinkItems.map((item) => (
-            <AccordionItem textAlign="center" px="1rem">
+            <AccordionItem key={item.key} textAlign="center" px="1rem">
               <AccordionButton>
                 <Box
                   display="flex"
@@ -325,6 +325,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
               {subCategoryItems.map((subCategoryItem) =>
                 subCategoryItem[item.key]?.map((subItem) => (
                   <Link
+                    key={subItem.name}
                     as={RouterLink}
                     to={`${subItem.url}`}
                     w="full"

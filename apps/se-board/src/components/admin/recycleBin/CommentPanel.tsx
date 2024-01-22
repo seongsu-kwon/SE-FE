@@ -4,10 +4,6 @@ import {
   Checkbox,
   Flex,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Table,
   Tbody,
   Td,
@@ -23,17 +19,20 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AdminCommentContent } from "@types";
-import { useEffect, useMemo, useState } from "react";
+import { AdminCommentContent, AllComments } from "@types";
+import React, { useEffect, useMemo, useState } from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
   useGetDeleteCommentsQuery,
   usePermanentlyDeleteCommentsQuery,
   usePostRestoreCommentsQuery,
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 const columnWidth = {
   base: ["3rem", "7rem", "2rem", "3rem", "3rem"],
@@ -46,13 +45,24 @@ export const CommentPanel = () => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [comments, setComments] = useState<AllComments>();
+
+  const { page, setPageSearchParam } = useRecycleBinParams();
 
   const { data, refetch } = useGetDeleteCommentsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreCommentsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteCommentsQuery();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setComments(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<AdminCommentContent, any>[]>(
     () => [
@@ -84,22 +94,7 @@ export const CommentPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          if (info.row.original.author.loginId === null) {
-            return (
-              <Text cursor="not-allowed">{info.row.original.author.name}</Text>
-            );
-          } else {
-            return (
-              <Menu>
-                <MenuButton _hover={{ textDecoration: "underline" }}>
-                  {info.row.original.author.name}
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>계정 정보 보기</MenuItem>
-                </MenuList>
-              </Menu>
-            );
-          }
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {
@@ -123,14 +118,10 @@ export const CommentPanel = () => {
   );
 
   const table = useReactTable<AdminCommentContent>({
-    data: data?.content || [],
+    data: comments?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -138,9 +129,35 @@ export const CommentPanel = () => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((comment) => comment.commentId) || []);
+      setCheckedList(
+        comments?.content.map((comment) => comment.commentId) || []
+      );
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    commentId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, commentId];
+      } else {
+        return prev.filter((v) => v !== commentId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === comments?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -151,7 +168,7 @@ export const CommentPanel = () => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(comments?.content.length).fill(false));
         refetch();
       },
     });
@@ -164,7 +181,7 @@ export const CommentPanel = () => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(comments?.content.length).fill(false));
         refetch();
       },
     });
@@ -223,23 +240,7 @@ export const CommentPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.commentId];
-                        } else {
-                          return prev.filter(
-                            (v) => v !== row.original.commentId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.commentId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (
@@ -290,10 +291,10 @@ export const CommentPanel = () => {
       </Flex>
       <Flex alignItems="center" justifyContent="center" mt="0.5rem">
         <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
+          currentPage={comments?.pageable.pageNumber || 0}
+          totalPage={comments?.totalPages || 1}
           onChangePage={(page: number) => {
-            setPage(page);
+            setPageSearchParam(page);
             window.scrollTo(0, 0);
           }}
         />

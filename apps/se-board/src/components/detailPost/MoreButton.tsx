@@ -26,7 +26,11 @@ import {
 } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useDeletePostMutation, useReportPost } from "@/react-query/hooks";
+import {
+  useDeletePostMutation,
+  useReportCommentMutation,
+  useReportPost,
+} from "@/react-query/hooks";
 import {
   useDeleteCommentMutation,
   useDeleteReplyMutation,
@@ -388,18 +392,33 @@ const CommentDeleteAlert = ({
   );
 };
 
-const CommentReportAlert = () => {
+const CommentReportAlert = ({ commentId }: { commentId: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { hasAuth } = useUserState();
   const reportAlertRef = React.useRef<HTMLButtonElement>(null);
+
+  const { mutate } = useReportCommentMutation();
+
+  const toast = useToast();
+
   const commentReportClick = () => {
-    // TODO: 댓글 신고
     if (!hasAuth) {
       onClose();
       alert("로그인 후 신고가능합니다.");
       console.log("로그인 후 신고가능합니다.");
     }
-    onClose();
+
+    mutate(commentId, {
+      onSuccess: () => {
+        onClose();
+        toast({
+          description: "해당 댓글을 신고했어요!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+    });
   };
 
   return (
@@ -474,7 +493,7 @@ export const CommentMoreButton = ({
           </>
         ) : (
           <>
-            <CommentReportAlert />
+            <CommentReportAlert commentId={commentId} />
           </>
         )}
       </MenuList>

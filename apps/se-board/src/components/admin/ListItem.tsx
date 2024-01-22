@@ -12,18 +12,18 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BannedId, BannedNickname, IpInfo } from "@types";
+import { AdminIP, BannedId, BannedNickname, IpInfo, SpamKeyword } from "@types";
 import React from "react";
 import { BsX } from "react-icons/bs";
 
 interface ListItemProps {
-  item: BannedNickname | BannedId | IpInfo | { id: number; name: string };
+  item: BannedNickname | BannedId | IpInfo | SpamKeyword | AdminIP;
   deleteOnClick: (name: string) => void;
   isLoading: boolean;
 }
 
 function nameValue(
-  item: BannedNickname | BannedId | IpInfo | { id: number; name: string }
+  item: BannedNickname | BannedId | IpInfo | SpamKeyword | AdminIP
 ) {
   if ("bannedNickname" in item) {
     return item.bannedNickname;
@@ -31,24 +31,24 @@ function nameValue(
     return item.bannedId;
   } else if ("ipAddress" in item) {
     return item.ipAddress;
-  } else if ("name" in item) {
-    return item.name;
+  } else if ("word" in item) {
+    return item.word;
   }
 
   return "";
 }
 
 function typeValue(
-  item: BannedNickname | BannedId | IpInfo | { id: number; name: string }
+  item: BannedNickname | BannedId | IpInfo | SpamKeyword | AdminIP
 ) {
   if ("bannedNickname" in item) {
     return "금지 닉네임";
   } else if ("bannedId" in item) {
     return "금지 아이디";
   } else if ("ipAddress" in item) {
-    return "금지 IP";
-  } else if ("name" in item) {
-    return "name";
+    return "IP";
+  } else if ("word" in item) {
+    return "스팸 키워드";
   }
 
   return "";
@@ -104,7 +104,11 @@ export const ListItem = ({ item, deleteOnClick, isLoading }: ListItemProps) => {
               </Button>
               <Button
                 variant="danger"
-                onClick={() => deleteOnClick(nameValue(item))}
+                onClick={
+                  "word" in item
+                    ? () => deleteOnClick(String(item.id))
+                    : () => deleteOnClick(nameValue(item))
+                }
                 ml={3}
                 isLoading={isLoading}
                 loadingText="삭제 중"

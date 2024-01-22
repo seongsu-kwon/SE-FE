@@ -8,6 +8,7 @@ import {
   MenuItemOption,
   MenuList,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { MainPageMenu } from "@types";
 import { useEffect, useState } from "react";
@@ -29,6 +30,8 @@ export const MenuItemManage = () => {
   const [menuList, setMenuList] = useState<
     (MainPageMenu & { isChecked: boolean })[]
   >([]);
+
+  const toast = useToast();
 
   useEffect(() => {
     if (!data || !selectedMenu) return;
@@ -61,6 +64,12 @@ export const MenuItemManage = () => {
     mutate(updateMenuList, {
       onSuccess: () => {
         refetch();
+        toast({
+          title: "메인 페이지 메뉴 배치가 변경되었어요!",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       },
       onError: (error) => {
         errorHandle(error);
@@ -103,6 +112,7 @@ export const MenuItemManage = () => {
         <MenuList>
           {menuList.map((value) => (
             <MenuItemOption
+              key={value.categoryId}
               value={String(value.categoryId)}
               type="checkbox"
               isChecked={value.isChecked}

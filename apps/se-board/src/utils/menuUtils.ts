@@ -114,3 +114,30 @@ export function adminMenuRoleList(
 
   return adminMenuRoleListValue;
 }
+
+export function getAllMenuList(
+  menuList: MenuInfomation[] | undefined
+): MenuInfomation[] {
+  if (menuList === undefined) return [];
+
+  const allMenuList: MenuInfomation[] = [];
+
+  menuList.forEach((menu) => {
+    if (menu.type === "MENU") {
+      allMenuList.push(menu);
+      allMenuList.push(...menu.subMenus);
+    } else {
+      allMenuList.push(menu);
+    }
+  });
+
+  return allMenuList;
+}
+
+export function getPossibleSubMenus(
+  menuList: MenuInfomation[]
+): MenuInfomation[] {
+  return menuList.filter((menu) => {
+    return menu.type !== "MENU";
+  });
+}

@@ -19,6 +19,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  StackDivider,
   Text,
   Tooltip,
   useDisclosure,
@@ -239,20 +240,25 @@ export const CategoryAndPrivacySetting = ({
                 </Text>
               </Box>
 
-              <Flex py="4px">
+              <HStack
+                spacing="0"
+                divider={<StackDivider borderColor={`${openColors.gray[3]}`} />}
+                mb="0.25rem"
+                border={`1px solid ${openColors.gray[3]}`}
+              >
                 {privacyOptions.map((option) => (
                   <Button
                     variant={active === option.kor ? "primary" : "outline"}
                     flexGrow="1"
                     borderRadius="0"
                     w="150px"
-                    border={`1px solid ${openColors.gray[3]}`}
+                    border="none"
                     onClick={onClickDisclosure}
                   >
                     {option.kor}
                   </Button>
                 ))}
-              </Flex>
+              </HStack>
               {active === "비밀" ? (
                 <PasswordInput
                   password={password}
@@ -379,20 +385,25 @@ export const DesktopCategoryAndPrivacySetting = ({
           </Text>
         </Box>
 
-        <Flex py="6px">
+        <HStack
+          spacing="0"
+          mb="0.25rem"
+          border={`1px solid ${openColors.gray[3]}`}
+          divider={<StackDivider borderColor={`${openColors.gray[3]}`} />}
+        >
           {privacyOptions.map((option) => (
             <Button
               variant={active === option.kor ? "primary" : "outline"}
               flexGrow="1"
               borderRadius="0"
+              border="none"
               w="150px"
-              border={`1px solid ${openColors.gray[3]}`}
               onClick={onClickDisclosure}
             >
               {option.kor}
             </Button>
           ))}
-        </Flex>
+        </HStack>
         {active === "비밀" ? (
           <PasswordInput
             password={password}

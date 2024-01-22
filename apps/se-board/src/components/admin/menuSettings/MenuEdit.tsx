@@ -9,6 +9,7 @@ import { adminMenuRoleList } from "@/utils/menuUtils";
 
 import { AdminAuthorityMenu } from "./AuthorityMenu";
 import { CategoryManage } from "./CategoryManage";
+import { GroupSubMenuManage } from "./GroupSubMenuManage";
 import { MenuDelete } from "./MenuDelete";
 import { AddMenuInfo, MenuInfo } from "./MenuInfo";
 
@@ -45,6 +46,7 @@ export const MenuEdit = ({ menuInfo }: MenuEditProps) => {
       {menuInfo?.type === "BOARD" && (
         <CategoryManage menuId={menuInfo.menuId} subMenus={menuInfo.subMenus} />
       )}
+      {menuInfo?.type === "MENU" && <GroupSubMenuManage menuInfo={menuInfo} />}
       <MenuDelete menuType={menuInfo?.type} menuId={menuInfo?.menuId} />
     </Box>
   );

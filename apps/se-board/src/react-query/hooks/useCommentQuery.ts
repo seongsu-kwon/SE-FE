@@ -13,6 +13,7 @@ import {
   postReply,
   putComment,
   putReply,
+  reportComment,
   restoreComments,
 } from "@/api/comment";
 import { errorHandle } from "@/utils/errorHandling";
@@ -62,6 +63,14 @@ export const useDeleteCommentMutation = (postId?: string) => {
   });
 };
 
+export const useReportCommentMutation = () => {
+  return useMutation((commentId: number) => reportComment(commentId), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
+};
+
 export const usePostReplyMutation = (postId?: string) => {
   return useMutation(postReply);
 };
@@ -82,18 +91,30 @@ export const useDeleteReplyMutation = (postId?: string) => {
 };
 
 export const useGetAdminCommmentQuery = (
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null,
   page?: number,
   perPage?: number,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  searchOption?: string,
+  query?: string
 ) => {
   return useQuery(
     ["adminComments"],
-    () => getAdminComments(page, perPage, isReadOnlyAuthor, isReported),
+    () =>
+      getAdminComments(
+        page,
+        perPage,
+        isReadOnlyAuthor,
+        isReported,
+        searchOption,
+        query
+      ),
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 61,
       onError: (err) => {
         errorHandle(err);
       },

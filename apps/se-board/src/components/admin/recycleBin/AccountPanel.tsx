@@ -18,11 +18,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AccountContent } from "@types";
+import { AccountContent, DeletedAccounts } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components";
+import { useNavigatePage } from "@/hooks";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
   useGetDeleteAccountsQuery,
   usePermanentlyDeleteAccountsQuery,
@@ -41,13 +44,26 @@ export const AccountPanel = () => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [accounts, setAccounts] = useState<DeletedAccounts>();
+
+  const { page, setPageSearchParam } = useRecycleBinParams();
 
   const { data, refetch } = useGetDeleteAccountsQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestoreAccountsQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeleteAccountsQuery();
+
+  const { goToProfilePage } = useNavigatePage();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setAccounts(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<AccountContent, any>[]>(
     () => [
@@ -60,7 +76,14 @@ export const AccountPanel = () => {
       columnHelper.accessor("name", {
         header: "이름",
         cell: (info) => {
-          return <Text>{info.row.original.name}</Text>;
+          return (
+            <Text
+              color="blue.7"
+              onClick={() => goToProfilePage(info.row.original.loginId)}
+            >
+              {info.row.original.name}
+            </Text>
+          );
         },
       }),
       columnHelper.accessor("nickname", {
@@ -92,14 +115,10 @@ export const AccountPanel = () => {
   );
 
   const table = useReactTable<AccountContent>({
-    data: data?.content || [],
+    data: accounts?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -107,9 +126,35 @@ export const AccountPanel = () => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((account) => account.accountId) || []);
+      setCheckedList(
+        accounts?.content.map((account) => account.accountId) || []
+      );
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    accountId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, accountId];
+      } else {
+        return prev.filter((v) => v !== accountId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === accounts?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -122,7 +167,7 @@ export const AccountPanel = () => {
         onSuccess: () => {
           setCheckedList([]);
           setIsAllChecked(false);
-          setCheckBoxes(Array(data?.content.length).fill(false));
+          setCheckBoxes(Array(accounts?.content.length).fill(false));
           refetch();
         },
       }
@@ -138,7 +183,7 @@ export const AccountPanel = () => {
         onSuccess: () => {
           setCheckedList([]);
           setIsAllChecked(false);
-          setCheckBoxes(Array(data?.content.length).fill(false));
+          setCheckBoxes(Array(accounts?.content.length).fill(false));
           refetch();
         },
       }
@@ -198,23 +243,7 @@ export const AccountPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.accountId];
-                        } else {
-                          return prev.filter(
-                            (v) => v !== row.original.accountId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.accountId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (
@@ -261,10 +290,10 @@ export const AccountPanel = () => {
       </Flex>
       <Flex alignItems="center" justifyContent="center" mt="0.5rem">
         <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
+          currentPage={accounts?.pageable.pageNumber || 0}
+          totalPage={accounts?.totalPages || 1}
           onChangePage={(page: number) => {
-            setPage(page);
+            setPageSearchParam(page);
             window.scrollTo(0, 0);
           }}
         />

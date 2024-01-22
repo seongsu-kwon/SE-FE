@@ -15,3 +15,8 @@ export const newSEMenuState = atom<string>({
   key: "newSEMenuState",
   default: "",
 });
+
+export const allMenuListState = atom<MenuInfomation[]>({
+  key: "allMenuListState",
+  default: [],
+});

@@ -1,4 +1,4 @@
-import { IpInfo } from "@types";
+import { AdminIP, IpInfo, SpamKeyword } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
@@ -32,6 +32,75 @@ export const deleteBannedIp = (ipAddress: string) => {
       ...getJWTHeader(),
     },
     url: "/admin/ip",
+    method: HTTP_METHODS.DELETE,
+    data: {
+      ipAddress,
+    },
+  }).then((res) => res.data);
+};
+
+export const getSpamKeyWord = () => {
+  return _axios<SpamKeyword[]>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/spamword",
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const postSpamKeyWord = (spamKeyWord: string) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/spamword",
+    method: HTTP_METHODS.POST,
+    data: {
+      word: spamKeyWord,
+    },
+  }).then((res) => res.data);
+};
+
+export const deleteSpamKeyWord = (id: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/spamword/${id}`,
+    method: HTTP_METHODS.DELETE,
+  }).then((res) => res.data);
+};
+
+export const getAdminIPs = () => {
+  return _axios<AdminIP[]>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/ip",
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const postAdminIP = (ipAddress: string) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "/admin/ip",
+    method: HTTP_METHODS.POST,
+    data: {
+      ipAddress,
+    },
+  }).then((res) => res.data);
+};
+
+export const deleteAdminIP = (ipAddress: string) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/admin/ip`,
     method: HTTP_METHODS.DELETE,
     data: {
       ipAddress,

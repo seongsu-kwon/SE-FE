@@ -95,15 +95,17 @@ export const useFetchPostList = ({
       refetchOnWindowFocus: false,
     }
   );
+  console.log("------");
+  console.log("pinedPostlistLoading : ", pinedPostlistLoading);
+  console.log("postListLoading : ", postListLoading);
 
   return {
     postList: [...posts.pinedPostList, ...posts.postList],
-    isLoading: pinedPostlistLoading || postListLoading,
+    isLoading:
+      searchOption === "" && query === ""
+        ? pinedPostlistLoading || postListLoading
+        : pinedPostlistLoading || searchPostListLoading,
     totalItems,
-    onChangePage: (page: number) => {
-      setPageSearchParam(page + 1);
-      window.scrollTo(0, 0);
-    },
   };
 };
 

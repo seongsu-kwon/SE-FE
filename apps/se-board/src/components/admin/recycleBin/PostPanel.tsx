@@ -18,17 +18,21 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DeletedPost } from "@types";
+import { DeletedPost, DeletedPostList } from "@types";
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { BsClockHistory, BsTrash3 } from "react-icons/bs";
 
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components";
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 import {
   useGetDeletedPostQuery,
   usePermanentlyDeletePostQuery,
   usePostRestorePostQuery,
 } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+
+import { MemberProfileButton } from "../MemberProfileButton";
 
 const columnWidth = {
   base: ["3rem", "8rem", "3rem", "4rem", "3rem", "2rem"],
@@ -41,13 +45,24 @@ export const PostPanel = () => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [posts, setPosts] = useState<DeletedPostList>();
+
+  const { page, setPageSearchParam } = useRecycleBinParams();
 
   const { data, refetch } = useGetDeletedPostQuery(page, 25);
   const { mutate: restoreMutate, isLoading: restoreIsLoading } =
     usePostRestorePostQuery();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     usePermanentlyDeletePostQuery();
+
+  useEffect(() => {
+    setCheckBoxes(Array(data?.content.length).fill(false));
+    setPosts(data);
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   const columns = useMemo<ColumnDef<DeletedPost, any>[]>(
     () => [
@@ -72,7 +87,7 @@ export const PostPanel = () => {
       columnHelper.accessor("author", {
         header: "작성자",
         cell: (info) => {
-          return <Text>{info.row.original.author.name}</Text>;
+          return <MemberProfileButton memberInfo={info.row.original.author} />;
         },
       }),
       columnHelper.accessor("createdAt", {
@@ -92,14 +107,10 @@ export const PostPanel = () => {
   );
 
   const table = useReactTable<DeletedPost>({
-    data: data?.content || [],
+    data: posts?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    setCheckBoxes(Array(data?.content.length).fill(false));
-  }, [data]);
 
   const onAllCheckClick = () => {
     setIsAllChecked(!isAllChecked);
@@ -107,9 +118,33 @@ export const PostPanel = () => {
 
     if (!isAllChecked) {
       // 체크박스가 모두 체크되어있는 상태
-      setCheckedList(data?.content.map((post) => post.postId) || []);
+      setCheckedList(posts?.content.map((post) => post.postId) || []);
     } else {
       setCheckedList([]);
+    }
+  };
+
+  const onCheckClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    postId: number
+  ) => {
+    const isChecked = e.target.checked;
+    setCheckBoxes((prev) =>
+      prev.map((checkbox, i) => (i === index ? isChecked : checkbox))
+    );
+    setCheckedList((prev) => {
+      if (isChecked) {
+        return [...prev, postId];
+      } else {
+        return prev.filter((v) => v !== postId);
+      }
+    });
+
+    if (isChecked && checkedList.length + 1 === posts?.content.length) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
     }
   };
 
@@ -120,7 +155,7 @@ export const PostPanel = () => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(posts?.content.length).fill(false));
         refetch();
       },
     });
@@ -133,7 +168,7 @@ export const PostPanel = () => {
       onSuccess: () => {
         setCheckedList([]);
         setIsAllChecked(false);
-        setCheckBoxes(Array(data?.content.length).fill(false));
+        setCheckBoxes(Array(posts?.content.length).fill(false));
         refetch();
       },
     });
@@ -192,23 +227,7 @@ export const PostPanel = () => {
                   <Checkbox
                     borderColor="gray.4"
                     isChecked={checkBoxes[i]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked;
-                      setCheckBoxes((prev) =>
-                        prev.map((checkbox, index) =>
-                          index === i ? isChecked : checkbox
-                        )
-                      );
-                      setCheckedList((prev) => {
-                        if (isChecked) {
-                          return [...prev, row.original.postId];
-                        } else {
-                          return prev.filter(
-                            (id) => id !== row.original.postId
-                          );
-                        }
-                      });
-                    }}
+                    onChange={(e) => onCheckClick(e, i, row.original.postId)}
                   ></Checkbox>
                 </Td>
                 {row.getVisibleCells().map((cell, i) => (
@@ -255,10 +274,10 @@ export const PostPanel = () => {
       </Flex>
       <Flex alignItems="center" justifyContent="center" mt="0.5rem">
         <Pagination
-          currentPage={data?.pageable.pageNumber || 0}
-          totalPage={data?.totalPages || 1}
+          currentPage={posts?.pageable.pageNumber || 0}
+          totalPage={posts?.totalPages || 1}
           onChangePage={(page: number) => {
-            setPage(page);
+            setPageSearchParam(page);
             window.scrollTo(0, 0);
           }}
         />

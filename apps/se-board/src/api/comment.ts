@@ -95,6 +95,16 @@ export const deleteReply = async (replyId: number) => {
   });
 };
 
+export const reportComment = (commentId: number) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: `/comments/${commentId}/report`,
+    method: HTTP_METHODS.POST,
+  });
+};
+
 export const fetchCommentListByLoginId = ({
   loginId,
   page = 0,
@@ -115,17 +125,23 @@ export const fetchCommentListByLoginId = ({
 export const getAdminComments = (
   page: number = 0,
   perPage: number = 25,
-  isReadOnlyAuthor?: boolean,
-  isReported?: boolean
+  isReadOnlyAuthor: boolean | null,
+  isReported: boolean | null,
+  searchOption?: string,
+  query?: string
 ) => {
   let url = "/admin/comments?";
 
-  if (isReadOnlyAuthor !== undefined) {
+  if (isReadOnlyAuthor !== null) {
     url += `isReadOnlyAuthor=${isReadOnlyAuthor}&`;
   }
 
-  if (isReported !== undefined) {
+  if (isReported !== null) {
     url += `isReported=${isReported}&`;
+  }
+
+  if (searchOption && query) {
+    url += `searchOption=${searchOption}&query=${query}&`;
   }
 
   return _axios<AllComments>({

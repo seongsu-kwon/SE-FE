@@ -1,28 +1,37 @@
 import {
-  Button,
   Flex,
-  Icon,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
   Select,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import React from "react";
 import { BsSearch } from "react-icons/bs";
 
-import { usePostSearchParams } from "@/hooks/usePostSearchParams";
+interface SearchFormProps {
+  searchOption: string;
+  query: string;
+  setSearchOptionAndQuery: (searchOption: string, query: string) => void;
+  searchOptions: { value: string; label: string }[];
+}
 
-export const PostSearchForm = () => {
-  const [inputs, setInputs] = React.useState({
+export const SearchForm = ({
+  searchOption,
+  query,
+  setSearchOptionAndQuery,
+  searchOptions,
+}: SearchFormProps) => {
+  const [inputs, setInputs] = useState({
     searchOption: "ALL",
     query: "",
   });
-  const { searchOption, query, search } = usePostSearchParams();
 
   const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    search(inputs.searchOption, inputs.query);
+    setSearchOptionAndQuery(inputs.searchOption, inputs.query);
   };
 
   useEffect(() => {
@@ -41,11 +50,11 @@ export const PostSearchForm = () => {
           rounded="full"
           w="13rem"
         >
-          <option value="ALL">전체</option>
-          <option value="TITLE">제목</option>
-          <option value="CONTENT">내용</option>
-          <option value="TITLE_OR_CONTENT">제목+내용</option>
-          <option value="AUTHOR">작성자</option>
+          {searchOptions.map((option, idx) => (
+            <option value={option.value} key={option.value + idx}>
+              {option.label}
+            </option>
+          ))}
         </Select>
         <InputGroup>
           <Input
@@ -59,13 +68,13 @@ export const PostSearchForm = () => {
           />
           <Tooltip label="검색">
             <InputRightElement>
-              <Button
+              <IconButton
                 type="submit"
                 variant="ghost"
+                aria-label="Search"
+                icon={<BsSearch />}
                 _hover={{ bgColor: "transparent" }}
-              >
-                <Icon as={BsSearch} />
-              </Button>
+              />
             </InputRightElement>
           </Tooltip>
         </InputGroup>

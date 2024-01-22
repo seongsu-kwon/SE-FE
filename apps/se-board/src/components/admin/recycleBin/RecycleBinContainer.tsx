@@ -1,18 +1,25 @@
-import {
-  Box,
-  Tab,
-  TabIndicator,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Box, Button, HStack } from "@chakra-ui/react";
+
+import { useRecycleBinParams } from "@/hooks/useRecycleBinParams";
 
 import { AccountPanel } from "./AccountPanel";
 import { CommentPanel } from "./CommentPanel";
 import { PostPanel } from "./PostPanel";
 
 export const RecycleBinContainer = () => {
+  const { classification, setClassificationSearchParam } =
+    useRecycleBinParams();
+
+  const getPanel = (classification: string) => {
+    if (classification === "member" || classification === "") {
+      return <AccountPanel />;
+    } else if (classification === "post") {
+      return <PostPanel />;
+    } else {
+      return <CommentPanel />;
+    }
+  };
+
   return (
     <Box
       my="20px"
@@ -22,25 +29,45 @@ export const RecycleBinContainer = () => {
       rounded="3xl"
       overflowX="auto"
     >
-      <Tabs variant="unstyled">
-        <TabList>
-          <Tab onClick={() => {}}>회원</Tab>
-          <Tab onClick={() => {}}>게시글</Tab>
-          <Tab onClick={() => {}}>댓글</Tab>
-        </TabList>
-        <TabIndicator mt="-1.5px" h="2px" bg="blue.5" borderRadius="2px" />
-        <TabPanels>
-          <TabPanel>
-            <AccountPanel />
-          </TabPanel>
-          <TabPanel>
-            <PostPanel />
-          </TabPanel>
-          <TabPanel>
-            <CommentPanel />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <HStack
+        flexWrap="wrap"
+        py="0.25rem"
+        borderTop="1px solid"
+        borderColor="gray.3"
+      >
+        <Button
+          variant="ghost"
+          color={
+            classification === "member" || classification === ""
+              ? "primary"
+              : ""
+          }
+          onClick={() => {
+            setClassificationSearchParam("member");
+          }}
+        >
+          회원
+        </Button>
+        <Button
+          variant="ghost"
+          color={classification === "post" ? "primary" : ""}
+          onClick={() => {
+            setClassificationSearchParam("post");
+          }}
+        >
+          게시글
+        </Button>
+        <Button
+          variant="ghost"
+          color={classification === "comment" ? "primary" : ""}
+          onClick={() => {
+            setClassificationSearchParam("comment");
+          }}
+        >
+          댓글
+        </Button>
+      </HStack>
+      {getPanel(classification)}
     </Box>
   );
 };
