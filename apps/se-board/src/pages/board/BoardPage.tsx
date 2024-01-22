@@ -31,7 +31,7 @@ export const BoardPage = () => {
   const { postList, totalItems, isLoading } = useFetchPostList({
     categoryId: getCurrentMenuId()!,
     page,
-    perPage: 40,
+    perPage: 1,
     searchOption,
     query,
   });

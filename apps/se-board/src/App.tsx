@@ -23,7 +23,7 @@ import {
   RecycleBinPage,
   SEMenuEditPage,
 } from "./pages/admin";
-import { PostManagePage } from "./pages/admin/post/PostManagePage";
+import PostManagePage from "./pages/admin/post/PostManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
 import { MainPage } from "./pages/main/MainPage";
 import { PageNotFound } from "./pages/PageNotFound";
