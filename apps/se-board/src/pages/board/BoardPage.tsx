@@ -101,7 +101,7 @@ export const BoardPage = () => {
             <PostTable
               data={postList}
               totalItems={totalItems}
-              perPage={40}
+              perPage={1}
               page={page}
             />
           )}
