@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { Pagination } from "@/components";
 import { PageHeaderTitle } from "@/components/admin";
+import { useAdminPostSearchParams } from "@/hooks";
 import {
   useAdminFetchPostList,
   useAdminTrashPost,
@@ -18,23 +19,25 @@ export default () => {
   const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
   const [params, setParams] = useState<FetchAdminPostListParams>({
     page: 0,
-    perPage: 1,
+    perPage: 10,
     exposeOption: undefined,
     isReported: undefined,
   });
   const [searchParams, setSearchParams] = useSearchParams();
   const { data } = useAdminFetchPostList(params);
 
+  const { setPageSearchParam } = useAdminPostSearchParams();
+
   const { mutate: trahsPostList, isLoading } = useAdminTrashPost();
 
-  const setPage = (page: number) => {
-    setParams((prev) => ({ ...prev, page }));
-    searchParams.set("page", page.toString());
-    setSearchParams(searchParams);
+  const onChangePage = (page: number) => {
+    setPageSearchParam(page);
+    window.scrollTo(0, 0);
   };
 
   const onDeleteButtonClick = () => {
     trahsPostList(selectedPostIds);
+    setSelectedPostIds([]);
   };
 
   useEffect(() => {
@@ -84,7 +87,7 @@ export default () => {
           <Pagination
             totalPage={data?.totalPages ?? 0}
             currentPage={data?.pageable.pageNumber ?? 0}
-            onChangePage={setPage}
+            onChangePage={onChangePage}
           />
         </Flex>
       </Box>
