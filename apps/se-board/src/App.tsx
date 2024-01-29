@@ -172,7 +172,7 @@ const MenuRouter = () => {
           element: <AdminMainPage />,
         },
         {
-          path: "seMenu",
+          path: "menu",
           element: <SEMenuEditPage />,
         },
         {
@@ -180,15 +180,15 @@ const MenuRouter = () => {
           element: <AdminMenuEdit />,
         },
         {
-          path: "memberPolicy",
+          path: "accountPolicy",
           element: <MemberPolicy />,
         },
         {
-          path: "memberGroup",
+          path: "roles",
           element: <MemberGroupManage />,
         },
         {
-          path: "recycleBin",
+          path: "trash",
           element: <RecycleBinPage />,
         },
         {
@@ -196,15 +196,15 @@ const MenuRouter = () => {
           element: <GeneralSetting />,
         },
         {
-          path: "postManage",
+          path: "posts",
           element: <PostManagePage />,
         },
         {
-          path: "commentManage",
+          path: "comments",
           element: <CommentManage />,
         },
         {
-          path: "mainPageSetting",
+          path: "mainPageMenu",
           element: <MainPageSetting />,
         },
         {

@@ -28,7 +28,8 @@ import {
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { AdminMenuDashBoard } from "@types";
+import { useEffect, useState } from "react";
 import { IconType } from "react-icons";
 import {
   BsCollection,
@@ -38,11 +39,12 @@ import {
   BsPersonLinesFill,
   BsWrenchAdjustable,
 } from "react-icons/bs";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
 import { ReactComponent as SELogo } from "@/assets/images/se_logo.svg";
 import { useNavigatePage } from "@/hooks";
+import { useGetAdminMenus } from "@/react-query/hooks";
 import { useLogout } from "@/react-query/hooks/auth";
 import { useUserState } from "@/store/user";
 import { openColors, semanticColors } from "@/styles";
@@ -59,42 +61,33 @@ const LinkItems: Array<LinkItemProps> = [
   { key: "setting", name: "설정", icon: BsWrenchAdjustable },
 ];
 
-interface SubCategoryItemsProps {
-  [key: string]: { name: string; url: string }[];
-}
-
-const subCategoryItems: SubCategoryItemsProps[] = [
-  {
-    menu: [
-      { name: "SE 메뉴 편집", url: "/admin/seMenu" },
-      { name: "관리자 메뉴 편집", url: "/admin/adminMenu" },
-    ],
-  },
-  {
-    person: [
-      { name: "회원 목록", url: "/admin/memberList" },
-      { name: "회원 정책", url: "/admin/memberPolicy" },
-      { name: "회원 그룹", url: "/admin/memberGroup" },
-    ],
-  },
-  {
-    content: [
-      { name: "게시글 관리", url: "/admin/postManage" },
-      { name: "댓글 관리", url: "/admin/commentManage" },
-      { name: "첨부파일 관리", url: "/admin/attachmentManage" },
-      { name: "휴지통", url: "/admin/recycleBin" },
-    ],
-  },
-  {
-    setting: [
-      { name: "일반", url: "/admin/general" },
-      { name: "메인 페이지 설정", url: "/admin/mainPageSetting" },
-    ],
-  },
-];
-
 export const AdminLayout = () => {
   const [isFullWidth, setIsFullWidth] = useState(false);
+
+  const { data } = useGetAdminMenus();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!data) return;
+
+    const keys = Object.keys(data);
+
+    if (keys.length === 0) return;
+
+    let firstMenu = "";
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+
+      if (data[key].length === 0) continue;
+
+      firstMenu += `${data[key][0].url}`;
+      break;
+    }
+
+    navigate(firstMenu);
+  }, [data]);
 
   const onChange = () => {
     setIsFullWidth(!isFullWidth);
@@ -103,10 +96,10 @@ export const AdminLayout = () => {
   return (
     <Box minH="100vh" bgColor="gray.0">
       <Show above="md">
-        <DesktopAdminLayout onChange={onChange} />
+        <DesktopAdminLayout menuList={data} onChange={onChange} />
       </Show>
       <Hide above="md">
-        <MobileAdminLayout />
+        <MobileAdminLayout menuList={data} />
       </Hide>
       <Box ml={{ md: "280px" }}>
         <Box
@@ -126,7 +119,11 @@ export const AdminLayout = () => {
   );
 };
 
-const MobileAdminLayout = () => {
+interface AdminLayoutProps {
+  menuList: AdminMenuDashBoard | undefined;
+}
+
+const MobileAdminLayout = ({ menuList }: AdminLayoutProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { hasAuth } = useUserState();
 
@@ -196,20 +193,23 @@ const MobileAdminLayout = () => {
         onClose={onClose}
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent menuList={menuList} onClose={onClose} />
         </DrawerContent>
       </Drawer>
     </>
   );
 };
 
-const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
+const DesktopAdminLayout = ({
+  menuList,
+  onChange,
+}: AdminLayoutProps & { onChange: () => void }) => {
   const { hasAuth } = useUserState();
   const { mutate: logout } = useLogout();
   const { goToLoginPage, goToMyPage } = useNavigatePage();
   return (
     <>
-      <SidebarContent />
+      <SidebarContent menuList={menuList} />
       <Flex
         w="100%"
         h="56px"
@@ -276,7 +276,7 @@ const DesktopAdminLayout = ({ onChange }: { onChange: () => void }) => {
   );
 };
 
-const SidebarContent = ({ onClose }: SidebarProps) => {
+const SidebarContent = ({ menuList, onClose }: SidebarProps) => {
   return (
     <Box
       bgColor="white"
@@ -322,10 +322,10 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
                 </Box>
                 <AccordionIcon color="gray.6" fontSize="1.5rem" />
               </AccordionButton>
-              {subCategoryItems.map((subCategoryItem) =>
-                subCategoryItem[item.key]?.map((subItem) => (
+              {menuList &&
+                menuList[item.key].map((subItem) => (
                   <Link
-                    key={subItem.name}
+                    key={subItem.id}
                     as={RouterLink}
                     to={`${subItem.url}`}
                     w="full"
@@ -343,8 +343,7 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
                       {subItem.name}
                     </AccordionPanel>
                   </Link>
-                ))
-              )}
+                ))}
             </AccordionItem>
           ))}
         </Accordion>
@@ -368,4 +367,5 @@ const SidebarContent = ({ onClose }: SidebarProps) => {
 
 interface SidebarProps extends BoxProps {
   onClose?: () => void;
+  menuList: AdminMenuDashBoard | undefined;
 }

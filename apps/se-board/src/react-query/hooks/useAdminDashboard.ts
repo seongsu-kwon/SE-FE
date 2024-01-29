@@ -1,11 +1,22 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { AdminSettingRole } from "@types";
+import { AdminMenuSettingData } from "@types";
 
-import { getAdminDashboard, postAdminMenuRollSetting } from "@/api/admin";
+import {
+  getAdminDashboard,
+  getAdminMenus,
+  putAdminMenuRollSetting,
+} from "@/api/admin";
 import { errorHandle } from "@/utils/errorHandling";
 
+export const useGetAdminMenus = () => {
+  return useQuery(["adminDashboard"], getAdminMenus, {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+};
+
 export const useGetAdminDashboard = () => {
-  return useQuery(["adminDashboard"], getAdminDashboard, {
+  return useQuery(["adminDashboardRoles"], getAdminDashboard, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
@@ -17,7 +28,7 @@ export const useGetAdminDashboard = () => {
 
 export const usePostAdminMenuRollSetting = () => {
   return useMutation(
-    (data: AdminSettingRole) => postAdminMenuRollSetting(data),
+    (data: AdminMenuSettingData[]) => putAdminMenuRollSetting(data),
     {
       onError: (err) => {
         errorHandle(err);

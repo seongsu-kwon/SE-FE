@@ -6,6 +6,10 @@ declare module "@types" {
     alias: string;
   }
 
+  interface AdminMenuRoll {
+    option: string;
+    roles: string[];
+  }
   interface MenuSettingRole {
     name: string;
     option: string;

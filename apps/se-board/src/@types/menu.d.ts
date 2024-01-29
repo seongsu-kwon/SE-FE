@@ -149,4 +149,10 @@ declare module "@types" {
       roles: number[];
     };
   }
+
+  interface AdminMenu {
+    id: number;
+    name: string;
+    url: string;
+  }
 }

@@ -1,4 +1,5 @@
-import { MenuSettingRole } from "./role";
+import { AdminMenu } from "./menu";
+import { AdminMenuRoll, MenuSettingRole } from "./role";
 
 declare module "@types" {
   interface AdminSettingRole {
@@ -20,5 +21,33 @@ declare module "@types" {
       general: MenuSettingRole;
       mainPage: MenuSettingRole;
     };
+  }
+
+  interface AdminMenuInfo {
+    menu: AdminMenu;
+    option: AdminMenuRoll;
+  }
+
+  interface AdminMenuMenuAndRole {
+    menu: AdminMenuInfo[];
+    person: AdminMenuInfo[];
+    content: AdminMenuInfo[];
+    setting: AdminMenuInfo[];
+  }
+
+  interface AdminMenuSettingData {
+    id: number;
+    option: {
+      option: string;
+      roles: number[];
+    };
+  }
+
+  interface AdminMenuDashBoard {
+    [key: string]: AdminMenu[];
+    menu: AdminMenu[];
+    person: AdminMenu[];
+    contents: AdminMenu[];
+    setting: AdminMenu[];
   }
 }

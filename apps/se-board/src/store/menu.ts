@@ -1,4 +1,4 @@
-import { Menu, MenuInfomation } from "@types";
+import { AdminMenuSettingData, Menu, MenuInfomation } from "@types";
 import { atom } from "recoil";
 
 export const menuListState = atom<Menu[]>({
@@ -18,5 +18,10 @@ export const newSEMenuState = atom<string>({
 
 export const allMenuListState = atom<MenuInfomation[]>({
   key: "allMenuListState",
+  default: [],
+});
+
+export const adminMenuRollSettingState = atom<AdminMenuSettingData[]>({
+  key: "adminMenuRollSettingState",
   default: [],
 });

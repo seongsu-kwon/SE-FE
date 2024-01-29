@@ -1,8 +1,9 @@
 import {
-  AdminSettingRole,
+  AdminMenuInfo,
+  AdminMenuMenuAndRole,
+  AdminMenuSettingData,
   MainPageMenu,
   MenuInfomation,
-  MenuSettingRole,
 } from "@types";
 
 export const isCheckedMenuCount = (
@@ -27,31 +28,22 @@ export function getBoardMenuList(menuList: MenuInfomation[]) {
   return boardMenuList;
 }
 
-export function getAdminMenuArray(data: AdminSettingRole | undefined) {
+export function getAdminMenuArray(data: AdminMenuMenuAndRole | undefined) {
   if (data === undefined) return [];
 
   return [
-    { heading: "메뉴 관리", list: [data.menuSetting.menuEdit] },
+    { heading: "메뉴 관리", list: [...data.menu] },
     {
       heading: "회원 관리",
-      list: [
-        data.accountManage.accountList,
-        data.accountManage.accountPolicy,
-        data.accountManage.roles,
-      ],
+      list: [...data.person],
     },
     {
       heading: "컨텐츠 관리",
-      list: [
-        data.contentManage.post,
-        data.contentManage.comment,
-        data.contentManage.file,
-        data.contentManage.trash,
-      ],
+      list: [...data.content],
     },
     {
       heading: "설정",
-      list: [data.generalSetting.general, data.generalSetting.mainPage],
+      list: [...data.setting],
     },
   ];
 }
@@ -91,28 +83,23 @@ const adminMenuList = [
   },
 ];
 
-export function adminMenuRoleList(
-  heading: string,
-  menuInfo: MenuSettingRole[]
-) {
-  const menu = adminMenuList.find((menu) => menu.kor === heading);
+export function adminMenuRoleSetting(
+  data: AdminMenuMenuAndRole
+): AdminMenuSettingData[] {
+  const menuInfo: AdminMenuInfo[] = [];
 
-  if (menu === undefined) return;
+  for (const [key, value] of Object.entries(data)) {
+    menuInfo.push(...value);
+  }
 
-  let adminMenuRoleInfo: { [key: string]: MenuSettingRole } = {};
-
-  menuInfo.forEach((subMenu) => {
-    const key: string =
-      menu.menus.find((v) => v.kor === subMenu.name)?.eng || "";
-
-    adminMenuRoleInfo[key] = subMenu;
+  const adminMenuRoleSettingArr = menuInfo.map((menu) => {
+    return {
+      id: menu.menu.id,
+      option: { option: menu.option.option, roles: [] },
+    };
   });
 
-  const adminMenuRoleListValue = {
-    [menu.eng]: adminMenuRoleInfo,
-  };
-
-  return adminMenuRoleListValue;
+  return adminMenuRoleSettingArr;
 }
 
 export function getAllMenuList(
