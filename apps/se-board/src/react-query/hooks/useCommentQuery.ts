@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { CommentsData, PutCommentData } from "@types";
+import { CommentsData, ErrorCode, PutCommentData } from "@types";
 
 import {
   deleteComment,
@@ -16,9 +16,12 @@ import {
   reportComment,
   restoreComments,
 } from "@/api/comment";
+import { useNavigatePage } from "@/hooks";
 import { errorHandle } from "@/utils/errorHandling";
 
-export const useGetCommentQuery = (postId?: string) => {
+export const useGetCommentQuery = (enabledOption: boolean, postId?: string) => {
+  const { goToBackPage } = useNavigatePage();
+
   return useInfiniteQuery(
     ["comments", postId],
     ({ pageParam = 0 }) => fetchComments(postId, pageParam),
@@ -26,6 +29,7 @@ export const useGetCommentQuery = (postId?: string) => {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
+      enabled: !!postId && enabledOption,
       staleTime: 1000 * 60 * 5,
       cacheTime: 1000 * 60 * 6,
       getNextPageParam: (lastPage: CommentsData) => {
@@ -34,7 +38,10 @@ export const useGetCommentQuery = (postId?: string) => {
           : lastPage.paginationInfo.pageNum + 1;
       },
       onError: (err) => {
-        errorHandle(err);
+        const { code, message } = err as ErrorCode;
+
+        alert(message);
+        goToBackPage();
       },
     }
   );

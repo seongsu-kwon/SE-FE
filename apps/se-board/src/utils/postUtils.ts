@@ -1,4 +1,4 @@
-import { DateType, PostMutate } from "@types";
+import { DateType, PostDetail, PostMutate } from "@types";
 
 import { isSameDateTime } from "./dateUtils";
 
@@ -32,4 +32,30 @@ export const isWritePostActive = (
   }
 
   return null;
+};
+
+export const convertPostInfo = (post: PostDetail) => {
+  const {
+    postId,
+    title,
+    author,
+    views,
+    category,
+    createdAt,
+    modifiedAt,
+    isBookmarked,
+    isEditable,
+  } = post;
+
+  return {
+    postId,
+    title,
+    author: { loginId: author.loginId || "", name: author.name },
+    views,
+    category: category.name,
+    createdAt,
+    modifiedAt,
+    bookmarked: isBookmarked,
+    isEditable,
+  };
 };

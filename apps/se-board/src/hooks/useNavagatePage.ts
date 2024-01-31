@@ -16,5 +16,6 @@ export const useNavigatePage = () => {
 
       navigate(`/profile/${email}`);
     },
+    goToBackPage: () => navigate(-1),
   };
 };

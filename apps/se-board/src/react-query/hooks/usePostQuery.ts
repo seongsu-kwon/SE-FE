@@ -16,13 +16,10 @@ import {
 } from "@/api/post";
 import { errorHandle } from "@/utils/errorHandling";
 
-export const useGetPostQuery = (
-  postId: string | undefined,
-  enabledOption: boolean = true
-) => {
+export const useGetPostQuery = (postId: string | undefined) => {
   return useQuery(["post", postId], () => fetchGetPost(postId), {
-    staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
-    enabled: enabledOption,
+    refetchOnWindowFocus: false,
+    enabled: !!postId,
     retry: (failureCount, error) => {
       const { code } = error as { code: number; message: string };
 

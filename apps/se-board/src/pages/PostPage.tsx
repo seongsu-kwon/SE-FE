@@ -1,5 +1,5 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
-import { PostDetail } from "@types";
+import { ErrorCode } from "@types";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,116 +13,100 @@ import {
   SkeletonDetailPostDesktopHeader,
   SkeletonDetailPostHeader,
 } from "@/components/detailPost";
+import { useNavigatePage } from "@/hooks";
 import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
-import { errorHandle } from "@/utils/errorHandling";
+import { incorrectPostPassword } from "@/utils/errorHandling";
+import { convertPostInfo } from "@/utils/postUtils";
 
+import { PageNotFound } from "./PageNotFound";
 import { PWInput } from "./SecretPostPWInput";
 
 export const PostPage = () => {
   const { postId } = useParams();
 
-  const [enabledOption, setEnabledOption] = useState<boolean>(false);
-  const { data, isLoading, isError, error, refetch } = useGetPostQuery(
-    postId,
-    enabledOption
-  );
-  const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
-  const [postData, setPostData] = useState<PostDetail | undefined>(data);
+  const { data, isLoading, isError, error } = useGetPostQuery(postId);
+  const { mutate, isLoading: secretIsLoading } = useSecretPostMutation();
+
   const [password, setPassword] = useState<string>("");
 
-  const { mutate } = useSecretPostMutation();
+  const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const { goToBackPage } = useNavigatePage();
+
+  let postHeaderInfo = data ? convertPostInfo(data) : undefined;
+  let attachemntFileData = data ? data.attachments.fileMetaDataList : undefined;
+  let content = data ? data.contents : undefined;
+
+  useEffect(() => {
+    mobileHeaderClose();
+
+    return mobileHeaderOpen;
+  }, []);
 
   const onSubmit = () => {
     mutate(
       { postId: Number(postId), password },
       {
         onSuccess: (data) => {
-          setEnabledOption(false);
-          setPostData(data);
-
+          postHeaderInfo = convertPostInfo(data);
+          attachemntFileData = data.attachments.fileMetaDataList;
+          content = data.contents;
           setPassword("");
         },
-        onError: (error) => {
-          errorHandle(error);
+        onError: (error: unknown | ErrorCode) => {
+          if (error === 114) {
+            incorrectPostPassword();
+          }
         },
       }
     );
   };
 
-  useEffect(() => {
-    mobileHeaderClose();
-    setPostData(data);
-
-    if (!postData) {
-      setEnabledOption(true);
-    }
-
-    return mobileHeaderOpen;
-  }, [data]);
-
   if (isError) {
-    const { code } = error as { code: number; message: string };
+    const { code, message } = error as { code: number; message: string };
 
-    if (code !== 113) {
-      errorHandle(error);
+    if (code === 113 && !postHeaderInfo) {
+      return (
+        <PWInput
+          password={password}
+          handleChange={(e) => setPassword(e.target.value)}
+          onSubmit={onSubmit}
+        />
+      );
     } else {
-      if (!postData) {
-        return (
-          <PWInput
-            password={password}
-            handleChange={handleChange}
-            onSubmit={onSubmit}
-          />
-        );
-      }
+      alert(message);
+      goToBackPage();
     }
   }
 
-  const headerInfo = {
-    postId: Number(postId),
-    title: postData?.title || "제목",
-    author: {
-      loginId: postData?.author.loginId || "",
-      name: postData?.author.name || "이름",
-    },
-    views: postData?.views || 0,
-    category: postData?.category.name || "카테고리",
-    createdAt: postData?.createdAt,
-    modifiedAt: postData?.modifiedAt,
-    bookmarked: postData?.isBookmarked || false,
-    isEditable: postData?.isEditable || false,
-  };
-
-  return (
+  return postHeaderInfo ? (
     <Box maxW="984px" w="100%">
       <Show above="md">
         <Box pt="0rem">
-          {isLoading ? (
+          {isLoading || secretIsLoading ? (
             <SkeletonDetailPostDesktopHeader />
           ) : (
-            <DesktopHeader HeadingInfo={headerInfo} />
+            <DesktopHeader HeadingInfo={postHeaderInfo} />
           )}
         </Box>
       </Show>
       <Hide above="md">
-        {isLoading ? (
+        {isLoading || secretIsLoading ? (
           <SkeletonDetailPostHeader />
         ) : (
-          <Header HeadingInfo={headerInfo} />
+          <Header HeadingInfo={postHeaderInfo} />
         )}
       </Hide>
-      <AttachmentFile files={postData?.attachments.fileMetaDataList || []} />
-      {isLoading ? (
+      <AttachmentFile files={attachemntFileData || []} />
+      {isLoading || secretIsLoading ? (
         <SkeletonDetailPostContent />
       ) : (
-        <Content contents={postData?.contents || "<p>내용 무</p>"} />
+        <Content contents={content || "<p></p>"} />
       )}
-      <CommentSection postId={postId} />
+      <CommentSection postId={postId} isPostRequestError={!!postHeaderInfo} />
     </Box>
+  ) : (
+    <PageNotFound />
   );
 };
