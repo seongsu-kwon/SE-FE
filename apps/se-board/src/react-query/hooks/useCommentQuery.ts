@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { CommentsData, ErrorCode, PutCommentData } from "@types";
+import { CommentsData, PutCommentData } from "@types";
 
 import {
   deleteComment,
@@ -16,18 +16,18 @@ import {
   reportComment,
   restoreComments,
 } from "@/api/comment";
-import { useNavigatePage } from "@/hooks";
 import { errorHandle } from "@/utils/errorHandling";
 
-export const useGetCommentQuery = (enabledOption: boolean, postId?: string) => {
-  const { goToBackPage } = useNavigatePage();
-
+export const useGetCommentQuery = (
+  enabledOption: boolean,
+  postId?: string,
+  password?: string
+) => {
   return useInfiniteQuery(
     ["comments", postId],
-    ({ pageParam = 0 }) => fetchComments(postId, pageParam),
+    ({ pageParam = 0 }) => fetchComments(postId, pageParam, password),
     {
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       refetchOnMount: false,
       enabled: !!postId && enabledOption,
       staleTime: 1000 * 60 * 5,
@@ -38,10 +38,7 @@ export const useGetCommentQuery = (enabledOption: boolean, postId?: string) => {
           : lastPage.paginationInfo.pageNum + 1;
       },
       onError: (err) => {
-        const { code, message } = err as ErrorCode;
-
-        alert(message);
-        goToBackPage();
+        errorHandle(err);
       },
     }
   );
@@ -58,16 +55,17 @@ export const usePostCommentMutation = (postId?: string) => {
 export const usePutCommentMutation = (postId?: string) => {
   return useMutation(
     (param: { commentId: number; putCommentData: PutCommentData }) =>
-      putComment(param)
+      putComment(param),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
   );
 };
 
 export const useDeleteCommentMutation = (postId?: string) => {
-  return useMutation((commentId: number) => deleteComment(commentId), {
-    onError: (err) => {
-      errorHandle(err);
-    },
-  });
+  return useMutation((commentId: number) => deleteComment(commentId));
 };
 
 export const useReportCommentMutation = () => {
@@ -79,22 +77,27 @@ export const useReportCommentMutation = () => {
 };
 
 export const usePostReplyMutation = (postId?: string) => {
-  return useMutation(postReply);
+  return useMutation(postReply, {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };
 
 export const usePutReplyMutation = (postId?: string) => {
   return useMutation(
     (param: { replyId: number; putReplyData: PutCommentData }) =>
-      putReply(param)
+      putReply(param),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
   );
 };
 
 export const useDeleteReplyMutation = (postId?: string) => {
-  return useMutation((replyId: number) => deleteReply(replyId), {
-    onError: (err) => {
-      errorHandle(err);
-    },
-  });
+  return useMutation((replyId: number) => deleteReply(replyId));
 };
 
 export const useGetAdminCommmentQuery = (
@@ -118,7 +121,6 @@ export const useGetAdminCommmentQuery = (
       ),
     {
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       refetchOnMount: false,
       staleTime: 1000 * 60 * 60,
       cacheTime: 1000 * 60 * 61,
@@ -146,7 +148,6 @@ export const useGetDeleteCommentsQuery = (page?: number, perPage?: number) => {
     () => getDeletedComments(page, perPage),
     {
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       refetchOnMount: false,
       staleTime: 1000 * 60 * 60,
       cacheTime: 1000 * 60 * 61,

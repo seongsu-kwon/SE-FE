@@ -32,6 +32,7 @@ import {
 } from "@/react-query/hooks/useMenu";
 import { categoryListState } from "@/store/categoryState";
 import { newSEMenuState } from "@/store/menu";
+import { errorHandle } from "@/utils/errorHandling";
 
 import { AuthorityMenu } from "./AuthorityMenu";
 
@@ -565,6 +566,9 @@ const EnrollAlert = ({ isOpen, onClose, menuId }: EnrollAlertProps) => {
               roles: [],
             },
           });
+        },
+        onError: (error) => {
+          errorHandle(error);
         },
       }
     );

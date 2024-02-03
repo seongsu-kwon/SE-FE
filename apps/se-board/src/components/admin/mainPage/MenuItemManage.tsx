@@ -20,7 +20,6 @@ import {
   useGetSelectedMainPageMenus,
   usePutMainPageMenus,
 } from "@/react-query/hooks/useMenu";
-import { errorHandle } from "@/utils/errorHandling";
 
 export const MenuItemManage = () => {
   const { data } = useGetMainPageMenus();
@@ -70,9 +69,6 @@ export const MenuItemManage = () => {
           duration: 5000,
           isClosable: true,
         });
-      },
-      onError: (error) => {
-        errorHandle(error);
       },
     });
   };

@@ -15,15 +15,17 @@ import { SkeletonComment } from "./SkeletonComment";
 interface CommentSectionProps {
   postId: string | undefined;
   isPostRequestError: boolean;
+  password?: string;
 }
 
 export const CommentSection = ({
   postId,
   isPostRequestError,
+  password,
 }: CommentSectionProps) => {
   const { data, isLoading, fetchNextPage, isFetchingNextPage } =
-    useGetCommentQuery(isPostRequestError, postId);
-  console.log(isPostRequestError);
+    useGetCommentQuery(isPostRequestError, postId, password);
+
   const queryClient = useQueryClient();
 
   const [comments, setComments] = useState<Comment[]>([]);

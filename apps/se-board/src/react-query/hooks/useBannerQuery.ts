@@ -7,8 +7,9 @@ import { errorHandle } from "@/utils/errorHandling";
 export const useBannerQuery = (isActive?: boolean) => {
   return useQuery(["bannerInfos"], () => getBanners(isActive), {
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     refetchOnMount: false,
+    staleTime: 1000 * 60 * 60,
+    cacheTime: 1000 * 60 * 61,
     onError: (err) => {
       errorHandle(err);
     },

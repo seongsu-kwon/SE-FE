@@ -12,6 +12,10 @@ import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetBannedNicknameQuery = () => {
   return useQuery(["bannedNickname"], getBannedNickname, {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 60,
+    cacheTime: 1000 * 60 * 61,
     onError: (error) => {
       errorHandle(error);
     },

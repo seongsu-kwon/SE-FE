@@ -12,13 +12,15 @@ export const useGetAdminMenus = () => {
   return useQuery(["adminDashboard"], getAdminMenus, {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    onError: (err) => {
+      errorHandle(err);
+    },
   });
 };
 
 export const useGetAdminDashboard = () => {
   return useQuery(["adminDashboardRoles"], getAdminDashboard, {
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     refetchOnMount: false,
     onError: (err) => {
       errorHandle(err);

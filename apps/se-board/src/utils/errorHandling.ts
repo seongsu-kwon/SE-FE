@@ -1,51 +1,26 @@
-import {
-  ErrorFieldAlert,
-  ExceededNumberAlert,
-  GotoLoginAlert,
-  NoneAttachmentAlert,
-  NoneCategoryAlert,
-  NoneCommentAlert,
-  NonePostAlert,
-  NoPermissionsAlert,
-} from "@/components";
+import { ErrorCode } from "@types";
 
-interface ErrorData {
-  code: number;
-  message: string;
-  id?: number;
-}
+import { useNavigatePage } from "@/hooks";
+
+export const incorrectPostPassword = () => {
+  return alert("비밀번호가 틀렸습니다.");
+};
+
+const errorCodeToAlert = [
+  103, 109, 115, 117, 118, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+  132, 133, 134, 135, 136, 137, 138, 140, 141, 142, 143, 202, 203, 204, 301,
+  302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 400,
+];
+const errorCodeToAlertAndGoToBack = [104, 200, 201, 300];
 
 export const errorHandle = (error: unknown) => {
-  const { code } = error as ErrorData;
+  const { goToBackPage } = useNavigatePage();
+  const { code } = error as ErrorCode;
 
-  switch (code) {
-    case 114:
-      // 비밀글 비밀번호 틀림
-      return alert("비밀번호가 틀렸습니다.");
-    case 201:
-      // 필수 필드 누락
-      return ErrorFieldAlert();
-    case 102:
-      return GotoLoginAlert();
-    case 103:
-      // 권한 없음
-      return NoPermissionsAlert();
-    case 115:
-      // 글, 댓글 작성 횟수 초과
-      return ExceededNumberAlert();
-    case 300:
-      // 게시글 없음
-      return NonePostAlert();
-    case 301:
-      // 카테고리 없음
-      return NoneCategoryAlert();
-    case 302:
-      // 첨부파일 id 없음
-      return NoneAttachmentAlert();
-    case 303:
-      // 댓글 없음
-      return NoneCommentAlert();
-    default:
-      return;
+  if (errorCodeToAlert.includes(code)) {
+    return alert("오류가 발생했습니다.");
+  } else if (errorCodeToAlertAndGoToBack.includes(code)) {
+    alert("오류가 발생했습니다.");
+    goToBackPage();
   }
 };

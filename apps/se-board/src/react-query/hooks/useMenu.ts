@@ -75,7 +75,6 @@ export const useGetCategory = (categoryId: number) => {
 export const useGetMainPageMenus = () => {
   return useQuery(["mainPageMenus"], getMainPageMenus, {
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     refetchOnMount: false,
     onError: (err) => {
       errorHandle(err);
@@ -86,7 +85,6 @@ export const useGetMainPageMenus = () => {
 export const useGetSelectedMainPageMenus = () => {
   return useQuery(["selectedMainPageMenus"], getSelectedMainPageMenus, {
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     refetchOnMount: false,
     onError: (err) => {
       errorHandle(err);
@@ -181,17 +179,18 @@ export const usePostAddMenuOrCategory = () => {
     (param: {
       categoryType: string;
       data: { superCategoryId: number | null } & PostMenuInfo;
-    }) => postAddMenuOrCategory(param.categoryType, param.data),
+    }) => postAddMenuOrCategory(param.categoryType, param.data)
+  );
+};
+
+export const usePutGroupSubMenu = () => {
+  return useMutation(
+    (param: { categoryId: number; data: PutSubMenu }) =>
+      putGroupSubMenu(param.categoryId, param.data),
     {
       onError: (err) => {
         errorHandle(err);
       },
     }
-  );
-};
-
-export const usePutGroupSubMenu = () => {
-  return useMutation((param: { categoryId: number; data: PutSubMenu }) =>
-    putGroupSubMenu(param.categoryId, param.data)
   );
 };
