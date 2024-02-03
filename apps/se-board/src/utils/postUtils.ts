@@ -59,3 +59,33 @@ export const convertPostInfo = (post: PostDetail) => {
     isEditable,
   };
 };
+
+export const convertModifyPostData = (post: PostDetail | null) => {
+  if (!post) {
+    return {
+      title: "",
+      contents: "",
+      categoryId: -1,
+      pined: false,
+      exposeOption: {
+        name: "PUBLIC",
+        password: "",
+      },
+      attachmentIds: Array<number>(),
+    };
+  }
+
+  const { title, contents, category, isPined, exposeType, attachments } = post;
+
+  return {
+    title,
+    contents,
+    categoryId: category.categoryId,
+    pined: isPined,
+    exposeOption: {
+      name: exposeType,
+      password: "",
+    },
+    attachmentIds: attachments.fileMetaDataList.map((v) => v.fileMetaDataId),
+  };
+};

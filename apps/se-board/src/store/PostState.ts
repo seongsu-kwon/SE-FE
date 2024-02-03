@@ -1,4 +1,3 @@
-import { Attachment } from "@types";
 import { atom } from "recoil";
 
 export const writePostState = atom({
@@ -29,23 +28,5 @@ export const modifyPostState = atom({
       password: "",
     },
     attachmentIds: Array<number>(),
-  },
-});
-
-export const beforePostState = atom({
-  key: "beforePostState",
-  default: {
-    postId: -1,
-    title: "",
-    contents: "",
-    category: {
-      categoryId: -1,
-      name: "",
-    },
-    isPined: false,
-    exposeType: "",
-    attachments: {
-      fileMetaDataList: Array<Attachment>(),
-    },
   },
 });

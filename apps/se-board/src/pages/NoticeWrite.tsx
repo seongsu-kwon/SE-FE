@@ -1,6 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useResetRecoilState } from "recoil";
 
 import {
@@ -11,6 +11,7 @@ import {
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
+import { useNavigatePage } from "@/hooks";
 import { useMenu } from "@/hooks/useMenu";
 import { queryClient } from "@/react-query";
 import {
@@ -18,12 +19,13 @@ import {
   usePostPostMutation,
   usePutPostMutation,
 } from "@/react-query/hooks";
-import { beforePostState, modifyPostState, writePostState } from "@/store";
+import { modifyPostState, writePostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
 import { errorHandle } from "@/utils/errorHandling";
-import { isWritePostActive } from "@/utils/postUtils";
+import { convertModifyPostData, isWritePostActive } from "@/utils/postUtils";
 
 export const NoticeWrite = () => {
+  const { postId } = useParams();
   const pathName = useLocation().pathname;
   const menu = useMenu().getCurrentMenu();
   const navigate = useNavigate();
@@ -33,64 +35,35 @@ export const NoticeWrite = () => {
   const resetModifyPost = useResetRecoilState(modifyPostState);
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const resetWritePost = useResetRecoilState(writePostState);
-  const [beforePost, setBeforePost] = useRecoilState(beforePostState);
-  const resetBeforePost = useResetRecoilState(beforePostState);
 
   const isModified = useRef(false);
 
+  const { data, isError, error } = useGetPostQuery(
+    postId,
+    pathName.includes("modify")
+  );
   const { mutate: putPostMutate, isLoading: putPostIsLoading } =
     usePutPostMutation();
-  const {
-    data,
-    isError: getPostIsError,
-    error: getPostError,
-  } = useGetPostQuery(pathName.split("/")[2], isModified.current);
   const { mutate: writePostMutate, isLoading: writePostIsLoading } =
     usePostPostMutation();
 
-  getPostIsError && errorHandle(getPostError);
-
-  useEffect(() => {
-    if (pathName.includes("modify")) {
-      isModified.current = true;
-
-      setModifyPost({
-        title: data?.title || "",
-        contents: data?.contents || "",
-        categoryId: data?.category?.categoryId || -1,
-        pined: data?.isPined || false,
-        exposeOption: {
-          name: data?.exposeType || "",
-          password: "",
-        },
-        attachmentIds:
-          data?.attachments.fileMetaDataList.map(
-            (attachment) => attachment.fileMetaDataId
-          ) || [],
-      });
-
-      setBeforePost({
-        postId: data?.postId || Number(pathName.split("/")[2]),
-        title: data?.title || "",
-        contents: data?.contents || "",
-        category: data?.category || { categoryId: -1, name: "" },
-        exposeType: data?.exposeType || "",
-        attachments: {
-          fileMetaDataList: data?.attachments.fileMetaDataList || [],
-        },
-        isPined: data?.isPined || false,
-      });
-    }
-  }, [data]);
+  const { goToBackPage } = useNavigatePage();
 
   useEffect(() => {
     mobileHeaderClose();
 
-    return () => {
-      mobileHeaderOpen();
-      resetBeforePost();
-    };
+    if (pathName.includes("modify")) {
+      isModified.current = true;
+    }
+
+    return mobileHeaderOpen();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setModifyPost(convertModifyPostData(data));
+    }
+  }, [data]);
 
   const onClickRegistrationInModify = () => {
     const correctPost = isWritePostActive(modifyPost, isModified.current);
@@ -139,17 +112,25 @@ export const NoticeWrite = () => {
     });
   };
 
+  if (isError) {
+    errorHandle(error);
+  }
+
   return (
     <Box maxW="984px" w="100%" mx="auto">
       <Show above="md">
-        <DesktopCategoryAndPrivacySetting isModified={isModified.current} />
+        <DesktopCategoryAndPrivacySetting
+          postData={data}
+          isModified={isModified.current}
+        />
         <DesktopFileUploader
           isModified={isModified.current}
-          beforeFiles={beforePost?.attachments.fileMetaDataList}
+          beforeFiles={data?.attachments.fileMetaDataList || []}
         />
       </Show>
       <Hide above="md">
         <CategoryAndPrivacySetting
+          postData={data}
           isModified={isModified.current}
           onClickRegistration={
             isModified.current
@@ -159,12 +140,12 @@ export const NoticeWrite = () => {
         />
         <MobileFileUploader
           isModified={isModified.current}
-          beforeFiles={beforePost?.attachments.fileMetaDataList}
+          beforeFiles={data?.attachments.fileMetaDataList || []}
         />
       </Hide>
       <WritingEditor
-        title={beforePost?.title}
-        contents={beforePost?.contents}
+        title={data?.title || ""}
+        contents={data?.contents || ""}
         isModified={isModified.current}
       />
       <Show above="md">

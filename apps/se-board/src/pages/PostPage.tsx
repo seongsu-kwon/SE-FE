@@ -1,6 +1,6 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
-import { ErrorCode } from "@types";
-import React, { useEffect, useState } from "react";
+import { ErrorCode, PostDetail } from "@types";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { CommentSection } from "@/components/comment";
@@ -13,10 +13,9 @@ import {
   SkeletonDetailPostDesktopHeader,
   SkeletonDetailPostHeader,
 } from "@/components/detailPost";
-import { useNavigatePage } from "@/hooks";
 import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
-import { incorrectPostPassword } from "@/utils/errorHandling";
+import { errorHandle, incorrectPostPassword } from "@/utils/errorHandling";
 import { convertPostInfo } from "@/utils/postUtils";
 
 import { PageNotFound } from "./PageNotFound";
@@ -25,38 +24,49 @@ import { PWInput } from "./SecretPostPWInput";
 export const PostPage = () => {
   const { postId } = useParams();
 
-  const { data, isLoading, isError, error } = useGetPostQuery(postId);
+  const enabledRef = useRef<boolean>(true);
+
+  const { data, isLoading, isError, error } = useGetPostQuery(
+    postId,
+    enabledRef.current
+  );
   const { mutate, isLoading: secretIsLoading } = useSecretPostMutation();
 
+  const [postData, setPostData] = useState<PostDetail>();
   const [password, setPassword] = useState<string>("");
 
   const { mobileHeaderOpen, mobileHeaderClose } = useMobileHeaderState();
 
-  const { goToBackPage } = useNavigatePage();
-
-  let postHeaderInfo = data ? convertPostInfo(data) : undefined;
-  let attachemntFileData = data ? data.attachments.fileMetaDataList : undefined;
-  let content = data ? data.contents : undefined;
+  let postHeaderInfo = postData ? convertPostInfo(postData) : undefined;
+  let attachemntFileData = postData
+    ? postData.attachments.fileMetaDataList
+    : undefined;
+  let content = postData ? postData.contents : undefined;
 
   useEffect(() => {
     mobileHeaderClose();
 
-    return mobileHeaderOpen;
+    return mobileHeaderOpen();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setPostData(data);
+    }
+  }, [data]);
 
   const onSubmit = () => {
     mutate(
       { postId: Number(postId), password },
       {
         onSuccess: (data) => {
-          postHeaderInfo = convertPostInfo(data);
-          attachemntFileData = data.attachments.fileMetaDataList;
-          content = data.contents;
-          setPassword("");
+          setPostData(data);
         },
         onError: (error: unknown | ErrorCode) => {
           if (error === 114) {
             incorrectPostPassword();
+          } else {
+            errorHandle(error);
           }
         },
       }
@@ -64,6 +74,7 @@ export const PostPage = () => {
   };
 
   if (isError) {
+    enabledRef.current = false;
     const { code, message } = error as { code: number; message: string };
 
     if (code === 113 && !postHeaderInfo) {
@@ -74,9 +85,8 @@ export const PostPage = () => {
           onSubmit={onSubmit}
         />
       );
-    } else {
-      alert(message);
-      goToBackPage();
+    } else if (code !== 113) {
+      errorHandle(error);
     }
   }
 
@@ -104,7 +114,11 @@ export const PostPage = () => {
       ) : (
         <Content contents={content || "<p></p>"} />
       )}
-      <CommentSection postId={postId} isPostRequestError={!!postHeaderInfo} />
+      <CommentSection
+        postId={postId}
+        isPostRequestError={!!postHeaderInfo}
+        password={password || undefined}
+      />
     </Box>
   ) : (
     <PageNotFound />

@@ -12,13 +12,18 @@ import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const fetchComments = (
   postId: string | undefined,
-  pageParam: number
+  pageParam: number,
+  password?: string
 ) => {
+  const queryParam = password
+    ? `page=${pageParam}&perPage=25&password=${password}`
+    : `page=${pageParam}&perPage=25`;
+
   return _axios<CommentsData>({
     headers: {
       ...getJWTHeader(),
     },
-    url: `/posts/${postId}/comments?page=${pageParam}&perPage=25`,
+    url: `/posts/${postId}/comments?` + queryParam,
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };
