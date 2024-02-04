@@ -9,7 +9,6 @@ export const useGetRoleInfos = (page = 0, perPage = 0) => {
     () => getRoleInfos(page, perPage),
     {
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       refetchOnMount: false,
       staleTime: 1000 * 60 * 10, // 10분
       cacheTime: 1000 * 60 * 11, // 11분
@@ -21,11 +20,7 @@ export const useGetRoleInfos = (page = 0, perPage = 0) => {
 };
 
 export const useDeleteRole = () => {
-  return useMutation((roleId: number) => deleteRole(roleId), {
-    onError: (err) => {
-      errorHandle(err);
-    },
-  });
+  return useMutation((roleId: number) => deleteRole(roleId));
 };
 
 export const useUpdateRole = () => {
@@ -40,23 +35,13 @@ export const useUpdateRole = () => {
         name: param.name,
         alias: param.alias,
         description: param.description,
-      }),
-    {
-      onError: (err) => {
-        errorHandle(err);
-      },
-    }
+      })
   );
 };
 
 export const useAddRole = () => {
   return useMutation(
     (param: { name: string; alias: string; description: string }) =>
-      postRole(param),
-    {
-      onError: (err) => {
-        errorHandle(err);
-      },
-    }
+      postRole(param)
   );
 };

@@ -1,4 +1,4 @@
-import { DateType, PostMutate } from "@types";
+import { DateType, PostDetail, PostMutate } from "@types";
 
 import { isSameDateTime } from "./dateUtils";
 
@@ -32,6 +32,62 @@ export const isWritePostActive = (
   }
 
   return null;
+};
+
+export const convertPostInfo = (post: PostDetail) => {
+  const {
+    postId,
+    title,
+    author,
+    views,
+    category,
+    createdAt,
+    modifiedAt,
+    isBookmarked,
+    isEditable,
+  } = post;
+
+  return {
+    postId,
+    title,
+    author: { loginId: author.loginId || "", name: author.name },
+    views,
+    category: category.name,
+    createdAt,
+    modifiedAt,
+    bookmarked: isBookmarked,
+    isEditable,
+  };
+};
+
+export const convertModifyPostData = (post: PostDetail | null) => {
+  if (!post) {
+    return {
+      title: "",
+      contents: "",
+      categoryId: -1,
+      pined: false,
+      exposeOption: {
+        name: "PUBLIC",
+        password: "",
+      },
+      attachmentIds: Array<number>(),
+    };
+  }
+
+  const { title, contents, category, isPined, exposeType, attachments } = post;
+
+  return {
+    title,
+    contents,
+    categoryId: category.categoryId,
+    pined: isPined,
+    exposeOption: {
+      name: exposeType,
+      password: "",
+    },
+    attachmentIds: attachments.fileMetaDataList.map((v) => v.fileMetaDataId),
+  };
 };
 
 export const getExposeOptionName = (exposeOption: string) => {

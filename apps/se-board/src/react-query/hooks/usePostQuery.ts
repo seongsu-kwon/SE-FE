@@ -18,11 +18,11 @@ import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetPostQuery = (
   postId: string | undefined,
-  enabledOption: boolean = true
+  enabled: boolean
 ) => {
   return useQuery(["post", postId], () => fetchGetPost(postId), {
-    staleTime: 1000 * 60, // stale 상태로 변경되기 전까지의 시간
-    enabled: enabledOption,
+    refetchOnWindowFocus: false,
+    enabled: !!postId && enabled,
     retry: (failureCount, error) => {
       const { code } = error as { code: number; message: string };
 
@@ -41,12 +41,22 @@ interface PostResData {
 }
 
 export const usePostPostMutation = () => {
-  return useMutation((reqBody: PostCreate) => postPost(reqBody));
+  return useMutation((reqBody: PostCreate) => postPost(reqBody), {
+    onError: (err) => {
+      errorHandle(err);
+    },
+  });
 };
 
 export const usePutPostMutation = () => {
-  return useMutation((param: { postId: number; data: PostPut }) =>
-    putPost(param.postId, param.data)
+  return useMutation(
+    (param: { postId: number; data: PostPut }) =>
+      putPost(param.postId, param.data),
+    {
+      onError: (err) => {
+        errorHandle(err);
+      },
+    }
   );
 };
 
@@ -74,7 +84,6 @@ export const useGetDeletedPostQuery = (page?: number, perPage?: number) => {
     () => getDeletedPosts(page, perPage),
     {
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       refetchOnMount: false,
       staleTime: 1000 * 60 * 60,
       cacheTime: 1000 * 60 * 61,
@@ -102,9 +111,5 @@ export const usePermanentlyDeletePostQuery = () => {
 };
 
 export const useReportPost = () => {
-  return useMutation((postId: number) => reportPost(postId), {
-    onError: (err) => {
-      errorHandle(err);
-    },
-  });
+  return useMutation((postId: number) => reportPost(postId));
 };

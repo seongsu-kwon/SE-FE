@@ -1,4 +1,3 @@
-export * from "./ErrorHandler";
 export * from "./HeaderNavigation";
 export * from "./Logo";
 export * from "./MobilePostPageBottonMenu";

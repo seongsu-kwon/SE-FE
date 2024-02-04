@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Flex, Grid, useToast } from "@chakra-ui/react";
-import { AdminSettingRole } from "@types";
-import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 
 import { PageHeaderTitle } from "@/components/admin";
 import { AdminMenuContainer } from "@/components/admin/menuSettings";
@@ -8,33 +9,34 @@ import {
   useGetAdminDashboard,
   usePostAdminMenuRollSetting,
 } from "@/react-query/hooks";
-import { getAdminMenuArray } from "@/utils/menuUtils";
+import { adminMenuRollSettingState } from "@/store/menu";
+import { adminMenuRoleSetting, getAdminMenuArray } from "@/utils/menuUtils";
 
 export const AdminMenuEdit = () => {
   const toast = useToast();
-  const { data, refetch } = useGetAdminDashboard();
-
-  const [adminMenuList, setAdminMenuList] = useState<AdminSettingRole>();
-
-  const adminMenuRoleListRef = useRef<AdminSettingRole>();
+  const { data } = useGetAdminDashboard();
+  const { mutate, isLoading } = usePostAdminMenuRollSetting();
 
   const menuDataList = getAdminMenuArray(data);
 
-  const { mutate, isLoading } = usePostAdminMenuRollSetting();
+  const [adminMenuRoleSettingData, setAdminMenuRoleSettingData] =
+    useRecoilState(adminMenuRollSettingState);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!data) return;
 
-    setAdminMenuList(data);
-    adminMenuRoleListRef.current = data;
+    setAdminMenuRoleSettingData(adminMenuRoleSetting(data));
   }, [data]);
 
   function onEnrollClick() {
-    if (!adminMenuRoleListRef.current) return;
+    if (!adminMenuRoleSettingData.length) return;
 
-    mutate(adminMenuRoleListRef.current, {
+    mutate(adminMenuRoleSettingData, {
       onSuccess: () => {
-        refetch();
+        queryClient.invalidateQueries(["adminDashboardRoles"]);
+        queryClient.invalidateQueries(["adminDashboard"]);
         toast({
           title: "권한 설정이 변경되었습니다.",
           status: "success",
@@ -61,7 +63,6 @@ export const AdminMenuEdit = () => {
               <AdminMenuContainer
                 heading={menuData.heading}
                 menu={menuData.list}
-                adminMenuRoleListRef={adminMenuRoleListRef}
               />
               <Divider border="1px solid" borderColor="gray.4" />
             </Box>

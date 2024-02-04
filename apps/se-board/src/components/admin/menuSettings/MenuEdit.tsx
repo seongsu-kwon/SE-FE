@@ -1,11 +1,10 @@
 /* 메뉴 타입, 메뉴 id props로 전달받아 메뉴 상세 정보 조회 */
 
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/react";
-import { AdminSettingRole, MenuInfomation, MenuSettingRole } from "@types";
-import React, { useEffect, useState } from "react";
+import { AdminMenuInfo, MenuInfomation } from "@types";
+import React, { useEffect } from "react";
 
 import { useMenuInfo } from "@/hooks";
-import { adminMenuRoleList } from "@/utils/menuUtils";
 
 import { AdminAuthorityMenu } from "./AuthorityMenu";
 import { CategoryManage } from "./CategoryManage";
@@ -80,32 +79,13 @@ export const AddMenu = () => {
 
 interface AdminMenuContainerProps {
   heading: string;
-  menu: MenuSettingRole[];
-  adminMenuRoleListRef: React.MutableRefObject<AdminSettingRole | undefined>;
+  menu: AdminMenuInfo[];
 }
 
 export const AdminMenuContainer = ({
   heading,
   menu,
-  adminMenuRoleListRef,
 }: AdminMenuContainerProps) => {
-  const [menuInfo, setMenuInfo] = useState<MenuSettingRole[]>(menu);
-
-  useEffect(() => {
-    setMenuInfo(menu);
-  }, [menu]);
-
-  useEffect(() => {
-    if (!adminMenuRoleListRef.current) return;
-
-    const newRoleList = {
-      ...adminMenuRoleListRef.current,
-      ...adminMenuRoleList(heading, menuInfo),
-    };
-
-    adminMenuRoleListRef.current = newRoleList;
-  }, [menuInfo]);
-
   return (
     <Box w="100%" wordBreak="keep-all">
       <Heading fontSize="xl">{heading}</Heading>
@@ -118,13 +98,12 @@ export const AdminMenuContainer = ({
         {menu.map((item, index) => (
           <Flex key={index} alignItems="center" my="0.5rem" gap="0.75rem">
             <Text fontWeight="550" w="6rem">
-              {item.name}
+              {item.menu.name}
             </Text>
             <AdminAuthorityMenu
-              index={index}
-              setMenuInfo={setMenuInfo}
-              defaultOption={item.option}
-              defaultRoles={item.roles}
+              menuID={item.menu.id}
+              defaultOption={item.option.option}
+              defaultRoles={item.option.roles}
             />
           </Flex>
         ))}

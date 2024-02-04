@@ -24,6 +24,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
+import { PostDetail } from "@types";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,7 @@ import {
   useSelectDisclosure,
 } from "@/hooks";
 import { useMenu } from "@/hooks/useMenu";
-import { beforePostState, modifyPostState, writePostState } from "@/store";
+import { modifyPostState, writePostState } from "@/store";
 import { openColors } from "@/styles";
 
 interface PasswordInputProps {
@@ -81,6 +82,7 @@ const PasswordInput = ({
 };
 
 interface CategoryAndPrivacySettingProps {
+  postData: PostDetail | undefined;
   isModified: boolean;
   onClickRegistration?: () => void;
 }
@@ -92,30 +94,36 @@ const privacyOptions = [
 ];
 
 export const CategoryAndPrivacySetting = ({
+  postData,
   isModified,
   onClickRegistration,
 }: CategoryAndPrivacySettingProps) => {
   const { getCurrentMenu } = useMenu();
   const navigate = useNavigate();
-  const [beforePost, setBeforePost] = useRecoilState(beforePostState);
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [prevOption, setPrevOption] = useState({
-    category: beforePost.category || { categoryId: -1, name: "카테고리" },
-    active: beforePost.exposeType || "전체",
+    category: postData?.category || {
+      categoryId: -1,
+      name: "카테고리",
+    },
+    active: postData?.exposeType || "전체",
     subscript: privacyOptions[0].value,
     password: "",
-    pined: beforePost.isPined || false,
+    pined: postData?.isPined || false,
     isAnonymous: false,
   });
   const { selectedCategory, setSelectedCategory, selectOption } =
-    useSelectCategory(isModified, beforePost.category);
+    useSelectCategory(
+      isModified,
+      postData?.category || { categoryId: -1, name: "" }
+    );
   const { subscript, setSubscript, active, setActive, onClickDisclosure } =
     useSelectDisclosure(
-      privacyOptions.find((value) => value.eng === beforePost.exposeType)
-        ?.kor || "전체",
+      privacyOptions.find((value) => value.eng === postData?.exposeType)?.kor ||
+        "전체",
       isModified
     );
   const { password, setPassword, show, handleClick, handleChange } =
@@ -127,7 +135,7 @@ export const CategoryAndPrivacySetting = ({
     setIsPined,
     onClickAnonymous,
     onClickPined,
-  } = useAnonymousAndPined(isModified, beforePost.isPined);
+  } = useAnonymousAndPined(isModified, postData?.isPined || false);
 
   const settingClick = () => {
     setPrevOption({
@@ -214,15 +222,16 @@ export const CategoryAndPrivacySetting = ({
                 py="4px"
                 onChange={selectOption}
                 _hover={{ borderColor: "blue.500" }}
+                value={selectedCategory.name}
               >
                 <option value="" hidden>
                   카테고리
                 </option>
                 {getCurrentMenu()?.subMenu.map((option) => (
                   <option
+                    key={option.name}
                     id={String(option.menuId)}
                     value={option.name}
-                    selected={selectedCategory.name === option.name}
                   >
                     {option.name}
                   </option>
@@ -248,6 +257,7 @@ export const CategoryAndPrivacySetting = ({
               >
                 {privacyOptions.map((option) => (
                   <Button
+                    key={option.value}
                     variant={active === option.kor ? "primary" : "outline"}
                     flexGrow="1"
                     borderRadius="0"
@@ -312,18 +322,17 @@ export const CategoryAndPrivacySetting = ({
 };
 
 export const DesktopCategoryAndPrivacySetting = ({
+  postData,
   isModified,
 }: CategoryAndPrivacySettingProps) => {
   const { getCurrentMenu } = useMenu();
 
-  const [beforePost, setBeforePost] = useRecoilState(beforePostState); // 게시글 수정 시 해당 게시글 정보
-
   const { selectedCategory, selectOption } = useSelectCategory(
     isModified,
-    beforePost.category
+    postData?.category || { categoryId: -1, name: "" }
   );
   const { subscript, active, onClickDisclosure } = useSelectDisclosure(
-    privacyOptions.find((value) => value.eng === beforePost.exposeType)?.kor ||
+    privacyOptions.find((value) => value.eng === postData?.exposeType)?.kor ||
       "전체",
     isModified
   );
@@ -336,7 +345,7 @@ export const DesktopCategoryAndPrivacySetting = ({
     setIsPined,
     onClickAnonymous,
     onClickPined,
-  } = useAnonymousAndPined(isModified, beforePost.isPined);
+  } = useAnonymousAndPined(isModified, postData?.isPined || false);
 
   const categoryOptions = getCurrentMenu()?.subMenu;
 
@@ -360,15 +369,16 @@ export const DesktopCategoryAndPrivacySetting = ({
           borderRadius="5"
           onChange={selectOption}
           _hover={{ borderColor: openColors.blue[5] }}
+          value={selectedCategory.name}
         >
           <option value="" hidden>
             카테고리
           </option>
-          {categoryOptions?.map((option) => (
+          {categoryOptions?.map((option, idx) => (
             <option
+              key={option.name + idx}
               id={String(option.menuId)}
               value={option.name}
-              selected={selectedCategory.name === option.name}
             >
               {option.name}
             </option>
@@ -393,6 +403,7 @@ export const DesktopCategoryAndPrivacySetting = ({
         >
           {privacyOptions.map((option) => (
             <Button
+              key={option.value}
               variant={active === option.kor ? "primary" : "outline"}
               flexGrow="1"
               borderRadius="0"

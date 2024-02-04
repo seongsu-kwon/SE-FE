@@ -26,6 +26,7 @@ import {
 } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useMenu } from "@/hooks/useMenu";
 import {
   useDeletePostMutation,
   useReportCommentMutation,
@@ -84,11 +85,14 @@ const PostModifyMenuItem = ({ postId }: { postId: number }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const modifyCancelRef = React.useRef<HTMLButtonElement>(null);
+  const { getCurrentMenu } = useMenu();
 
   const postModifyClick = () => {
     onClose();
 
-    navigate(`/notice/${postId}/modify`);
+    const menuName = getCurrentMenu()?.urlId;
+
+    navigate(`/${menuName}/${postId}/modify`);
   };
 
   return (
@@ -197,6 +201,10 @@ export const PostReportAlert = ({ postId }: { postId: number }) => {
           duration: 3000,
           isClosable: true,
         });
+      },
+      onError: (error) => {
+        onClose();
+        errorHandle(error);
       },
     });
   };
@@ -344,12 +352,20 @@ const CommentDeleteAlert = ({
 
           queryClient.invalidateQueries(["comments", postId]);
         },
+        onError: (error) => {
+          errorHandle(error);
+          onClose();
+        },
       });
     } else {
       deleteReplyMutate(commentId, {
         onSuccess: () => {
           onClose();
           queryClient.invalidateQueries(["comments", postId]);
+        },
+        onError: (error) => {
+          errorHandle(error);
+          onClose();
         },
       });
     }
@@ -405,7 +421,6 @@ const CommentReportAlert = ({ commentId }: { commentId: number }) => {
     if (!hasAuth) {
       onClose();
       alert("로그인 후 신고가능합니다.");
-      console.log("로그인 후 신고가능합니다.");
     }
 
     mutate(commentId, {

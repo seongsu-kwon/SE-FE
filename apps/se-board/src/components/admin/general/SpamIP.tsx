@@ -7,7 +7,6 @@ import {
   useGetBannedIpQuery,
   usePostBannedIpMutation,
 } from "@/react-query/hooks";
-import { errorHandle } from "@/utils/errorHandling";
 
 import { ItemInput, ListContainer } from "..";
 
@@ -32,10 +31,6 @@ export const SpamIP = () => {
       onSuccess: () => {
         refetch();
       },
-
-      onError: (error) => {
-        errorHandle(error);
-      },
     });
   };
 
@@ -44,10 +39,6 @@ export const SpamIP = () => {
       onSuccess: () => {
         setIp("");
         refetch();
-      },
-
-      onError: (error) => {
-        errorHandle(error);
       },
     });
   };

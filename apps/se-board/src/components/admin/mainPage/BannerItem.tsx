@@ -26,7 +26,6 @@ import {
   useDeleteFileQuery,
   usePostFileQuery,
 } from "@/react-query/hooks/useFileQuery";
-import { errorHandle } from "@/utils/errorHandling";
 
 interface BannerItemProps {
   bannerId: number;
@@ -127,9 +126,6 @@ export const BannerItem = ({
             bannerDeleteMutate(fileMetaData.fileMetaDataId);
           }
           refetch();
-        },
-        onError: (error) => {
-          errorHandle(error);
         },
       }
     );
@@ -311,9 +307,6 @@ export const BannerItem = ({
                       onClose();
                       refetch();
                     },
-                    onError: (error) => {
-                      errorHandle(error);
-                    },
                   });
                 }}
                 ml={3}
@@ -393,9 +386,6 @@ export const AddBannerItem = ({ setIsAdd, refetch }: AddBannerItemProps) => {
         setLink("");
         setIsAdd(false);
         refetch();
-      },
-      onError: (error) => {
-        errorHandle(error);
       },
     });
   };

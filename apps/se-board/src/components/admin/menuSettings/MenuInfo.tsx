@@ -22,6 +22,7 @@ import {
   usePutCategory,
 } from "@/react-query/hooks/useMenu";
 import { newSEMenuState } from "@/store/menu";
+import { errorHandle } from "@/utils/errorHandling";
 
 import { AuthorityMenu } from "./AuthorityMenu";
 
@@ -347,6 +348,9 @@ export const AddMenuInfo = ({
           });
           queryClient.invalidateQueries(["adminMenuList"]);
           setNewSEMenuState(menuName);
+        },
+        onError: (error) => {
+          errorHandle(error);
         },
       }
     );

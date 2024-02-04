@@ -27,7 +27,6 @@ import { BsRecord, BsTrash3, BsXLg } from "react-icons/bs";
 
 import { useDeleteCommentListMutation } from "@/react-query/hooks";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
-import { errorHandle } from "@/utils/errorHandling";
 
 import { MemberProfileButton } from "../MemberProfileButton";
 
@@ -173,9 +172,6 @@ export const AllCommentTable = ({
         setCheckBoxes(new Array(commentList.length).fill(false));
         refetch();
         queryClient.invalidateQueries(["deletedComments", 0, 25]);
-      },
-      onError: (error) => {
-        errorHandle(error);
       },
     });
   };
