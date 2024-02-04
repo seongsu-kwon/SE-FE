@@ -15,12 +15,15 @@ const errorCodeToAlertAndGoToBack = [104, 200, 201, 300];
 
 export const errorHandle = (error: unknown) => {
   const { goToBackPage } = useNavigatePage();
-  const { code } = error as ErrorCode;
+  const { code, message } = error as ErrorCode;
 
   if (errorCodeToAlert.includes(code)) {
-    return alert("오류가 발생했습니다.");
+    return alert(message);
   } else if (errorCodeToAlertAndGoToBack.includes(code)) {
-    alert("오류가 발생했습니다.");
+    alert(message);
     goToBackPage();
+  } else if (code === 139) {
+    alert("댓글 작성에 실패했습니다. 다시 시도해주세요.");
+    location.reload();
   }
 };
