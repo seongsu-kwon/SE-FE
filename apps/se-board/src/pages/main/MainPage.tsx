@@ -1,4 +1,4 @@
-import { Flex, SimpleGrid, Skeleton, Stack } from "@chakra-ui/react";
+import { Flex, GridItem, SimpleGrid, Skeleton, Stack } from "@chakra-ui/react";
 
 import { convertPostListItemDTOToPostListItem } from "@/api/post";
 import { useMainPageMenu } from "@/react-query/hooks/useMainPage";
@@ -11,40 +11,49 @@ export const MainPage = () => {
   const { data, isLoading } = useMainPageMenu();
   const { data: bannerResponse, isLoading: bannerLoading } = useFetchBanners();
   return (
-    <>
-      <Stack
-        alignItems="center"
-        maxW={{ base: "100%", md: "1180px" }}
-        w="full"
-        px="1rem"
-        py={{ base: "calc(56px + 1rem)", md: "1rem" }}
-      >
-        <Flex
+    <Stack
+      alignItems="center"
+      maxW={{ base: "100%", md: "1180px" }}
+      w="full"
+      px="1rem"
+      py={{ base: "calc(56px + 1rem)", md: "1rem" }}
+    >
+      {bannerLoading ? (
+        <Skeleton
           w={{ base: "full", md: "container.md" }}
           h={{ base: "8rem", sm: "9rem", md: "10rem", lg: "11rem" }}
-          mb={{ base: "1rem", md: "2rem" }}
-        >
-          {bannerLoading ? (
-            <Skeleton w="full" h="full" />
-          ) : (
-            <Carousel banners={bannerResponse?.data || []} />
-          )}
-        </Flex>
-        <Flex alignItems="center" w="full">
-          <SimpleGrid
-            w="full"
-            columns={{ base: 1, md: 2 }}
-            spacingX="2rem"
-            spacingY="4rem"
+        />
+      ) : (
+        bannerResponse?.length !== 0 && (
+          <Flex
+            w={{ base: "full", md: "container.md" }}
+            h={{ base: "8rem", sm: "9rem", md: "10rem", lg: "11rem" }}
           >
-            {isLoading && (
-              <>
-                <BoardPreviewSkeleton />
-                <BoardPreviewSkeleton />
-              </>
-            )}
+            <Carousel banners={bannerResponse || []} />
+          </Flex>
+        )
+      )}
+      <Flex alignItems="center" w="full" mt="4rem">
+        <SimpleGrid
+          w="full"
+          columns={{ base: 1, md: 2 }}
+          spacingX="2rem"
+          spacingY="4rem"
+        >
+          {isLoading && (
+            <>
+              <BoardPreviewSkeleton />
+              <BoardPreviewSkeleton />
+            </>
+          )}
 
-            {data?.data.map((menu, i) => (
+          {data?.map((menu, i) => (
+            <GridItem
+              colSpan={{
+                base: 1,
+                md: i === data.length - 1 && data.length % 2 === 1 ? 2 : 1,
+              }}
+            >
               <BoardPreview
                 key={i}
                 menuName={menu.menuName}
@@ -53,10 +62,10 @@ export const MainPage = () => {
                   .map((v) => convertPostListItemDTOToPostListItem(v))
                   .map((v) => ({ ...v, pined: false }))}
               />
-            ))}
-          </SimpleGrid>
-        </Flex>
-      </Stack>
-    </>
+            </GridItem>
+          ))}
+        </SimpleGrid>
+      </Flex>
+    </Stack>
   );
 };

@@ -3,4 +3,5 @@ export const queryKeys = {
   postList: "postList",
   pinedPostList: "pinedPostList",
   profile: "profile",
+  admin: "admin",
 };

@@ -89,3 +89,16 @@ export const convertModifyPostData = (post: PostDetail | null) => {
     attachmentIds: attachments.fileMetaDataList.map((v) => v.fileMetaDataId),
   };
 };
+
+export const getExposeOptionName = (exposeOption: string) => {
+  switch (exposeOption) {
+    case "PUBLIC":
+      return "전체";
+    case "PRIVACY":
+      return "비밀글";
+    case "KUMOH":
+      return "금오인";
+    default:
+      return "";
+  }
+};
