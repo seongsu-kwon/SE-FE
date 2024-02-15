@@ -308,44 +308,48 @@ const SidebarContent = ({ menuList, onClose }: SidebarProps) => {
 
       <Center w="full">
         <Accordion w="full" allowMultiple>
-          {LinkItems.map((item) => (
-            <AccordionItem key={item.key} textAlign="center" px="1rem">
-              <AccordionButton>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flex="1"
-                  textAlign="left"
-                >
-                  <Icon fontSize="1.25rem" as={item.icon} mr="8px" />
-                  <Text fontSize="1.25rem">{item.name}</Text>
-                </Box>
-                <AccordionIcon color="gray.6" fontSize="1.5rem" />
-              </AccordionButton>
-              {menuList &&
-                menuList[item.key].map((subItem) => (
-                  <Link
-                    key={subItem.id}
-                    as={RouterLink}
-                    to={`${subItem.url}`}
-                    w="full"
-                    fontSize="1rem"
-                    _hover={{ textDecoration: "none" }}
+          {LinkItems.map((item) =>
+            menuList && menuList[item.key].length ? (
+              <AccordionItem key={item.key} textAlign="center" px="1rem">
+                <AccordionButton>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    flex="1"
+                    textAlign="left"
                   >
-                    <AccordionPanel
-                      py="6px"
-                      pl="48px"
+                    <Icon fontSize="1.25rem" as={item.icon} mr="8px" />
+                    <Text fontSize="1.25rem">{item.name}</Text>
+                  </Box>
+                  <AccordionIcon color="gray.6" fontSize="1.5rem" />
+                </AccordionButton>
+                {menuList &&
+                  menuList[item.key].map((subItem) => (
+                    <Link
+                      key={subItem.id}
+                      as={RouterLink}
+                      to={`${subItem.url}`}
                       w="full"
-                      transition="0.2s"
-                      _hover={{ bgColor: "blue.1" }}
-                      textAlign="left"
+                      fontSize="1rem"
+                      _hover={{ textDecoration: "none" }}
                     >
-                      {subItem.name}
-                    </AccordionPanel>
-                  </Link>
-                ))}
-            </AccordionItem>
-          ))}
+                      <AccordionPanel
+                        py="6px"
+                        pl="48px"
+                        w="full"
+                        transition="0.2s"
+                        _hover={{ bgColor: "blue.1" }}
+                        textAlign="left"
+                      >
+                        {subItem.name}
+                      </AccordionPanel>
+                    </Link>
+                  ))}
+              </AccordionItem>
+            ) : (
+              <></>
+            )
+          )}
         </Accordion>
       </Center>
 
