@@ -17,6 +17,7 @@ import {
   SimpleGrid,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CategoryInfomation, MenuInfomation, MenuRoleInfo } from "@types";
@@ -92,8 +93,8 @@ export const CategoryManage = ({ menuId, subMenus }: CategoryManageProps) => {
             수정 / 삭제
           </Box>
         </SimpleGrid>
-        {subMenus.map((category) => (
-          <CategoryManageItem category={category} menuId={menuId} />
+        {subMenus.map((category, idx) => (
+          <CategoryManageItem key={idx} category={category} menuId={menuId} />
         ))}
       </Box>
       <Flex justifyContent="end" mt="0.75rem">
@@ -205,6 +206,8 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     useDeleteCategory();
 
+  const toast = useToast();
+
   const cancelRef = useRef<HTMLButtonElement>(null);
   const fromCategoryIdRef = useRef<number>(category.menuId);
   const toCategoryIdRef = useRef<number | undefined>(undefined);
@@ -213,10 +216,22 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
     if (!toCategoryIdRef.current)
       return alert("이동할 카테고리를 선택해주세요.");
 
-    moveMutate({
-      fromCategoryId: fromCategoryIdRef.current,
-      toCategoryId: toCategoryIdRef.current,
-    });
+    moveMutate(
+      {
+        fromCategoryId: fromCategoryIdRef.current,
+        toCategoryId: toCategoryIdRef.current,
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "카테고리 이동 완료",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        },
+      }
+    );
   }
 
   function onCategoryDeleteClick() {
@@ -226,6 +241,12 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
         setCurSEMenu(curSEMenu);
         queryClient.invalidateQueries(["adminMenuList"]);
         moveReset();
+        toast({
+          title: "카테고리 삭제 완료",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   }
@@ -324,6 +345,8 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = usePutCategory();
 
+  const toast = useToast();
+
   const [categoryInfo, setCategoryInfo] = useState<MenuInfomation>(category);
   const [roles, setRoles] = useState<MenuRoleInfo>({
     access: {
@@ -371,6 +394,12 @@ const ModifyAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
         onSuccess: () => {
           onClose();
           queryClient.invalidateQueries(["adminMenuList"]);
+          toast({
+            title: "카테고리 수정 완료",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
         },
       }
     );

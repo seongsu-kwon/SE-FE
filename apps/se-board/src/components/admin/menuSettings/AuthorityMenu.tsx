@@ -7,7 +7,7 @@ import {
   MenuList,
   MenuOptionGroup,
 } from "@chakra-ui/react";
-import { MenuRoleInfo } from "@types";
+import { MenuRoleInfo, Role } from "@types";
 import { useEffect, useState } from "react";
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
@@ -48,34 +48,12 @@ export const AuthorityMenu = ({
     defaultRoles || []
   );
 
-  useEffect(() => {
-    if (!defaultOption) return;
-
-    setSelectedOption(defaultOption);
-
-    setRoles((prev) => ({
-      ...prev,
-      [roleType]: {
-        option: defaultOption,
-        roles: defaultOption === "select" ? defaultRoles : [],
-      },
-    }));
-
-    if (!defaultRoles) return;
-
-    setSelectedRoles(defaultRoles);
-
-    setRoles((prev) => ({
-      ...prev,
-      [roleType]: {
-        option: defaultOption,
-        roles: defaultOption === "select" ? defaultRoles : [],
-      },
-    }));
-  }, [defaultOption, defaultRoles]);
+  const adminRollId: Role | undefined = data?.find(
+    (role) => role.name === "ROLE_ADMIN"
+  );
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || !defaultOption || !defaultRoles) return;
 
     if (defaultOption === "select") {
       setRoles((prev) => ({
@@ -89,40 +67,73 @@ export const AuthorityMenu = ({
               .map((role) => role.roleId) || [],
         },
       }));
-
+      setSelectedOption(defaultOption);
       setSelectedRoles(
         data
           .filter((role) => defaultRoles?.includes(role.name))
           .map((role) => role.alias)
       );
+    } else {
+      setRoles((prev) => ({
+        ...prev,
+        [roleType]: {
+          ...prev[roleType],
+          option: defaultOption,
+          roles: [],
+        },
+      }));
+      setSelectedOption(defaultOption);
+      setSelectedRoles([]);
     }
-  }, [data]);
+  }, [data, defaultOption, defaultRoles]);
 
   const onChange = (value: string | string[]) => {
     setSelectedOption(value);
 
-    setRoles((prev) => ({
-      ...prev,
-      [roleType]: {
-        option: value as string,
-        roles: value === "select" ? selectedRoles : [],
-      },
-    }));
+    if (value !== "select") {
+      setRoles((prev) => ({
+        ...prev,
+        [roleType]: {
+          option: value as string,
+          roles: [],
+        },
+      }));
+      setSelectedRoles([]);
+    } else if (value === "select" && defaultRoles && adminRollId) {
+      const temp =
+        data?.filter(
+          (role) =>
+            defaultRoles.includes(role.name) || role.name === adminRollId.name
+        ) || [];
 
-    if (value !== "select") setSelectedRoles([]);
+      setRoles((prev) => ({
+        ...prev,
+        [roleType]: {
+          option: value as string,
+          roles: temp?.map((role) => role.roleId) || [],
+        },
+      }));
+      setSelectedRoles(temp.map((role) => role.alias));
+    }
   };
 
   const onCheckBoxChange = (value: string | string[]) => {
-    setSelectedRoles(value as string[]);
+    const selectedRoleAliases = [...(value as string[])];
+
+    if (adminRollId && !selectedRoleAliases.includes("관리자"))
+      selectedRoleAliases.push(adminRollId.alias);
+
+    setSelectedRoles(selectedRoleAliases);
 
     setRoles((prev) => ({
       ...prev,
       [roleType]: {
         ...prev[roleType],
         option: "select",
-        roles: data
-          ?.filter((role) => value.includes(role.alias))
-          .map((role) => role.roleId),
+        roles:
+          data
+            ?.filter((role) => selectedRoleAliases.includes(role.alias))
+            .map((role) => role.roleId) || [],
       },
     }));
   };
@@ -130,7 +141,8 @@ export const AuthorityMenu = ({
   return (
     <Menu closeOnSelect={false}>
       <MenuButton as={Button} rightIcon={<BsChevronDown />}>
-        권한 선택
+        {defaultRoleList.find((v) => v.value === selectedOption)?.label ||
+          "권한 선택"}
       </MenuButton>
       <MenuList>
         <MenuOptionGroup
@@ -171,7 +183,9 @@ export const AuthorityMenu = ({
               borderTop="1px solid"
               borderColor="gray.2"
               _hover={{ bg: "blue.1" }}
-              isDisabled={selectedOption !== "select"}
+              isDisabled={
+                selectedOption !== "select" || role.name === "ROLE_ADMIN"
+              }
             >
               {role.alias}
             </MenuItemOption>
@@ -204,6 +218,10 @@ export const AdminAuthorityMenu = ({
 
   const [adminMenuRoleSettingData, setAdminMenuRoleSettingData] =
     useRecoilState(adminMenuRollSettingState);
+
+  const adminRoll: Role | undefined = data?.find(
+    (role) => role.name === "ROLE_ADMIN"
+  );
 
   useEffect(() => {
     if (!data) return;
@@ -243,32 +261,60 @@ export const AdminAuthorityMenu = ({
   function onChange(value: string | string[]) {
     setSelectedOption(value);
 
-    setAdminMenuRoleSettingData((prev) =>
-      prev.map((menu) => {
-        if (menu.id === menuID) {
-          return {
-            id: menuID,
-            option: {
-              option: value as string,
-              roles: menu.option.roles,
-            },
-          };
-        }
-
-        return menu;
-      })
-    );
-
     if (value !== "select") {
+      setAdminMenuRoleSettingData((prev) =>
+        prev.map((menu) => {
+          if (menu.id === menuID) {
+            return {
+              id: menuID,
+              option: {
+                option: value as string,
+                roles: [],
+              },
+            };
+          }
+
+          return menu;
+        })
+      );
       setSelectedRoles([]);
+    } else if (value === "select" && adminRoll) {
+      const temp =
+        data?.filter(
+          (role) =>
+            defaultRoles.includes(role.alias) || role.name === adminRoll.name
+        ) || [];
+
+      setAdminMenuRoleSettingData((prev) =>
+        prev.map((menu) => {
+          if (menu.id === menuID) {
+            return {
+              id: menuID,
+              option: {
+                option: value as string,
+                roles: temp.map((role) => role.roleId),
+              },
+            };
+          }
+
+          return menu;
+        })
+      );
+
+      setSelectedRoles(temp.map((role) => role.alias));
     }
   }
 
   function onCheckBoxChange(value: string | string[]) {
-    setSelectedRoles(value as string[]);
+    const selectedRoleTemp = [...(value as string[])];
 
-    setAdminMenuRoleSettingData((prev) => {
-      const temp = prev.map((menu) => {
+    if (adminRoll && !selectedRoleTemp.includes("관리자"))
+      selectedRoleTemp.push(adminRoll.alias);
+
+    setSelectedRoles(selectedRoleTemp);
+
+    setAdminMenuRoleSettingData((prev) =>
+      prev.map((menu) => {
         if (menu.id === menuID) {
           return {
             id: menuID,
@@ -276,23 +322,22 @@ export const AdminAuthorityMenu = ({
               option: "select",
               roles:
                 data
-                  ?.filter((role) => value.includes(role.alias))
+                  ?.filter((role) => selectedRoleTemp.includes(role.alias))
                   .map((role) => role.roleId) || [],
             },
           };
         }
 
         return menu;
-      });
-
-      return temp;
-    });
+      })
+    );
   }
 
   return (
     <Menu closeOnSelect={false}>
       <MenuButton as={Button} rightIcon={<BsChevronDown />}>
-        권한 선택
+        {defaultRoleList.find((v) => v.value === selectedOption)?.label ||
+          "권한 선택"}
       </MenuButton>
       <MenuList>
         <MenuOptionGroup
@@ -332,7 +377,9 @@ export const AdminAuthorityMenu = ({
               borderTop="1px solid"
               borderColor="gray.2"
               _hover={{ bg: "blue.1" }}
-              isDisabled={selectedOption !== "select"}
+              isDisabled={
+                selectedOption !== "select" || role.name === "ROLE_ADMIN"
+              }
             >
               {role.alias}
             </MenuItemOption>
