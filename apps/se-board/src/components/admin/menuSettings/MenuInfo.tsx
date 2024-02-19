@@ -5,15 +5,19 @@ import {
   Flex,
   Grid,
   Heading,
+  HStack,
+  Icon,
   Input,
   Radio,
   RadioGroup,
   Text,
+  Tooltip,
   useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MenuInfomation, MenuRoleInfo } from "@types";
 import React, { useCallback, useEffect, useState } from "react";
+import { BsExclamationCircleFill } from "react-icons/bs";
 import { useSetRecoilState } from "recoil";
 
 import { useGetRoleInfos } from "@/react-query/hooks";
@@ -66,6 +70,8 @@ export const MenuInfo = ({
   const { data: roleList } = useGetRoleInfos();
 
   const queryClient = useQueryClient();
+
+  const toast = useToast();
 
   const [roles, setRoles] = useState<MenuRoleInfo>({
     access: {
@@ -143,6 +149,12 @@ export const MenuInfo = ({
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["adminMenuList"]);
+          toast({
+            title: "메뉴 수정 완료",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
         },
       }
     );
@@ -222,7 +234,19 @@ export const MenuInfo = ({
       </Box>
       <Divider borderColor="gray.6" my="1rem" />
       <Box>
-        <Heading fontSize="xl">권한 설정</Heading>
+        <HStack spacing={1} align="baseline">
+          <Heading fontSize="xl">권한 설정</Heading>
+          <Tooltip
+            label="선택 사용자 설정 시 관리자 권한은 기본 설정됩니다."
+            placement="right"
+            whiteSpace="nowrap"
+            maxW="25rem"
+          >
+            <span>
+              <Icon as={BsExclamationCircleFill} color="blue.6" />
+            </span>
+          </Tooltip>
+        </HStack>
         {settingMenu().authority.map((authorityMenu, index) => (
           <Flex key={index} alignItems="center" mt="0.5rem">
             <Heading fontSize="md" w={{ md: "8.25rem" }}>

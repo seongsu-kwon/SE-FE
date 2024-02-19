@@ -97,6 +97,7 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
           <Heading
             size="lg"
             w="fit-content"
+            wordBreak="keep-all"
           >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
           <HStack mt="4px" spacing="12px">
             <AuthorInfoMenuList

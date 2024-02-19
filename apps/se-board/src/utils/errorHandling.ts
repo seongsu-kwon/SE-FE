@@ -1,7 +1,5 @@
 import { ErrorCode } from "@types";
 
-import { useNavigatePage } from "@/hooks";
-
 export const incorrectPostPassword = () => {
   return alert("비밀번호가 틀렸습니다.");
 };
@@ -13,17 +11,16 @@ const errorCodeToAlert = [
 ];
 const errorCodeToAlertAndGoToBack = [104, 200, 201, 300];
 
-export const errorHandle = (error: unknown) => {
-  const { goToBackPage } = useNavigatePage();
+export function errorHandle(error: ErrorCode | unknown) {
   const { code, message } = error as ErrorCode;
 
   if (errorCodeToAlert.includes(code)) {
     return alert(message);
   } else if (errorCodeToAlertAndGoToBack.includes(code)) {
     alert(message);
-    goToBackPage();
+    window.history.back();
   } else if (code === 139) {
     alert("댓글 작성에 실패했습니다. 다시 시도해주세요.");
     location.reload();
   }
-};
+}
