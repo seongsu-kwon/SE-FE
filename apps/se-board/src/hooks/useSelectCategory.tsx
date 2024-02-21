@@ -1,5 +1,5 @@
 import { PostDetatilCategory } from "@types";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { modifyPostState, writePostState } from "@/store";
@@ -8,18 +8,10 @@ export function useSelectCategory(
   isModified: boolean,
   beforeCategory: PostDetatilCategory
 ) {
-  const [selectedCategory, setSelectedCategory] = useState<PostDetatilCategory>(
-    {
-      categoryId: -1,
-      name: "",
-    }
-  );
+  const [selectedCategory, setSelectedCategory] =
+    useState<PostDetatilCategory>(beforeCategory);
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
-
-  useEffect(() => {
-    setSelectedCategory(beforeCategory);
-  }, [beforeCategory]);
 
   const selectOption = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
