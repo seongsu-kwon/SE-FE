@@ -49,13 +49,13 @@ export const MainPage = () => {
 
           {data?.map((menu, i) => (
             <GridItem
+              key={menu.urlId}
               colSpan={{
                 base: 1,
                 md: i === data.length - 1 && data.length % 2 === 1 ? 2 : 1,
               }}
             >
               <BoardPreview
-                key={i}
                 menuName={menu.menuName}
                 menuUrlId={menu.urlId}
                 posts={menu.posts.content
