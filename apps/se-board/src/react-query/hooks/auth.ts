@@ -81,7 +81,12 @@ export const useSignup = () => {
 };
 
 export const useFetchOAuthUserBasicInfo = (id: string) => {
-  return useQuery(["oauthasd"], () => fetchOAUthUserBasicInfo(id));
+  return useQuery(["oauthasd"], () => fetchOAUthUserBasicInfo(id), {
+    onError: () => {
+      window.alert("만료된 페이지 입니다.");
+      window.location.href = "/login";
+    },
+  });
 };
 
 export const useLogin = (maintainLogin: boolean = false) => {
