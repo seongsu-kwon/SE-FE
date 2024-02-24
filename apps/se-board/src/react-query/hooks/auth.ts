@@ -147,6 +147,8 @@ export const useLogout = () => {
   const refreshToken = getStoredRefreshToken();
   return useMutation(["logout"], () => logout(refreshToken!), {
     onSuccess: (res) => {
+      localStorage.removeItem("access_token");
+      sessionStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       sessionStorage.removeItem("refresh_token");
       if (res.data.requiredRedirect) {
