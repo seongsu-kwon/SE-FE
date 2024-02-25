@@ -81,7 +81,12 @@ export const useSignup = () => {
 };
 
 export const useFetchOAuthUserBasicInfo = (id: string) => {
-  return useQuery(["oauthasd"], () => fetchOAUthUserBasicInfo(id));
+  return useQuery(["oauthasd"], () => fetchOAUthUserBasicInfo(id), {
+    onError: () => {
+      window.alert("만료된 페이지 입니다.");
+      window.location.href = "/login";
+    },
+  });
 };
 
 export const useLogin = (maintainLogin: boolean = false) => {
@@ -142,6 +147,8 @@ export const useLogout = () => {
   const refreshToken = getStoredRefreshToken();
   return useMutation(["logout"], () => logout(refreshToken!), {
     onSuccess: (res) => {
+      localStorage.removeItem("access_token");
+      sessionStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       sessionStorage.removeItem("refresh_token");
       if (res.data.requiredRedirect) {

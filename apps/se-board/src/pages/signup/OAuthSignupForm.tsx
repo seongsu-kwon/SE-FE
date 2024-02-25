@@ -151,7 +151,7 @@ export const OAuthSignupForm = ({
             <InputGroup>
               <Input
                 isInvalid={getFieldState("email").invalid}
-                disabled={checkAuthCodeMutation.isSuccess}
+                disabled={true}
                 placeholder="이메일"
                 {...register("email", {
                   required: true,
