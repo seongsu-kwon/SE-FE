@@ -58,7 +58,13 @@ instance.interceptors.response.use(
       console.error(error);
     }
 
-    if (error.response.data.code === 107) {
+    if (error.response.data.code === 102) {
+      alert("로그인이 필요합니다");
+      window.location.href = "/login";
+    } else if (error.response.data.code === 103) {
+      alert("접근 권한이 없습니다.");
+      window.location.href = "/";
+    } else if (error.response.data.code === 107) {
       sessionStorage.removeItem("refresh_token");
       localStorage.removeItem("refresh_token");
       alert("로그인이 필요합니다");
