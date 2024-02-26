@@ -677,7 +677,19 @@ const EnrollAlert = ({ isOpen, onClose, menuId }: EnrollAlertProps) => {
 
           <AlertDialogFooter>
             <ButtonGroup>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button
+                ref={cancelRef}
+                onClick={() => {
+                  setCategoryInfo({
+                    name: "",
+                    urlId: "",
+                    menuId: 0,
+                    writeRole: [],
+                    manageRole: [],
+                  });
+                  onClose();
+                }}
+              >
                 취소
               </Button>
               <Button
