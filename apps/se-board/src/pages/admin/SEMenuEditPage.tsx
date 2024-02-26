@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  Icon,
+  HStack,
   Menu,
   MenuButton,
   MenuItem,
@@ -63,40 +63,41 @@ export const SEMenuEditPage = () => {
   return (
     <Box h="full" textAlign="left">
       <PageHeaderTitle title="SE 메뉴 관리" />
-      <Menu>
-        <MenuButton
-          as={Button}
-          rightIcon={<BsChevronDown />}
-          fontSize="lg"
-          bg="white"
-          _hover={{ bg: "gray.3" }}
-        >
-          {selectedMenu?.name || "메뉴 목록"}
-        </MenuButton>
-        <MenuList paddingBottom="0" shadow="2xl">
-          {menuList.map((menu) => (
-            <MenuItem
-              id={menu.menuId + menu.type}
-              key={menu.menuId}
-              _hover={{ bg: "gray.1" }}
-              onClick={() => onSelectMenu(menu)}
-            >
-              {menu.name}
-            </MenuItem>
-          ))}
-          <MenuItem
-            id="add-menu"
-            borderTop="1px solid"
-            borderColor="gray.3"
-            bgColor="white"
-            _hover={{ bg: "gray.1" }}
-            onClick={() => onSelectMenu(undefined)}
+      <HStack spacing="1rem">
+        <Menu>
+          <MenuButton
+            as={Button}
+            rightIcon={<BsChevronDown />}
+            fontSize="lg"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.4"
+            _hover={{ bg: "gray.3" }}
           >
-            <Icon as={BsPlusCircle} mr="4px" />
-            메뉴 추가
-          </MenuItem>
-        </MenuList>
-      </Menu>
+            {selectedMenu?.name || "메뉴 목록"}
+          </MenuButton>
+          <MenuList paddingBottom="0" shadow="2xl">
+            {menuList.map((menu) => (
+              <MenuItem
+                id={menu.menuId + menu.type}
+                key={menu.menuId}
+                _hover={{ bg: "gray.1" }}
+                onClick={() => onSelectMenu(menu)}
+              >
+                {menu.name}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+        <Button
+          leftIcon={<BsPlusCircle />}
+          variant="primary-outline"
+          bgColor={"white"}
+          onClick={() => onSelectMenu(undefined)}
+        >
+          메뉴 추가
+        </Button>
+      </HStack>
       {selectedMenu !== undefined ? (
         <MenuEdit menuInfo={selectedMenu} />
       ) : (
