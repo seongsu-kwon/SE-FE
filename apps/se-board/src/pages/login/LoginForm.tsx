@@ -17,7 +17,7 @@ import { useLogin } from "@/react-query/hooks/auth";
 export const LoginForm = () => {
   const [maintainLogin, setMaintainLogin] = useBoolean();
 
-  const { mutate: login, isLoading, error } = useLogin();
+  const { mutate: login, isLoading, error } = useLogin(maintainLogin);
 
   const {
     register,
