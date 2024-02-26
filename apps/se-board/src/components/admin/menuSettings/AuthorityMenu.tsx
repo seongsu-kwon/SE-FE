@@ -53,7 +53,7 @@ export const AuthorityMenu = ({
   );
 
   useEffect(() => {
-    if (!data || !defaultOption || !defaultRoles) return;
+    if (!data || !defaultOption) return;
 
     if (defaultOption === "select") {
       setRoles((prev) => ({
