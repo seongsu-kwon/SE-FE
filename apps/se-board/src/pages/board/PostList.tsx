@@ -8,7 +8,7 @@ import { usePostSearchParams } from "@/hooks/usePostSearchParams";
 export const PostList = ({
   data,
   totalItems = 0,
-  perPage = 25,
+  perPage = 20,
   page,
 }: {
   data?: PostListItemType[];
@@ -33,7 +33,7 @@ export const PostList = ({
       <Flex w="full" justify="center" py="2rem">
         <Pagination
           currentPage={page || 0}
-          totalPage={Math.ceil(totalItems / perPage) || 1}
+          totalPage={Math.ceil(totalItems / perPage) || 20}
           onChangePage={onChange}
           viewPage={5}
         />

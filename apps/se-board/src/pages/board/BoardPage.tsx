@@ -31,7 +31,7 @@ export const BoardPage = () => {
   const { postList, totalItems, isLoading } = useFetchPostList({
     categoryId: getCurrentMenuId()!,
     page,
-    perPage: 1,
+    perPage: 20,
     searchOption,
     query,
   });
@@ -101,7 +101,7 @@ export const BoardPage = () => {
             <PostTable
               data={postList}
               totalItems={totalItems}
-              perPage={1}
+              perPage={20}
               page={page}
             />
           )}
