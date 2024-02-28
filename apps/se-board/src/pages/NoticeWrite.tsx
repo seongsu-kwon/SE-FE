@@ -11,7 +11,6 @@ import {
   MobileFileUploader,
   WritingEditor,
 } from "@/components/writing";
-import { useNavigatePage } from "@/hooks";
 import { useMenu } from "@/hooks/useMenu";
 import { queryClient } from "@/react-query";
 import {
@@ -21,6 +20,7 @@ import {
 } from "@/react-query/hooks";
 import { modifyPostState, writePostState } from "@/store";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
+import { useUserState } from "@/store/user";
 import { errorHandle } from "@/utils/errorHandling";
 import { convertModifyPostData, isWritePostActive } from "@/utils/postUtils";
 
@@ -47,10 +47,15 @@ export const NoticeWrite = () => {
   const { mutate: writePostMutate, isLoading: writePostIsLoading } =
     usePostPostMutation();
 
-  const { goToBackPage } = useNavigatePage();
+  const { hasAuth } = useUserState();
 
   useEffect(() => {
     mobileHeaderClose();
+
+    if (!hasAuth) {
+      alert("로그인 후 작성해주세요.");
+      navigate("/login");
+    }
 
     if (pathName.includes("modify")) {
       isModified.current = true;
