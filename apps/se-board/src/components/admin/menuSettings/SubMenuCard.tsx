@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { MenuInfomation, PutSubMenu } from "@types";
+import { MenuInfomation, MenuType, PutSubMenu } from "@types";
 import { useSetRecoilState } from "recoil";
 
 import { useGetRoleInfos } from "@/react-query/hooks";
@@ -22,6 +22,19 @@ interface SubMenuCardProps {
   menu: MenuInfomation;
   superMenuName: string;
 }
+
+type MenuTypeList = {
+  [key in MenuType | "ADD" | "NULL"]: string;
+};
+
+const menuTypeList: MenuTypeList = {
+  MENU: "그룹 메뉴",
+  BOARD: "게시판 메뉴",
+  EXTERNAL: "외부 링크",
+  CATEGORY: "카테고리",
+  ADD: "추가",
+  NULL: "기타",
+};
 
 export const SubMenuCard = ({ menu, superMenuName }: SubMenuCardProps) => {
   const { data: roles } = useGetRoleInfos();
@@ -108,7 +121,7 @@ export const SubMenuCard = ({ menu, superMenuName }: SubMenuCardProps) => {
             {menu.name}
           </Heading>
           <Text>Menu ID: {menu.menuId}</Text>
-          <Text>Menu TYPE: {menu.type}</Text>
+          <Text>Menu TYPE: {menuTypeList[menu.type]}</Text>
         </Stack>
       </CardBody>
       <Divider borderColor="gray.5" />
