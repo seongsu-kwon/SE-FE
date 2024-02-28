@@ -69,6 +69,8 @@ export const MenuInfo = ({
   const { mutate, isLoading } = usePutCategory();
   const { data: roleList } = useGetRoleInfos();
 
+  const setSEMenu = useSetRecoilState(newSEMenuState);
+
   const queryClient = useQueryClient();
 
   const toast = useToast();
@@ -155,6 +157,7 @@ export const MenuInfo = ({
             duration: 5000,
             isClosable: true,
           });
+          setSEMenu(menuName);
         },
       }
     );

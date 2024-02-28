@@ -194,7 +194,9 @@ interface AlertProps {
 const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const queryClient = useQueryClient();
 
-  const categoryList = useRecoilValue(categoryListState(menuId));
+  const categoryList = useRecoilValue(categoryListState(menuId)).filter(
+    (v) => v.menuId !== category.menuId
+  );
   const [curSEMenu, setCurSEMenu] = useRecoilState(newSEMenuState);
 
   const {
@@ -209,16 +211,19 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   const toast = useToast();
 
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const fromCategoryIdRef = useRef<number>(category.menuId);
   const toCategoryIdRef = useRef<number | undefined>(undefined);
 
   function onCategoryMoveClick() {
     if (!toCategoryIdRef.current)
       return alert("이동할 카테고리를 선택해주세요.");
 
+    if (!categoryList.find((v) => v.menuId === toCategoryIdRef.current)) {
+      return alert("이동할 카테고리를 다시 선택해주세요.");
+    }
+
     moveMutate(
       {
-        fromCategoryId: fromCategoryIdRef.current,
+        fromCategoryId: category.menuId,
         toCategoryId: toCategoryIdRef.current,
       },
       {
@@ -235,7 +240,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
   }
 
   function onCategoryDeleteClick() {
-    deleteMutate(fromCategoryIdRef.current, {
+    deleteMutate(category.menuId, {
       onSuccess: () => {
         onClose();
         setCurSEMenu(curSEMenu);
@@ -266,7 +271,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
           <AlertDialogBody>
             <Text>게시글 이동 후 카테고리 삭제 가능합니다.</Text>
             <Text
-              display={categoryList.length === 1 ? "block" : "none"}
+              display={categoryList.length === 0 ? "block" : "none"}
               mt="-0.125rem"
               color="red.5"
               fontSize="14px"
@@ -290,7 +295,7 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
                   mr="4px"
                   border="1px"
                   borderColor="gray.4"
-                  disabled={categoryList.length === 1}
+                  disabled={categoryList.length === 0}
                   onChange={(e) =>
                     (toCategoryIdRef.current = Number(e.target.value))
                   }
@@ -298,20 +303,18 @@ const DeleteAlert = ({ isOpen, onClose, menuId, category }: AlertProps) => {
                   <option value="" hidden>
                     카테고리
                   </option>
-                  {categoryList
-                    .filter((v) => v.menuId !== fromCategoryIdRef.current)
-                    .map((category) => (
-                      <option key={category.menuId} value={category.menuId}>
-                        {category.name}
-                      </option>
-                    ))}
+                  {categoryList.map((category) => (
+                    <option key={category.menuId} value={category.menuId}>
+                      {category.name}
+                    </option>
+                  ))}
                 </Select>
                 <Button
                   variant="primary"
                   onClick={onCategoryMoveClick}
                   isLoading={moveIsLoading}
                   loadingText="이동 중"
-                  isDisabled={categoryList.length === 1 || moveIsSuccess}
+                  isDisabled={categoryList.length === 0 || moveIsSuccess}
                 >
                   이동
                 </Button>
