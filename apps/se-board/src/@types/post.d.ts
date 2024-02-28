@@ -125,6 +125,7 @@ declare module "@types" {
     exposeOption: exposeOptionDTO;
     attachmentIds: number[];
     anonymous: boolean;
+    isSyncOldVersion: boolean;
   }
 
   interface PostCreateRes {

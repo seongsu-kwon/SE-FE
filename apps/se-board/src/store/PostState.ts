@@ -13,6 +13,7 @@ export const writePostState = atom({
     },
     attachmentIds: Array<number>(),
     anonymous: false,
+    isSyncOldVersion: false,
   },
 });
 
