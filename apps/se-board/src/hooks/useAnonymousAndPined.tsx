@@ -12,6 +12,7 @@ export const useAnonymousAndPined = (
 
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isPined, setIsPined] = useState(false);
+  const [isOldVersion, setIsOldVersion] = useState(false);
 
   useEffect(() => {
     setIsPined(beforePined);
@@ -44,6 +45,17 @@ export const useAnonymousAndPined = (
     }
   }, [writePost, modifyPost]);
 
+  const onClickOldVersion = () => {
+    setIsOldVersion(!isOldVersion);
+
+    if (!isModified) {
+      setWritePost({
+        ...writePost,
+        isSyncOldVersion: !isOldVersion,
+      });
+    }
+  };
+
   return {
     isAnonymous,
     setIsAnonymous,
@@ -51,5 +63,7 @@ export const useAnonymousAndPined = (
     setIsPined,
     onClickAnonymous,
     onClickPined,
+    isOldVersion,
+    onClickOldVersion,
   };
 };

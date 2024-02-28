@@ -23,6 +23,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { PostDetail } from "@types";
 import React, { useState } from "react";
@@ -135,6 +136,8 @@ export const CategoryAndPrivacySetting = ({
     setIsPined,
     onClickAnonymous,
     onClickPined,
+    isOldVersion,
+    onClickOldVersion,
   } = useAnonymousAndPined(isModified, postData?.isPined || false);
 
   const settingClick = () => {
@@ -280,21 +283,18 @@ export const CategoryAndPrivacySetting = ({
                 ""
               )}
             </Box>
-            <HStack display="flex">
-              {isModified ? (
-                ""
-              ) : (
-                <Checkbox
-                  size="md"
-                  borderRadius="3px"
-                  borderColor="gray.5"
-                  color={openColors.gray[7]}
-                  isChecked={isAnonymous}
-                  onChange={onClickAnonymous}
-                >
-                  익명글 작성
-                </Checkbox>
-              )}
+            <HStack display="flex" wordBreak="keep-all">
+              <Checkbox
+                display={isModified ? "none" : "inline-flex"}
+                size="md"
+                borderRadius="3px"
+                borderColor="gray.5"
+                color={openColors.gray[7]}
+                isChecked={isAnonymous}
+                onChange={onClickAnonymous}
+              >
+                익명글 작성
+              </Checkbox>
               <Checkbox
                 size="md"
                 borderRadius="3px"
@@ -304,6 +304,17 @@ export const CategoryAndPrivacySetting = ({
                 onChange={onClickPined}
               >
                 게시글 목록 상단 고정
+              </Checkbox>
+              <Checkbox
+                display={isModified ? "none" : "inline-flex"}
+                size="md"
+                borderRadius="3px"
+                borderColor="gray.5"
+                color={openColors.gray[7]}
+                isChecked={isOldVersion}
+                onChange={onClickOldVersion}
+              >
+                기존 SE 등록
               </Checkbox>
             </HStack>
           </ModalBody>
@@ -345,6 +356,8 @@ export const DesktopCategoryAndPrivacySetting = ({
     setIsPined,
     onClickAnonymous,
     onClickPined,
+    isOldVersion,
+    onClickOldVersion,
   } = useAnonymousAndPined(isModified, postData?.isPined || false);
 
   const categoryOptions = getCurrentMenu()?.subMenu;
@@ -430,9 +443,14 @@ export const DesktopCategoryAndPrivacySetting = ({
         <Heading as="h4" size="md" pb="8px">
           추가 설정
         </Heading>
-        <Box py={isModified ? "8px" : "0"}>
+        <VStack
+          py={isModified ? "8px" : "0"}
+          align="start"
+          spacing="1px"
+          wordBreak="keep-all"
+        >
           <Checkbox
-            display={isModified ? "none" : "block"}
+            display={isModified ? "none" : "inline-flex"}
             size="md"
             borderRadius="3px"
             borderColor="gray.5"
@@ -452,7 +470,18 @@ export const DesktopCategoryAndPrivacySetting = ({
           >
             리스트 상단 고정
           </Checkbox>
-        </Box>
+          <Checkbox
+            display={isModified ? "none" : "inline-flex"}
+            size="md"
+            borderRadius="3px"
+            borderColor="gray.5"
+            color={openColors.gray[7]}
+            isChecked={isOldVersion}
+            onChange={onClickOldVersion}
+          >
+            기존 SE 등록
+          </Checkbox>
+        </VStack>
       </Box>
     </Flex>
   );
