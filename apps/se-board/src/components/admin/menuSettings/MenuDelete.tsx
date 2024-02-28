@@ -194,6 +194,7 @@ const DeleteAlert = ({
         setNewSEMenu("");
         queryClient.invalidateQueries(["adminMenuList"]);
         moveReset();
+        onClose();
       },
     });
   }
