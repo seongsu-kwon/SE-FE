@@ -9,9 +9,6 @@ import {
   Content,
   DesktopHeader,
   Header,
-  SkeletonDetailPostContent,
-  SkeletonDetailPostDesktopHeader,
-  SkeletonDetailPostHeader,
 } from "@/components/detailPost";
 import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
@@ -20,13 +17,14 @@ import { convertPostInfo } from "@/utils/postUtils";
 
 import { PageNotFound } from "./PageNotFound";
 import { PWInput } from "./SecretPostPWInput";
+import { SkeletonPostPage } from "./SkeletonPostPage";
 
 export const PostPage = () => {
   const { postId } = useParams();
 
   const enabledRef = useRef<boolean>(true);
 
-  const { data, isLoading, isError, error } = useGetPostQuery(
+  const { data, isFetching, isError, error } = useGetPostQuery(
     postId,
     enabledRef.current
   );
@@ -94,32 +92,24 @@ export const PostPage = () => {
     <Box maxW="984px" w="100%">
       <Show above="md">
         <Box pt="0rem">
-          {isLoading || secretIsLoading ? (
-            <SkeletonDetailPostDesktopHeader />
-          ) : (
-            <DesktopHeader HeadingInfo={postHeaderInfo} />
-          )}
+          <DesktopHeader HeadingInfo={postHeaderInfo} />
         </Box>
       </Show>
       <Hide above="md">
-        {isLoading || secretIsLoading ? (
-          <SkeletonDetailPostHeader />
-        ) : (
-          <Header HeadingInfo={postHeaderInfo} />
-        )}
+        <Header HeadingInfo={postHeaderInfo} />
       </Hide>
       <AttachmentFile files={attachemntFileData || []} />
-      {isLoading || secretIsLoading ? (
-        <SkeletonDetailPostContent />
-      ) : (
-        <Content contents={content || "<p></p>"} />
-      )}
+
+      <Content contents={content || "<p></p>"} />
+
       <CommentSection
         postId={postId}
         isPostRequestError={!!postHeaderInfo}
         password={password || undefined}
       />
     </Box>
+  ) : isFetching || secretIsLoading ? (
+    <SkeletonPostPage />
   ) : (
     <PageNotFound />
   );
