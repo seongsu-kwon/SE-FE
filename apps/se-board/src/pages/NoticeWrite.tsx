@@ -61,7 +61,7 @@ export const NoticeWrite = () => {
       isModified.current = true;
     }
 
-    return mobileHeaderOpen();
+    return () => mobileHeaderOpen();
   }, []);
 
   useEffect(() => {

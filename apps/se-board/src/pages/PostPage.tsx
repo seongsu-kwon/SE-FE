@@ -46,7 +46,7 @@ export const PostPage = () => {
   useEffect(() => {
     mobileHeaderClose();
 
-    return mobileHeaderOpen();
+    return () => mobileHeaderOpen();
   }, []);
 
   useEffect(() => {
