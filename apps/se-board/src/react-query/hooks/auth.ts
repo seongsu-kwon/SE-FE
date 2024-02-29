@@ -9,7 +9,7 @@ import {
 } from "@types";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
 
 import {
   changePassword,
@@ -143,6 +143,7 @@ export const useKakaoLogin = async (id: string) => {
 };
 
 export const useLogout = () => {
+  const resetUserState = useResetRecoilState(userState);
   const { goToLoginPage } = useNavigatePage();
   const refreshToken = getStoredRefreshToken();
   return useMutation(["logout"], () => logout(refreshToken!), {
@@ -154,6 +155,7 @@ export const useLogout = () => {
       if (res.data.requiredRedirect) {
         window.location.href = res.data.url;
       }
+      resetUserState();
       goToLoginPage();
     },
   });
