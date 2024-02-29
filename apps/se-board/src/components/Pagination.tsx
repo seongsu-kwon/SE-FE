@@ -108,7 +108,7 @@ export const Pagination = ({
       <Button
         onClick={toFirstPageGroup}
         isDisabled={pageGroup.currentGroup === 0}
-        _disabled={{ cursor: "not-allowed" }}
+        _disabled={{ cursor: "not-allowed", opacity: 0.3 }}
         variant="outline"
         rounded="none"
         size={{ base: "xs", sm: "sm", lg: "md" }}
@@ -118,7 +118,7 @@ export const Pagination = ({
       <Button
         onClick={toPrevPageGroup}
         isDisabled={pageGroup.currentGroup === 0}
-        _disabled={{ cursor: "not-allowed" }}
+        _disabled={{ cursor: "not-allowed", opacity: 0.3 }}
         variant="outline"
         rounded="none"
         size={{ base: "xs", sm: "sm", lg: "md" }}
@@ -142,7 +142,7 @@ export const Pagination = ({
       <Button
         onClick={toNextPageGroup}
         isDisabled={pageGroup.currentGroup === pageGroup.lastGroup}
-        _disabled={{ cursor: "not-allowed" }}
+        _disabled={{ cursor: "not-allowed", opacity: 0.3 }}
         variant="outline"
         rounded="none"
         size={{ base: "xs", sm: "sm", lg: "md" }}
@@ -152,7 +152,7 @@ export const Pagination = ({
       <Button
         onClick={toLastPageGroup}
         isDisabled={pageGroup.currentGroup === pageGroup.lastGroup}
-        _disabled={{ cursor: "not-allowed" }}
+        _disabled={{ cursor: "not-allowed", opacity: 0.3 }}
         variant="outline"
         rounded="none"
         size={{ base: "xs", sm: "sm", lg: "md" }}

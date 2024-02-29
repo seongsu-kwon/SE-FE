@@ -14,6 +14,9 @@ import { _axios, getJWTHeader } from "./axiosInstance";
 
 export const fetchMenuList = () => {
   return _axios<Menu[]>({
+    headers: {
+      ...getJWTHeader(),
+    },
     url: "/menu",
     method: HTTP_METHODS.GET,
   });
