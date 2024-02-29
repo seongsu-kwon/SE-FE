@@ -8,7 +8,7 @@ export const mobileHeaderState = atom({
 export const useMobileHeaderState = () => {
   const [value, setValue] = useRecoilState(mobileHeaderState);
   return {
-    mobileHeaderOpen: () => setValue(false),
-    mobileHeaderClose: () => setValue(true),
+    mobileHeaderOpen: () => setValue(true),
+    mobileHeaderClose: () => setValue(false),
   };
 };
