@@ -27,7 +27,7 @@ export const BookmarkPage = () => {
     useFetchBookmarkList({
       loginId: userInfo.email,
       page,
-      perPage: 40,
+      perPage: 20,
     });
 
   return (
@@ -73,7 +73,7 @@ export const BookmarkPage = () => {
             <PostTable
               data={postList}
               totalItems={totalItems}
-              perPage={40}
+              perPage={20}
               page={page}
             />
           )}
@@ -105,7 +105,7 @@ export const BookmarkPage = () => {
           <PostList
             data={postList}
             totalItems={totalItems}
-            perPage={40}
+            perPage={20}
             page={page}
           />
         )}
