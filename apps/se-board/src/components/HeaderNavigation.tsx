@@ -313,7 +313,12 @@ const DesktopNavItem = ({ type, name, externalUrl, urlId }: Menu) => {
         <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
           <ExternalLink
             href={externalUrl}
-            target="_blank"
+            target={
+              process.env.REACT_APP_ENDPOINT &&
+              externalUrl.startsWith(process.env.REACT_APP_ENDPOINT)
+                ? "_self"
+                : "_blank"
+            }
             display="flex"
             alignItems="center"
             columnGap="0.25rem"
@@ -396,7 +401,12 @@ const DrawerNavItem = ({
         <ExternalLink
           isExternal
           href={externalUrl}
-          target="_blank"
+          target={
+            process.env.REACT_APP_ENDPOINT &&
+            externalUrl.startsWith(process.env.REACT_APP_ENDPOINT)
+              ? "_self"
+              : "_blank"
+          }
           w="full"
           _hover={{ textDecoration: "none" }}
         >
