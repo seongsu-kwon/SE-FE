@@ -118,7 +118,14 @@ export const NoticeWrite = () => {
   };
 
   if (isError) {
-    errorHandle(error);
+    const { code, message } = error as { code: number; message: string };
+
+    if (code === 113) {
+      alert(message);
+      window.history.back();
+    } else {
+      errorHandle(error);
+    }
   }
 
   return (

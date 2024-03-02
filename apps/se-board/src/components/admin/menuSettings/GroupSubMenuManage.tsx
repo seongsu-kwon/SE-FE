@@ -207,8 +207,8 @@ export const GroupSubMenuManage = ({ menuInfo }: GroupSubMenuManageProps) => {
         rowGap="2rem"
         columnGap="3rem"
       >
-        {menuInfo?.subMenus.map((menu) => (
-          <SubMenuCard menu={menu} superMenuName={menuInfo.name} />
+        {menuInfo?.subMenus.map((menu, idx) => (
+          <SubMenuCard key={idx} menu={menu} superMenuName={menuInfo.name} />
         ))}
       </SimpleGrid>
       <Flex justifyContent="end" mt="0.75rem">
