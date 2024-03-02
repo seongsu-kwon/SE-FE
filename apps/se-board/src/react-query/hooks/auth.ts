@@ -127,6 +127,7 @@ export const useLogin = (maintainLogin: boolean = false) => {
 
 export const useKakaoLogin = async (id: string) => {
   const setUserState = useSetRecoilState(userState);
+  const queryClient = useQueryClient();
 
   const { goToMainPage } = useNavigatePage();
   return loginWithKakao(id).then((res) => {
@@ -141,13 +142,15 @@ export const useKakaoLogin = async (id: string) => {
         roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
       }));
     });
-
+    queryClient.invalidateQueries([queryKeys.menuList]);
     goToMainPage();
   });
 };
 
 export const useLogout = () => {
   const resetUserState = useResetRecoilState(userState);
+  const queryClient = useQueryClient();
+
   const { goToLoginPage } = useNavigatePage();
   const refreshToken = getStoredRefreshToken();
   return useMutation(["logout"], () => logout(refreshToken!), {
@@ -159,6 +162,7 @@ export const useLogout = () => {
       if (res.data.requiredRedirect) {
         window.location.href = res.data.url;
       }
+      queryClient.invalidateQueries([queryKeys.menuList]);
       resetUserState();
       goToLoginPage();
     },
