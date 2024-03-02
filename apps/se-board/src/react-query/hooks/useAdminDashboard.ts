@@ -12,6 +12,14 @@ export const useGetAdminMenus = () => {
   return useQuery(["adminDashboard"], getAdminMenus, {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    onSuccess: (res) => {
+      // 조회가능한 메뉴가 1개라도 있는지 확인
+      const hasPermission = Object.values(res).some((v) => 0 < v.length);
+      if (!hasPermission) {
+        window.alert("접근 권한이 없습니다.");
+        window.location.href = "/";
+      }
+    },
     onError: (err) => {
       errorHandle(err);
     },

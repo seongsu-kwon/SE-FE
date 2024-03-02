@@ -24,7 +24,7 @@ export const ProfilePostListPage = () => {
     useFetchProfilePostList({
       loginId: userId!,
       page,
-      perPage: 40,
+      perPage: 20,
     });
 
   return (
@@ -70,7 +70,7 @@ export const ProfilePostListPage = () => {
             <PostTable
               data={postList}
               totalItems={totalItems}
-              perPage={40}
+              perPage={20}
               page={page}
             />
           )}
@@ -102,7 +102,7 @@ export const ProfilePostListPage = () => {
           <PostList
             data={postList}
             totalItems={totalItems}
-            perPage={40}
+            perPage={20}
             page={page}
           />
         )}
