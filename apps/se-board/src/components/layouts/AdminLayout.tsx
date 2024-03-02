@@ -30,6 +30,7 @@ import {
 } from "@chakra-ui/react";
 import { AdminMenuDashBoard } from "@types";
 import { useEffect, useState } from "react";
+import React from "react";
 import { IconType } from "react-icons";
 import {
   BsCollection,
@@ -308,7 +309,7 @@ const SidebarContent = ({ menuList, onClose }: SidebarProps) => {
 
       <Center w="full">
         <Accordion w="full" allowMultiple>
-          {LinkItems.map((item) =>
+          {LinkItems.map((item, idx) =>
             menuList && menuList[item.key].length ? (
               <AccordionItem key={item.key} textAlign="center" px="1rem">
                 <AccordionButton>
@@ -347,7 +348,7 @@ const SidebarContent = ({ menuList, onClose }: SidebarProps) => {
                   ))}
               </AccordionItem>
             ) : (
-              <></>
+              <React.Fragment key={idx}></React.Fragment>
             )
           )}
         </Accordion>

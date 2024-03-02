@@ -76,7 +76,7 @@ export const SEMenuEditPage = () => {
           >
             {selectedMenu?.name || "메뉴 목록"}
           </MenuButton>
-          <MenuList paddingBottom="0" shadow="2xl">
+          <MenuList paddingBottom="0px" shadow="2xl">
             {menuList.map((menu) => (
               <MenuItem
                 id={menu.menuId + menu.type}

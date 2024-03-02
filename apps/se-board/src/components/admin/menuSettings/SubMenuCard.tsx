@@ -67,10 +67,12 @@ export const SubMenuCard = ({ menu, superMenuName }: SubMenuCardProps) => {
       description: "",
       urlId: menu.urlId,
       externalUrl: menu.urlId,
-      access: {
-        option: menu.access.option,
-        roles: accessRole,
-      },
+      access: menu.access
+        ? {
+            option: menu.access.option,
+            roles: accessRole,
+          }
+        : null,
       expose: {
         option: menu.expose.option,
         roles: exposeRole,
