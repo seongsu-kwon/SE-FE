@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChangePasswordRequestDTO,
   checkAuthCodeDTO,
@@ -36,6 +36,8 @@ import {
 } from "@/api/storage";
 import { useNavigatePage } from "@/hooks";
 import { roleNames, userState } from "@/store/user";
+
+import { queryKeys } from "../queryKeys";
 
 export const useRequestEmailAuthCode = () => {
   return useMutation((email: string) => requestEmailAuthCode(email));
@@ -90,6 +92,7 @@ export const useFetchOAuthUserBasicInfo = (id: string) => {
 };
 
 export const useLogin = (maintainLogin: boolean = false) => {
+  const queryClient = useQueryClient();
   const setUserState = useSetRecoilState(userState);
   const { goToMainPage } = useNavigatePage();
   return useMutation<
@@ -117,6 +120,7 @@ export const useLogin = (maintainLogin: boolean = false) => {
       });
 
       goToMainPage();
+      queryClient.invalidateQueries([queryKeys.menuList]);
     },
   });
 };
