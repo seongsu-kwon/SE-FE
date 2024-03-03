@@ -27,8 +27,9 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
-            {files.map((file) => (
+            {files.map((file, idx) => (
               <Tooltip
+                key={file.fileMetaDataId + idx}
                 label="다운로드"
                 aria-label="다운로드"
                 placement="right-end"
@@ -42,6 +43,7 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
                   <a
                     href={`${process.env.REACT_APP_FILE_ENDPOINT}${file.url}`}
                     target="_self"
+                    download={`${file.originalFileName}`}
                   >
                     {file.originalFileName}
                   </a>
