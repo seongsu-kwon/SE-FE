@@ -43,6 +43,7 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
                   <a
                     href={`${process.env.REACT_APP_FILE_ENDPOINT}${file.url}`}
                     target="_self"
+                    download={`${file.originalFileName}`}
                   >
                     {file.originalFileName}
                   </a>
