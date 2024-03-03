@@ -1,5 +1,5 @@
 import { Attachment } from "@types";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import {
@@ -12,7 +12,7 @@ export const useFileInput = (
   isModified: boolean,
   beforeFiles: Attachment[]
 ) => {
-  const [files, setFiles] = useState<Attachment[]>([]);
+  const [files, setFiles] = useState<Attachment[]>(beforeFiles);
 
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
@@ -20,17 +20,12 @@ export const useFileInput = (
   const { mutate: postFileMutate } = usePostFileQuery();
   const { mutate: deleteFileMutate } = useDeleteFileQuery();
 
-  useEffect(() => {
-    setFiles(beforeFiles);
-  }, [beforeFiles]);
-
   const setPostState = (data: Attachment[]) => {
     if (!isModified) {
       setWritePost({
         ...writePost,
         attachmentIds: [
           ...writePost.attachmentIds,
-          ...files.map((file) => file.fileMetaDataId),
           ...data.map((file: Attachment) => file.fileMetaDataId),
         ],
       });
@@ -39,7 +34,6 @@ export const useFileInput = (
         ...modifyPost,
         attachmentIds: [
           ...modifyPost.attachmentIds,
-          ...files.map((file) => file.fileMetaDataId),
           ...data.map((file: Attachment) => file.fileMetaDataId),
         ],
       });
@@ -57,8 +51,7 @@ export const useFileInput = (
 
     postFileMutate(formData, {
       onSuccess(data) {
-        console.log(data);
-        setFiles([...files, ...data.fileMetaDataList]);
+        setFiles((prev) => [...prev, ...data.fileMetaDataList]);
 
         setPostState(data.fileMetaDataList);
       },
@@ -82,7 +75,7 @@ export const useFileInput = (
 
     postFileMutate(formData, {
       onSuccess(data) {
-        setFiles([...files, ...data.fileMetaDataList]);
+        setFiles((prev) => [...prev, ...data.fileMetaDataList]);
 
         setPostState(data.fileMetaDataList);
       },
