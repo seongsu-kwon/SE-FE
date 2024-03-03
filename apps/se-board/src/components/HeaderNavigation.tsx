@@ -1,4 +1,9 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Avatar,
   Box,
   Button,
@@ -419,63 +424,121 @@ const DrawerNavItem = ({
   type,
   externalUrl,
   urlId,
+  subMenu,
   onClick,
 }: Menu & { onClick?: () => void }) => {
-  return (
-    <WrapItem
-      onClick={onClick}
-      w="full"
-      m="0px"
-      fontSize="1.125rem"
-      fontWeight="bold"
-    >
-      {type === "EXTERNAL" ? (
-        <ExternalLink
-          isExternal
-          href={externalUrl}
-          target={
-            process.env.REACT_APP_ENDPOINT &&
-            externalUrl.startsWith(process.env.REACT_APP_ENDPOINT)
-              ? "_self"
-              : "_blank"
-          }
+  switch (type) {
+    case "MENU":
+      if (subMenu.length === 0) return null;
+      return (
+        <Accordion defaultIndex={[0]} allowMultiple w="full">
+          <AccordionItem w="full" border="none">
+            <AccordionButton
+              w="full"
+              p="0"
+              _hover={{ backgroundColor: "transparent" }}
+            >
+              <WrapItem
+                w="full"
+                m="0px"
+                fontSize="1.125rem"
+                fontWeight="bold"
+                cursor="pointer"
+              >
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  w="full"
+                  p="1rem"
+                  bgColor="transparent"
+                  rounded="lg"
+                  transition="background-color 0.2s"
+                  _hover={{ bgColor: "gray.0" }}
+                >
+                  <Text fontWeight="bold" color="gray.7">
+                    {name}
+                  </Text>
+                  {/* <Icon as={BsCaretDownFill} /> */}
+                  <AccordionIcon />
+                </Box>
+              </WrapItem>
+            </AccordionButton>
+            <AccordionPanel padding="0" pl="1rem">
+              {subMenu.map((sub) => (
+                <DrawerNavItem {...sub} />
+              ))}
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      );
+    case "BOARD":
+      return (
+        <WrapItem
+          onClick={onClick}
           w="full"
-          _hover={{ textDecoration: "none" }}
+          m="0px"
+          fontSize="1.125rem"
+          fontWeight="bold"
         >
-          <Box
-            display="flex"
-            alignItems="center"
-            columnGap="0.25rem"
+          <NavLink to={urlId} style={{ width: "100%" }}>
+            {({ isActive }) => (
+              <Box
+                w="full"
+                p="1rem"
+                bgColor={isActive ? "gray.1" : "transparent"}
+                rounded="lg"
+                transition="background-color 0.2s"
+                _hover={{ bgColor: "gray.0" }}
+              >
+                <Text fontWeight="bold" color={isActive ? "primary" : "gray.7"}>
+                  {name}
+                </Text>
+              </Box>
+            )}
+          </NavLink>
+        </WrapItem>
+      );
+    case "EXTERNAL":
+      return (
+        <WrapItem
+          onClick={onClick}
+          w="full"
+          m="0px"
+          fontSize="1.125rem"
+          fontWeight="bold"
+        >
+          <ExternalLink
+            isExternal
+            href={externalUrl}
+            target={
+              process.env.REACT_APP_ENDPOINT &&
+              externalUrl.startsWith(process.env.REACT_APP_ENDPOINT)
+                ? "_self"
+                : "_blank"
+            }
             w="full"
-            p="1rem"
-            rounded="lg"
-            transition="background-color 0.2s"
-            _hover={{ bgColor: "gray.0" }}
+            _hover={{ textDecoration: "none" }}
           >
-            <Text>{name}</Text>
-            <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
-          </Box>
-        </ExternalLink>
-      ) : (
-        <NavLink to={urlId} style={{ width: "100%" }}>
-          {({ isActive }) => (
             <Box
+              display="flex"
+              alignItems="center"
+              columnGap="0.25rem"
               w="full"
               p="1rem"
-              bgColor={isActive ? "gray.1" : "transparent"}
               rounded="lg"
               transition="background-color 0.2s"
               _hover={{ bgColor: "gray.0" }}
             >
-              <Text fontWeight="bold" color={isActive ? "primary" : "gray.7"}>
-                {name}
-              </Text>
+              <Text>{name}</Text>
+              <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />
             </Box>
-          )}
-        </NavLink>
-      )}
-    </WrapItem>
-  );
+          </ExternalLink>
+        </WrapItem>
+      );
+    default:
+      return <></>;
+  }
 };
 
 const NavItem = ({ name, path }: NavItemProps) => {
