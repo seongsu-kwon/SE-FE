@@ -43,10 +43,6 @@ export const useFetchPostList = ({
         );
         setPosts((prev) => ({ ...prev, pinedPostList: list }));
       },
-      keepPreviousData: true,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
     }
   );
 
@@ -95,9 +91,6 @@ export const useFetchPostList = ({
       refetchOnWindowFocus: false,
     }
   );
-  console.log("------");
-  console.log("pinedPostlistLoading : ", pinedPostlistLoading);
-  console.log("postListLoading : ", postListLoading);
 
   return {
     postList: [...posts.pinedPostList, ...posts.postList],

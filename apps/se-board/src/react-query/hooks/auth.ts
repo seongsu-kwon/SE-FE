@@ -88,6 +88,9 @@ export const useFetchOAuthUserBasicInfo = (id: string) => {
       window.alert("만료된 페이지 입니다.");
       window.location.href = "/login";
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 };
 
