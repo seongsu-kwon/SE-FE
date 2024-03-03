@@ -13,21 +13,20 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
-  Hide,
   Icon,
   Link as ExternalLink,
-  Show,
   Text,
   useDisclosure,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
 import { Menu } from "@types";
+import { useEffect, useRef, useState } from "react";
 import { BsBoxArrowUpRight, BsList } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { useNavigatePage } from "@/hooks";
+import { useNavigatePage, useWindowSize } from "@/hooks";
 import { useLogout } from "@/react-query/hooks/auth";
 import { mobileHeaderState } from "@/store/mobileHeaderState";
 import { useUserState } from "@/store/user";
@@ -63,10 +62,25 @@ export const DesktopHeaderNavigation = ({
 }: {
   menuList: Menu[];
 }) => {
+  const [viewMode, setViewMode] = useState<"desktop" | "tablet">("desktop");
+  const windowSize = useWindowSize();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { goToLoginPage, goToMyPage } = useNavigatePage();
   const { mutate: logout } = useLogout();
   const { userInfo, hasAuth } = useUserState();
+  const navRef = useRef<any>();
+
+  useEffect(() => {
+    if (!navRef.current) return;
+    if (
+      992 <= windowSize.width &&
+      navRef.current.clientWidth === navRef.current.scrollWidth
+    ) {
+      setViewMode("desktop");
+    } else {
+      setViewMode("tablet");
+    }
+  }, [windowSize, navRef]);
   return (
     <Center
       as="header"
@@ -84,50 +98,60 @@ export const DesktopHeaderNavigation = ({
         px="1rem"
       >
         <Logo size="3.5rem" />
-        <Show above="lg">
-          <Box as="nav">
-            <Wrap spacingX="2rem" spacingY="0px">
-              {menuList.map((menu) => (
-                <DesktopNavItem key={menu.name} {...menu} />
-              ))}
-            </Wrap>
+        <Box
+          as="nav"
+          visibility={viewMode === "desktop" ? "visible" : "hidden"}
+        >
+          <Box
+            ref={navRef}
+            display="flex"
+            rowGap="1rem"
+            columnGap="2rem"
+            overflowX="auto"
+            px="1rem"
+          >
+            {menuList.map((menu) => (
+              <DesktopNavItem key={menu.name} {...menu} />
+            ))}
           </Box>
-          <ButtonGroup>
-            {hasAuth ? (
-              <>
-                <Button onClick={goToMyPage} variant="link" color="gray.7">
-                  {userInfo.nickname}
-                </Button>
-                <Button
-                  onClick={() => logout()}
-                  variant="primary-outline"
-                  rounded="full"
-                >
-                  로그아웃
-                </Button>
-              </>
-            ) : (
+        </Box>
+        <ButtonGroup visibility={viewMode === "desktop" ? "visible" : "hidden"}>
+          {hasAuth ? (
+            <>
+              <Button onClick={goToMyPage} variant="link" color="gray.7">
+                {userInfo.nickname}
+              </Button>
               <Button
-                onClick={goToLoginPage}
+                onClick={() => logout()}
                 variant="primary-outline"
                 rounded="full"
               >
-                로그인
+                로그아웃
               </Button>
-            )}
-          </ButtonGroup>
-        </Show>
+            </>
+          ) : (
+            <Button
+              onClick={goToLoginPage}
+              variant="primary-outline"
+              rounded="full"
+            >
+              로그인
+            </Button>
+          )}
+        </ButtonGroup>
         {/* tablet 사이즈에서 노출 desktop 사이즈에서 노출X */}
-        <Hide above="lg">
-          <Button onClick={onOpen} variant="ghost" p="0">
-            <Icon as={BsList} color="gray.7" boxSize="2rem" />
-          </Button>
-          <DrawerNavigation
-            isOpen={isOpen}
-            onClose={onClose}
-            menuList={menuList}
-          />
-        </Hide>
+        {viewMode == "tablet" && (
+          <>
+            <Button onClick={onOpen} variant="ghost" p="0">
+              <Icon as={BsList} color="gray.7" boxSize="2rem" />
+            </Button>
+            <DrawerNavigation
+              isOpen={isOpen}
+              onClose={onClose}
+              menuList={menuList}
+            />
+          </>
+        )}
       </Flex>
     </Center>
   );
@@ -272,13 +296,21 @@ interface NavItemProps {
   onClick?: () => void;
 }
 
-const DesktopNavItem = ({ type, name, externalUrl, urlId }: Menu) => {
+const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
   switch (type) {
     case "MENU":
-      return <div>menu</div>;
+      // 하위메뉴가 없으면 렌더링 X
+      if (subMenu.length === 0) return null;
+      return (
+        <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
+          <Text fontWeight="bold" color="gray.7" position="relative" py="1rem">
+            {name}
+          </Text>
+        </WrapItem>
+      );
     case "BOARD":
       return (
-        <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
+        <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
           <NavLink to={urlId}>
             {({ isActive }) => (
               <Text
@@ -310,7 +342,7 @@ const DesktopNavItem = ({ type, name, externalUrl, urlId }: Menu) => {
       );
     case "EXTERNAL":
       return (
-        <WrapItem m="0px" fontSize="1.125rem" fontWeight="bold">
+        <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
           <ExternalLink
             href={externalUrl}
             target={
