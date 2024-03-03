@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChangePasswordRequestDTO,
   checkAuthCodeDTO,
@@ -36,6 +36,8 @@ import {
 } from "@/api/storage";
 import { useNavigatePage } from "@/hooks";
 import { roleNames, userState } from "@/store/user";
+
+import { queryKeys } from "../queryKeys";
 
 export const useRequestEmailAuthCode = () => {
   return useMutation((email: string) => requestEmailAuthCode(email));
@@ -90,6 +92,7 @@ export const useFetchOAuthUserBasicInfo = (id: string) => {
 };
 
 export const useLogin = (maintainLogin: boolean = false) => {
+  const queryClient = useQueryClient();
   const setUserState = useSetRecoilState(userState);
   const { goToMainPage } = useNavigatePage();
   return useMutation<
@@ -117,12 +120,14 @@ export const useLogin = (maintainLogin: boolean = false) => {
       });
 
       goToMainPage();
+      queryClient.invalidateQueries([queryKeys.menuList]);
     },
   });
 };
 
 export const useKakaoLogin = async (id: string) => {
   const setUserState = useSetRecoilState(userState);
+  const queryClient = useQueryClient();
 
   const { goToMainPage } = useNavigatePage();
   return loginWithKakao(id).then((res) => {
@@ -137,13 +142,15 @@ export const useKakaoLogin = async (id: string) => {
         roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
       }));
     });
-
+    queryClient.invalidateQueries([queryKeys.menuList]);
     goToMainPage();
   });
 };
 
 export const useLogout = () => {
   const resetUserState = useResetRecoilState(userState);
+  const queryClient = useQueryClient();
+
   const { goToLoginPage } = useNavigatePage();
   const refreshToken = getStoredRefreshToken();
   return useMutation(["logout"], () => logout(refreshToken!), {
@@ -155,6 +162,7 @@ export const useLogout = () => {
       if (res.data.requiredRedirect) {
         window.location.href = res.data.url;
       }
+      queryClient.invalidateQueries([queryKeys.menuList]);
       resetUserState();
       goToLoginPage();
     },

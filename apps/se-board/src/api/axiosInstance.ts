@@ -68,6 +68,7 @@ instance.interceptors.response.use(
       sessionStorage.removeItem("refresh_token");
       localStorage.removeItem("refresh_token");
       alert("로그인이 필요합니다");
+      window.location.reload();
       window.location.href = "/login";
     } else if (error.response.data.code === 108) {
       const {
