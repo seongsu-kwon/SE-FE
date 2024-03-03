@@ -1,6 +1,6 @@
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
-import { SpamIP } from "./SpamIP";
+// import { SpamIP } from "./SpamIP";
 import { SpamKeyword } from "./SpamKeyword";
 
 export const SpamManage = () => {
@@ -22,8 +22,8 @@ export const SpamManage = () => {
         스팸 관리
       </Text>
       <SpamKeyword />
-      <Divider border="1px" borderColor="gray.6" />
-      <SpamIP />
+      {/* <Divider border="1px" borderColor="gray.6" />
+      <SpamIP /> */}
     </Box>
   );
 };
