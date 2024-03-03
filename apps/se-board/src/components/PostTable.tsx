@@ -1,7 +1,6 @@
 import {
   Flex,
   Menu,
-  MenuButton,
   MenuItem,
   MenuList,
   Table as ChakraTable,
@@ -73,11 +72,11 @@ const columns: ColumnDef<PostListItem, any>[] = [
     cell: (info) => (
       <Flex justifyContent="flex-start">
         <Menu autoSelect={false}>
-          <MenuButton>
-            <Text whiteSpace="nowrap" textAlign="left">
-              {info.getValue()}
-            </Text>
-          </MenuButton>
+          {/* <MenuButton> */}
+          <Text whiteSpace="nowrap" textAlign="left">
+            {info.getValue()}
+          </Text>
+          {/* </MenuButton> */}
           <MenuList>
             <MenuItem>작성글 보기</MenuItem>
           </MenuList>
