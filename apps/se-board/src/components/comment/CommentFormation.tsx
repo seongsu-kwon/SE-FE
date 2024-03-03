@@ -132,7 +132,7 @@ const AuthorInfoMenuList = ({
 
   return (
     <Menu autoSelect={false}>
-      <MenuButton cursor={authorId === null ? "not-allowed" : "pointer"}>
+      <MenuButton cursor={!authorId ? "not-allowed" : "pointer"}>
         <Box display="flex" alignItems="center" w="fit-content">
           <Icon as={BsPersonCircle} boxSize="32px" color="gray.4" my="auto" />
           <Text px="10px" fontSize="lg" fontWeight="600" whiteSpace="nowrap">
@@ -140,7 +140,7 @@ const AuthorInfoMenuList = ({
           </Text>
         </Box>
       </MenuButton>
-      {authorId !== null && (
+      {!!authorId && (
         <MenuList>
           <MenuItem onClick={() => goToProfilePage(authorId)}>
             프로필 보기

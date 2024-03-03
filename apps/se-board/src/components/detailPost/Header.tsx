@@ -44,7 +44,7 @@ const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
 
   return (
     <Menu autoSelect={false}>
-      <MenuButton cursor={id !== null ? "pointer" : "not-allowed"}>
+      <MenuButton cursor={id ? "pointer" : "not-allowed"}>
         <Box display="flex" alignItems="center">
           <Icon
             as={BsPerson}
@@ -60,7 +60,7 @@ const AuthorInfoMenuList = ({ id, name }: { id: string; name: string }) => {
           </Text>
         </Box>
       </MenuButton>
-      {id !== null && (
+      {!!id && (
         <MenuList maxW={{ base: "100px" }}>
           <MenuItem w="100%" onClick={() => goToProfilePage(id)}>
             프로필 보기
