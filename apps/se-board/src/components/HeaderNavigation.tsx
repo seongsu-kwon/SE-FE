@@ -105,7 +105,11 @@ export const DesktopHeaderNavigation = ({
         <Logo size="3.5rem" />
         <Box
           as="nav"
+          display="flex"
+          justifyContent="center"
           visibility={viewMode === "desktop" ? "visible" : "hidden"}
+          w={992 <= windowSize.width ? "auto" : "0"}
+          h={992 <= windowSize.width ? "auto" : "0"}
         >
           <Box
             ref={navRef}
@@ -120,7 +124,11 @@ export const DesktopHeaderNavigation = ({
             ))}
           </Box>
         </Box>
-        <ButtonGroup visibility={viewMode === "desktop" ? "visible" : "hidden"}>
+        <ButtonGroup
+          visibility={viewMode === "desktop" ? "visible" : "hidden"}
+          w={992 <= windowSize.width ? "auto" : "0px"}
+          h={992 <= windowSize.width ? "auto" : "0px"}
+        >
           {hasAuth ? (
             <>
               <Button onClick={goToMyPage} variant="link" color="gray.7">
