@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 
 import { PageHeaderTitle } from "@/components/admin";
+import { FileManage } from "@/components/admin/general/FileManage";
 // import { AdminIPManage } from "@/components/admin/general/AdminIPManage";
 import { SpamManage } from "@/components/admin/general/SpamManage";
 
@@ -10,6 +11,7 @@ export const GeneralSetting = () => {
       <PageHeaderTitle title="일반" />
       {/* <AdminIPManage /> */}
       <SpamManage />
+      <FileManage />
     </Box>
   );
 };
