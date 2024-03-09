@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useState } from "react";
 
 import { NumberCount } from "../NumberCount";
@@ -21,16 +21,10 @@ export const FileCapacity = () => {
           setCount={onCapacityChange}
           min={1}
           max={1000}
-        />
-        <Button
-          size="sm"
-          variant="primary"
           onClick={() => {
             console.log(capacity);
           }}
-        >
-          등록
-        </Button>
+        />
       </Flex>
     </Box>
   );

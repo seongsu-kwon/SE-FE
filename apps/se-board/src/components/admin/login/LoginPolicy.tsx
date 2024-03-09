@@ -56,6 +56,9 @@ export const LoginPolicy = () => {
           setCount={onCountChange}
           min={0}
           max={30}
+          onClick={() => {
+            console.log(count);
+          }}
         />
         <Divider />
         <NumberCount
@@ -66,6 +69,9 @@ export const LoginPolicy = () => {
           setCount={onTimeChange}
           min={0}
           max={3600}
+          onClick={() => {
+            console.log(time);
+          }}
         />
       </Box>
       <Box w="full" textAlign="right" pr={{ base: "1rem", md: "1.5rem" }}>
