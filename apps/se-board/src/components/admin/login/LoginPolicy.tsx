@@ -1,12 +1,13 @@
-import { Box, Button, Divider, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, Divider, Text, useToast } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+
+import {
+  useGetLoginPolicyQuery,
+  usePostLoginPolicyMutation,
+} from "@/react-query/hooks/useLoginPolicy";
 
 import { NumberCount } from "../NumberCount";
-
-const data = {
-  loginBan: 5,
-  loginBanTime: 300,
-};
 
 const alerts = {
   loginBan: "로그인 시도 횟수를 초과하면 일정 시간동안 로그인이 제한됩니다.",
@@ -15,8 +16,22 @@ const alerts = {
 };
 
 export const LoginPolicy = () => {
-  const [count, setCount] = useState<number>(data.loginBan);
-  const [time, setTime] = useState<number>(data.loginBanTime);
+  const [count, setCount] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
+
+  const { data } = useGetLoginPolicyQuery();
+  const { mutate } = usePostLoginPolicyMutation();
+
+  const toast = useToast();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (data) {
+      setCount(data.loginTryCount);
+      setTime(data.loginLimitTime);
+    }
+  }, [data]);
 
   const onCountChange = (value: string) => {
     setCount(Number(value));
@@ -27,7 +42,20 @@ export const LoginPolicy = () => {
   };
 
   const onClick = () => {
-    // TODO: enroll Request
+    mutate(
+      { loginLimitTime: time, loginTryCount: count },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["loginPolicy"]);
+          toast({
+            title: "로그인 정책이 설정되었습니다.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -45,7 +73,7 @@ export const LoginPolicy = () => {
         borderBottom="1px solid"
         borderColor="gray.5"
       >
-        로그인
+        로그인 정책
       </Text>
       <Box mt="1rem">
         <NumberCount
@@ -56,9 +84,6 @@ export const LoginPolicy = () => {
           setCount={onCountChange}
           min={0}
           max={30}
-          onClick={() => {
-            console.log(count);
-          }}
         />
         <Divider />
         <NumberCount
@@ -69,9 +94,6 @@ export const LoginPolicy = () => {
           setCount={onTimeChange}
           min={0}
           max={3600}
-          onClick={() => {
-            console.log(time);
-          }}
         />
       </Box>
       <Box w="full" textAlign="right" pr={{ base: "1rem", md: "1.5rem" }}>

@@ -20,7 +20,7 @@ interface NumberCountProps {
   setCount: (value: string) => void;
   min: number;
   max: number;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const NumberCount = ({
@@ -77,9 +77,11 @@ export const NumberCount = ({
         <Text fontSize="md" fontWeight="semibold" ml="0.5rem">
           {unit}
         </Text>
-        <Button size="sm" variant="primary" ml="1rem" onClick={onClick}>
-          등록
-        </Button>
+        {onClick && (
+          <Button size="sm" variant="primary" ml="1rem" onClick={onClick}>
+            등록
+          </Button>
+        )}
       </Flex>
     </Box>
   );
