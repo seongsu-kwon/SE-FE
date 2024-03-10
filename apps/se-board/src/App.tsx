@@ -23,6 +23,7 @@ import {
   RecycleBinPage,
   SEMenuEditPage,
 } from "./pages/admin";
+import { MemberManagePage } from "./pages/admin/member/MemberManagePage";
 import PostManagePage from "./pages/admin/post/PostManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
 import { MainPage } from "./pages/main/MainPage";
@@ -182,6 +183,10 @@ const MenuRouter = () => {
         {
           path: "accountPolicy",
           element: <MemberPolicy />,
+        },
+        {
+          path: "account",
+          element: <MemberManagePage />,
         },
         {
           path: "roles",
