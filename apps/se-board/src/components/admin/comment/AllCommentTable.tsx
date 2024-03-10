@@ -11,6 +11,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -53,6 +54,8 @@ export const AllCommentTable = ({
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkBoxes, setCheckBoxes] = useState<boolean[]>([]);
+
+  const toast = useToast();
 
   const columns = useMemo<ColumnDef<AdminCommentContent, any>[]>(
     () => [
@@ -172,6 +175,12 @@ export const AllCommentTable = ({
         setCheckBoxes(new Array(commentList.length).fill(false));
         refetch();
         queryClient.invalidateQueries(["deletedComments", 0, 25]);
+        toast({
+          title: "댓글 삭제 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   };
