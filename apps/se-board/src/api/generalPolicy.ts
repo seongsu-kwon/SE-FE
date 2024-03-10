@@ -8,7 +8,7 @@ export const getBannedIp = () => {
     headers: {
       ...getJWTHeader(),
     },
-    url: "/admin/ip",
+    url: "/admin/ip?ipType=SPAM",
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };
@@ -22,6 +22,7 @@ export const postBannedIp = (ipAddress: string) => {
     method: HTTP_METHODS.POST,
     data: {
       ipAddress,
+      ipType: "SPAM",
     },
   }).then((res) => res.data);
 };
@@ -77,7 +78,7 @@ export const getAdminIPs = () => {
     headers: {
       ...getJWTHeader(),
     },
-    url: "/admin/ip",
+    url: "/admin/ip?ipType=ADMIN",
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };
@@ -91,6 +92,7 @@ export const postAdminIP = (ipAddress: string) => {
     method: HTTP_METHODS.POST,
     data: {
       ipAddress,
+      ipType: "ADMIN",
     },
   }).then((res) => res.data);
 };
