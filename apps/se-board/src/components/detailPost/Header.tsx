@@ -140,8 +140,9 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
       <Box p="1.5rem 0 1.5rem 1rem">
         <Heading
           as="h2"
-          size="lg"
+          fontSize="1.625rem"
           w="fit-content"
+          wordBreak="keep-all"
         >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
         <HStack mt="8px" spacing="12px">
           <AuthorInfoMenuList
