@@ -13,7 +13,6 @@ import {
   SignupPage,
 } from "./pages";
 import {
-  AdminMainPage,
   AdminMenuEdit,
   CommentManage,
   GeneralSetting,
@@ -167,10 +166,6 @@ const MenuRouter = () => {
       path: "admin",
       element: <AdminLayout />,
       children: [
-        {
-          path: "",
-          element: <AdminMainPage />,
-        },
         {
           path: "menu",
           element: <SEMenuEditPage />,
