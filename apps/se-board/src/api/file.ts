@@ -1,4 +1,4 @@
-import { FileExtensions, FileUploadRes } from "@types";
+import { FileConfigurations, FileExtensions, FileUploadRes } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
@@ -54,5 +54,26 @@ export const deleteFileExtension = (extensions: string[]) => {
     url: "admin/files/extension",
     method: HTTP_METHODS.DELETE,
     data: { extensions },
+  });
+};
+
+export const getFileConfigurations = () => {
+  return _axios<FileConfigurations>({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/files/configuration",
+    method: HTTP_METHODS.GET,
+  }).then((res) => res.data);
+};
+
+export const postFileConfigurations = (config: FileConfigurations) => {
+  return _axios({
+    headers: {
+      ...getJWTHeader(),
+    },
+    url: "admin/files/configuration",
+    method: HTTP_METHODS.POST,
+    data: config,
   });
 };
