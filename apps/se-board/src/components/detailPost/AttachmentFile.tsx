@@ -23,7 +23,7 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
         <AccordionItem>
           <AccordionButton _hover={{ backgroundColor: openColors.gray[1] }}>
             <BsPaperclip />
-            첨부파일
+            첨부파일({files.length})
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
