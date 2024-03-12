@@ -12,7 +12,7 @@ import {
 } from "@/components/detailPost";
 import { useGetPostQuery, useSecretPostMutation } from "@/react-query/hooks";
 import { useMobileHeaderState } from "@/store/mobileHeaderState";
-import { errorHandle, incorrectPostPassword } from "@/utils/errorHandling";
+import { errorHandle } from "@/utils/errorHandling";
 import { convertPostInfo } from "@/utils/postUtils";
 
 import { PageNotFound } from "./PageNotFound";
@@ -61,11 +61,7 @@ export const PostPage = () => {
           setPostData(data);
         },
         onError: (error: unknown | ErrorCode) => {
-          if (error === 114) {
-            incorrectPostPassword();
-          } else {
-            errorHandle(error);
-          }
+          errorHandle(error);
         },
       }
     );
