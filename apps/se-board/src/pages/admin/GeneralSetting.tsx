@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { PageHeaderTitle } from "@/components/admin";
 import { AdminIPManage } from "@/components/admin/general/AdminIPManage";
 import { FileManage } from "@/components/admin/general/FileManage";
-import { ReportManage } from "@/components/admin/general/ReportManage";
+// import { ReportManage } from "@/components/admin/general/ReportManage";
 import { SpamManage } from "@/components/admin/general/SpamManage";
 
 export const GeneralSetting = () => {
@@ -13,7 +13,7 @@ export const GeneralSetting = () => {
       <AdminIPManage />
       <SpamManage />
       <FileManage />
-      <ReportManage />
+      {/* <ReportManage /> */}
     </Box>
   );
 };
