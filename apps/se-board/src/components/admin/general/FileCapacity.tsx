@@ -10,11 +10,13 @@ import {
 import { NumberCount } from "../NumberCount";
 
 export const FileCapacity = () => {
-  const [capacity, setCapacity] = useState<number>(100);
-  const [perPostCapacity, setPerPostCapacity] = useState<number>(100);
-
   const { data } = useGetFileConfigurationsQuery();
   const { mutate, isLoading } = usePostFileConfigurationsMutation();
+
+  const [capacity, setCapacity] = useState<number>(data?.maxSizePerFile || 100);
+  const [perPostCapacity, setPerPostCapacity] = useState<number>(
+    data?.maxSizePerPost || 100
+  );
 
   const queryClient = useQueryClient();
 
