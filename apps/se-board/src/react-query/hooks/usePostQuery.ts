@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PostCreate, PostPut } from "@types";
 
@@ -95,7 +96,16 @@ export const useGetDeletedPostQuery = (page?: number, perPage?: number) => {
 };
 
 export const usePostRestorePostQuery = () => {
-  return useMutation((postIds: number[]) => restorePosts(postIds), {
+  const toast = useToast();
+  return useMutation((data: { postIds: number[] }) => restorePosts(data), {
+    onSuccess: () => {
+      toast({
+        title: "게시글이 복구되었습니다",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
     onError: (err) => {
       errorHandle(err);
     },
@@ -103,7 +113,16 @@ export const usePostRestorePostQuery = () => {
 };
 
 export const usePermanentlyDeletePostQuery = () => {
+  const toast = useToast();
   return useMutation((postIds: number[]) => permanentlyDeletePosts(postIds), {
+    onSuccess: () => {
+      toast({
+        title: "게시글이 영구적으로 삭제되었습니다.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
     onError: (err) => {
       errorHandle(err);
     },

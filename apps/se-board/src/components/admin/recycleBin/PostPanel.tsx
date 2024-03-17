@@ -150,15 +150,17 @@ export const PostPanel = () => {
 
   const onRestoreClick = () => {
     if (checkedList.length === 0) return alert("복원할 게시글을 선택해주세요.");
-
-    restoreMutate(checkedList, {
-      onSuccess: () => {
-        setCheckedList([]);
-        setIsAllChecked(false);
-        setCheckBoxes(Array(posts?.content.length).fill(false));
-        refetch();
-      },
-    });
+    restoreMutate(
+      { postIds: checkedList },
+      {
+        onSuccess: () => {
+          setCheckedList([]);
+          setIsAllChecked(false);
+          setCheckBoxes(Array(posts?.content.length).fill(false));
+          refetch();
+        },
+      }
+    );
   };
 
   const onDeleteClick = () => {

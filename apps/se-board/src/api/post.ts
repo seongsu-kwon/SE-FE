@@ -218,14 +218,14 @@ export const getDeletedPosts = (page: number = 0, perPage: number = 25) => {
   }).then((res) => res.data);
 };
 
-export const restorePosts = (postIds: number[]) => {
+export const restorePosts = (data: { postIds: number[] }) => {
   return _axios({
     headers: {
       ...getJWTHeader(),
     },
     url: "/admin/posts/restore",
     method: HTTP_METHODS.POST,
-    data: postIds,
+    data,
   }).then((res) => res.data);
 };
 
