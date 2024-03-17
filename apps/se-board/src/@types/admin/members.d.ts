@@ -23,7 +23,7 @@ declare module "@types" {
     loginId: string;
     name: string;
     nickname: string;
-    registerDate: DateType;
+    registeredDate: DateType;
     roles: Role[];
   }
 }

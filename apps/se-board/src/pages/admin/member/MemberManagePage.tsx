@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { FetchAdminMemberListParams } from "@types";
+import { AdminMember, FetchAdminMemberListParams } from "@types";
 import { useEffect, useState } from "react";
 import { BsTrash3 } from "react-icons/bs";
 import { useSearchParams } from "react-router-dom";
@@ -9,9 +9,14 @@ import { PageHeaderTitle } from "@/components/admin";
 import { useAdminMemberSearchParams } from "@/hooks";
 import { useAdminFetchMemberList } from "@/react-query/hooks/admin/useAdminMemberQuery";
 
+import { MemberEditModal } from "./MemberEditModal";
 import { AdminMemberTable } from "./MemberTable";
 
 export const MemberManagePage = () => {
+  const [editModal, setEditModal] = useState<{
+    isOpen: boolean;
+    member?: AdminMember;
+  }>({ isOpen: false });
   const [selectedPMemberIds, setSelectedMemberIds] = useState<number[]>([]);
   const [params, setParams] = useState<FetchAdminMemberListParams>({
     page: 0,
@@ -24,6 +29,13 @@ export const MemberManagePage = () => {
   const onChangePage = (page: number) => {
     setPageSearchParam(page);
     window.scrollTo(0, 0);
+  };
+
+  const openEditModal = (member: AdminMember) => {
+    setEditModal({ isOpen: true, member });
+  };
+  const closeEditModal = () => {
+    setEditModal({ isOpen: false });
   };
 
   useEffect(() => {
@@ -39,17 +51,16 @@ export const MemberManagePage = () => {
     <Box h="full" textAlign="left">
       <PageHeaderTitle title="회원 목록" />
       <Box
-        w="full"
         my="20px"
         py="1rem"
         px={{ base: "0.75rem", md: "1rem" }}
         rounded="3xl"
         bgColor="white"
-        overflowX="hidden"
       >
         <AdminMemberTable
           members={data?.content}
           setSelectedMemberIds={setSelectedMemberIds}
+          onClickEdit={openEditModal}
         />
         <Flex mt="0.5rem" justify="end">
           <Button
@@ -71,6 +82,11 @@ export const MemberManagePage = () => {
           />
         </Flex>
       </Box>
+      <MemberEditModal
+        isOpen={editModal.isOpen}
+        onClose={closeEditModal}
+        member={editModal.member}
+      />
     </Box>
   );
 };

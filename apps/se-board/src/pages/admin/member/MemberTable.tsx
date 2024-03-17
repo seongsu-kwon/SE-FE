@@ -2,6 +2,11 @@ import {
   Box,
   Checkbox,
   Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Table,
   Tbody,
   Td,
@@ -14,22 +19,23 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { AdminMember, Role } from "@types";
 import { useEffect, useMemo } from "react";
+import { BsPencil, BsThreeDots, BsTrash3 } from "react-icons/bs";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 
 interface AdminMemberTableProps {
   members?: AdminMember[];
   setSelectedMemberIds: (ids: number[]) => void;
+  onClickEdit: (member: AdminMember) => void;
 }
 export const AdminMemberTable = ({
   members,
   setSelectedMemberIds,
+  onClickEdit,
 }: AdminMemberTableProps) => {
   const columns = useMemo<ColumnDef<AdminMember>[]>(
     () => [
@@ -74,10 +80,10 @@ export const AdminMemberTable = ({
         ),
       },
       {
-        accessorFn: (row) => row.registerDate,
+        accessorFn: (row) => row.registeredDate,
         header: "가입일",
         cell: (info) => (
-          <Text textAlign="center">
+          <Text textAlign="center" noOfLines={1}>
             {toYYMMDD_DOT(info.getValue<string>())}
           </Text>
         ),
@@ -86,12 +92,45 @@ export const AdminMemberTable = ({
         accessorFn: (row) => row.roles,
         header: "권한",
         cell: (info) => (
-          <Text textAlign="center">
+          <Text textAlign="center" noOfLines={1}>
             {info
               .getValue<Role[]>()
               .map((v) => v.alias)
               .join(", ")}
           </Text>
+        ),
+      },
+      {
+        id: "actions",
+        header: "관리",
+        cell: (props) => (
+          <Flex justify="center">
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="Options"
+                icon={<BsThreeDots />}
+                variant="ghost"
+              />
+              <MenuList>
+                <MenuItem
+                  icon={<BsPencil />}
+                  onClick={() => onClickEdit(props.row.original)}
+                >
+                  수정
+                </MenuItem>
+                <MenuItem
+                  icon={<BsTrash3 />}
+                  _hover={{
+                    backgroundColor: "red.7",
+                    color: "white",
+                  }}
+                >
+                  삭제
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
         ),
       },
     ],
@@ -103,8 +142,6 @@ export const AdminMemberTable = ({
     columns,
     // enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   useEffect(() => {
@@ -142,7 +179,7 @@ export const AdminMemberTable = ({
             <Tr key={row.id}>
               {row.getVisibleCells().map((cell) => {
                 return (
-                  <Td key={cell.id}>
+                  <Td key={cell.id} py="0.25rem">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Td>
                 );
