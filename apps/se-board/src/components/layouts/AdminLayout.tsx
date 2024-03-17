@@ -112,6 +112,7 @@ export const AdminLayout = () => {
           transition="all 0.2s"
           maxW={isFullWidth ? "100%" : "container.lg"}
           px={{ base: "1rem" }}
+          overflowX="auto"
         >
           <Outlet />
         </Box>
