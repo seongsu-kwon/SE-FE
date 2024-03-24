@@ -204,7 +204,7 @@ export const MemberEditModal = ({
               {/* <-----  권한 시작 */}
               <FormControl isInvalid={getFieldState("roles").invalid}>
                 <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
-                  닉네임
+                  권한
                 </FormLabel>
                 <Flex alignItems="center" gap="0.5rem">
                   <Menu closeOnSelect={false}>
