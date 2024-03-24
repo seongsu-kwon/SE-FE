@@ -17,8 +17,10 @@ export const useFileInput = (
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
-  const { mutate: postFileMutate } = usePostFileQuery();
-  const { mutate: deleteFileMutate } = useDeleteFileQuery();
+  const { mutate: postFileMutate, isLoading: isFileUploadLoading } =
+    usePostFileQuery();
+  const { mutate: deleteFileMutate, isLoading: isFileDeleteLoading } =
+    useDeleteFileQuery();
 
   const setPostState = (data: Attachment[]) => {
     if (!isModified) {
@@ -112,5 +114,7 @@ export const useFileInput = (
     handleDragOver,
     handleFileInput,
     handleRemove,
+    isFileUploadLoading,
+    isFileDeleteLoading,
   };
 };

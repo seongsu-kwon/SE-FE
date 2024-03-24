@@ -8,6 +8,7 @@ import {
   Input,
   Link,
   ListItem,
+  Progress,
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
@@ -21,8 +22,15 @@ export const DesktopFileUploader = ({
   isModified,
   beforeFiles,
 }: FileUploaderProps) => {
-  const { files, handleDrop, handleDragOver, handleFileInput, handleRemove } =
-    useFileInput(isModified, beforeFiles);
+  const {
+    files,
+    handleDrop,
+    handleDragOver,
+    handleFileInput,
+    handleRemove,
+    isFileUploadLoading,
+    isFileDeleteLoading,
+  } = useFileInput(isModified, beforeFiles);
 
   return (
     <Box
@@ -62,7 +70,9 @@ export const DesktopFileUploader = ({
             </Flex>
           </FormLabel>
         </Flex>
-
+        {(isFileUploadLoading || isFileDeleteLoading) && (
+          <Progress size="xs" isIndeterminate colorScheme="blue" />
+        )}
         <Input
           type="file"
           id="file-input"
@@ -111,10 +121,13 @@ export const MobileFileUploader = ({
   isModified,
   beforeFiles,
 }: FileUploaderProps) => {
-  const { files, handleFileInput, handleRemove } = useFileInput(
-    isModified,
-    beforeFiles
-  );
+  const {
+    files,
+    handleFileInput,
+    handleRemove,
+    isFileUploadLoading,
+    isFileDeleteLoading,
+  } = useFileInput(isModified, beforeFiles);
 
   return (
     <FormControl borderY={`1px solid ${openColors.gray[3]}`} minH="3.5rem">
@@ -133,6 +146,9 @@ export const MobileFileUploader = ({
           </Text>
         </Flex>
       </FormLabel>
+      {(isFileUploadLoading || isFileDeleteLoading) && (
+        <Progress size="xs" isIndeterminate colorScheme="blue" />
+      )}
       <Input
         type="file"
         id="file-input"
