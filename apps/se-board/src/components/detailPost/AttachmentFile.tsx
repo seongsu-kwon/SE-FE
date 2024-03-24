@@ -27,16 +27,15 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
-            {files.map((file, idx) => (
+            {files.map((file) => (
               <Tooltip
-                key={file.fileMetaDataId + idx}
+                key={file.fileMetaDataId}
                 label="다운로드"
                 aria-label="다운로드"
                 placement="right-end"
               >
                 <Box
                   w="fit-content"
-                  key={file.fileMetaDataId}
                   color={openColors.gray[6]}
                   _hover={{ color: openColors.gray[7] }}
                 >
