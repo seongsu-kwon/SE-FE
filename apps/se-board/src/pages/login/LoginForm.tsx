@@ -10,6 +10,7 @@ import {
 import { LoginFormFileds } from "@types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BsCheckCircle, BsCheckCircleFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 import { useLogin } from "@/react-query/hooks/auth";
 
@@ -65,11 +66,11 @@ export const LoginForm = () => {
             <Text fontSize="sm">로그인 유지</Text>
           </Flex>
           <Spacer />
-          {/* <Link to="user/password">
+          <Link to="/passwordChange">
             <Text fontSize="sm" _hover={{ textDecoration: "underline" }}>
               비밀번호 재설정
             </Text>
-          </Link> */}
+          </Link>
         </Flex>
       </Flex>
     </form>
