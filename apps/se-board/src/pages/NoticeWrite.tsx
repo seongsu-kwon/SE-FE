@@ -129,7 +129,7 @@ export const NoticeWrite = () => {
   }
 
   return (
-    <Box maxW="984px" w="100%" mx="auto">
+    <Box maxW="984px" w="100%" pt="56px" mx="auto">
       <Show above="md">
         <DesktopCategoryAndPrivacySetting
           postData={data}
