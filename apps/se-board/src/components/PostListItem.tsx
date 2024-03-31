@@ -14,7 +14,7 @@ import { NewIcon } from "@/components/NewIcon";
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 import {
   commentsSizeFormat,
-  isModified,
+  isRecentModifiedPost,
   isRecentPost,
 } from "@/utils/postUtils";
 
@@ -83,7 +83,7 @@ export const PostListItem = ({
             {hasAttachment && <Icon as={BsLink45Deg} />}
             {isRecentPost(createdDateTime) ? (
               <NewIcon />
-            ) : isModified(createdDateTime, modifiedDateTime) ? (
+            ) : isRecentModifiedPost(createdDateTime, modifiedDateTime) ? (
               <UpdateIcon />
             ) : null}
           </Flex>
