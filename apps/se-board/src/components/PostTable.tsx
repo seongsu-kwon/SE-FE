@@ -23,7 +23,7 @@ import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
-import { isModified, isRecentPost } from "@/utils/postUtils";
+import { isRecentModifiedPost, isRecentPost } from "@/utils/postUtils";
 
 import { NewIcon } from "./NewIcon";
 import { UpdateIcon } from "./UpdateIcon";
@@ -71,7 +71,7 @@ const columns: ColumnDef<PostListItem, any>[] = [
           {hasAttachment && <Icon as={BsLink45Deg} ml="0.25rem" />}
           {isRecentPost(createdDateTime) ? (
             <NewIcon />
-          ) : isModified(createdDateTime, modifiedDateTime) ? (
+          ) : isRecentModifiedPost(createdDateTime, modifiedDateTime) ? (
             <UpdateIcon />
           ) : null}
         </Flex>
