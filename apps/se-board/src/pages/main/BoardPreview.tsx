@@ -2,7 +2,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Img,
   Skeleton,
   Stack,
   Text,
@@ -11,7 +10,6 @@ import { PostListItem as PostListItemInfo } from "@types";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 
-import NoticeIcon from "@/assets/images/notice_icon.png";
 import { PostListItem } from "@/components";
 
 interface BoardPreviewProps {
@@ -41,13 +39,13 @@ export const BoardPreview = ({
         _hover={{ cursor: "pointer" }}
       >
         <Heading fontSize={{ base: "1.5rem", md: "2rem" }}>{menuName}</Heading>
-        <Img
+        {/* <Img
           src={NoticeIcon}
           position="absolute"
           w={{ base: "5rem", md: "6rem" }}
           right={{ base: "1rem", md: "2rem" }}
           top="-1.5rem"
-        />
+        /> */}
       </Flex>
       <Flex direction="column" w="full">
         {posts.length === 0 ? (
