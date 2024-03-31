@@ -1,7 +1,14 @@
-import { Center, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  Link as ChakraLink,
+  Text,
+} from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 import { commentsSizeFormat, isModified } from "@/utils/postUtils";
@@ -26,13 +33,12 @@ export const PostListItem = ({
   menuUrlId,
 }: PostListItemProps) => {
   const navigate = useNavigate();
-  const goDetailPost = () => {
-    if (menuUrlId) navigate(`${menuUrlId}/${postId}`);
-    else navigate(`${postId}`);
-  };
+
   return (
-    <Flex
-      onClick={goDetailPost}
+    <ChakraLink
+      as={Link}
+      to={menuUrlId ? `${menuUrlId}/${postId}` : `${postId}`}
+      display="flex"
       alignItems="flex-start"
       p="1rem"
       _hover={{ bgColor: "gray.0", cursor: "pointer" }}
@@ -85,6 +91,6 @@ export const PostListItem = ({
         <Text>댓글</Text>
         <Text>{commentsSizeFormat(commentSize)}</Text>
       </Center>
-    </Flex>
+    </ChakraLink>
   );
 };
