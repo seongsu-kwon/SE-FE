@@ -1,4 +1,5 @@
 import { DateType, PostDetail, PostMutate } from "@types";
+import dayjs from "dayjs";
 
 import { isSameDateTime } from "./dateUtils";
 
@@ -10,6 +11,12 @@ export const isModified = (
   createdDateTime: DateType,
   modifiedDateTime: DateType
 ) => !isSameDateTime(createdDateTime, modifiedDateTime);
+
+export const isRecentPost = (createdDateTime: DateType) => {
+  const diff = Math.abs(dayjs(createdDateTime).diff(dayjs(), "hour"));
+
+  return diff < 48;
+};
 
 export const isWritePostActive = (
   postData: PostMutate,
