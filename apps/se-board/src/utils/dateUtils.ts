@@ -16,3 +16,13 @@ export const toYYYYMMDDHHhhss = (date: DateType = "1970-01-01 12:00:00") => {
 export const toYYYYMMDDHHhh = (date: DateType = "1970-01-01 12:00:00") => {
   return dayjs(date).format("YYYY.MM.DD HH:mm");
 };
+
+export const isModifiedContent = (
+  createdAt: DateType,
+  modifiedAt: DateType
+) => {
+  const created = dayjs(createdAt).format("YYYY.MM.DD.HH.mm.ss");
+  const modified = dayjs(modifiedAt).format("YYYY.MM.DD.HH.mm.ss");
+
+  return created !== modified;
+};
