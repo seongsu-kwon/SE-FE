@@ -25,6 +25,7 @@ import {
 import { MemberManagePage } from "./pages/admin/member/MemberManagePage";
 import PostManagePage from "./pages/admin/post/PostManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
+import { PasswordChangeWithoutLoginPage } from "./pages/login";
 import { MainPage } from "./pages/main/MainPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import { BookmarkPage } from "./pages/profile/BookmarkPage";
@@ -104,6 +105,7 @@ const MenuRouter = () => {
       children: [
         ...dynamicRoutes,
         { path: "", element: <MainPage /> },
+
         {
           path: "/posts/:postId",
           element: <PostPage />,
@@ -218,6 +220,10 @@ const MenuRouter = () => {
         {
           path: "login",
           element: <LoginPage />,
+        },
+        {
+          path: "passwordChange",
+          element: <PasswordChangeWithoutLoginPage />,
         },
         {
           path: "signup",
