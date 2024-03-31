@@ -6,7 +6,11 @@ export const BackButton = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(-1);
+    if (window.history.length === 1) {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -17,6 +21,7 @@ export const BackButton = () => {
       h="40px"
       p="8px"
       ml="8px"
+      cursor="pointer"
       onClick={handleClick}
     ></Icon>
   );

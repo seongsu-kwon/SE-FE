@@ -19,34 +19,40 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Menu as MenuType } from "@types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsFunnel, BsPencil, BsSearch } from "react-icons/bs";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { usePostSearchParams } from "@/hooks/usePostSearchParams";
 
 export const MobilePostPageBottonMenu = ({
   categoryList,
 }: {
   categoryList: MenuType[];
 }) => {
-  const [searchPrams, setSearchParams] = useSearchParams();
+  const [inputs, setInputs] = useState({
+    searchOption: "ALL",
+    query: "",
+  });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const search = (e: React.FormEvent<HTMLFormElement>) => {
+  const {
+    searchOption,
+    query,
+    search,
+    deleteCategory,
+    changeCategory,
+    category,
+  } = usePostSearchParams();
+
+  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const target = e.target as typeof e.target & {
-      field: { value: string };
-      query: { value: string };
-    };
-    const field = target.field.value;
-    const query = target.query.value;
-    if (!query) {
-      searchPrams.delete(field);
-      setSearchParams(searchPrams);
-    } else {
-      searchPrams.append(field, query);
-      setSearchParams(searchPrams);
-    }
+    search(inputs.searchOption, inputs.query);
   };
+
+  useEffect(() => {
+    setInputs({ searchOption, query });
+  }, [searchOption, query]);
 
   return (
     <Flex
@@ -69,25 +75,21 @@ export const MobilePostPageBottonMenu = ({
         <MenuList w="max-content">
           <MenuItem
             onClick={() => {
-              searchPrams.delete("category");
-              setSearchParams(searchPrams);
+              deleteCategory();
             }}
-            bgColor={!searchPrams.get("category") ? "gray.1" : ""}
+            bgColor={category === "" ? "gray.1" : ""}
           >
             전체
           </MenuItem>
-          {categoryList.map((category) => (
+          {categoryList.map((v) => (
             <MenuItem
-              key={category.menuId}
+              key={v.menuId}
               onClick={() => {
-                searchPrams.set("category", category.urlId);
-                setSearchParams(searchPrams);
+                changeCategory(v.urlId);
               }}
-              bgColor={
-                searchPrams.get("category") === category.urlId ? "gray.1" : ""
-              }
+              bgColor={category === v.urlId ? "gray.1" : ""}
             >
-              {category.name}
+              {v.name}
             </MenuItem>
           ))}
         </MenuList>
@@ -104,17 +106,33 @@ export const MobilePostPageBottonMenu = ({
           <DrawerBody>
             <form
               onSubmit={(e) => {
-                search(e);
+                onSearch(e);
                 onClose();
               }}
             >
               <Stack pb="6rem">
-                <Select name="field">
-                  <option value="all">전체</option>
-                  <option value="title">제목</option>
-                  <option value="author">작성자</option>
+                <Select
+                  value={inputs.searchOption}
+                  onChange={(e) =>
+                    setInputs((prev) => ({
+                      ...prev,
+                      searchOption: e.target.value,
+                    }))
+                  }
+                  name="option"
+                >
+                  <option value="ALL">전체</option>
+                  <option value="TITLE">제목</option>
+                  <option value="AUTHOR">작성자</option>
                 </Select>
-                <Input name="query" placeholder="검색어를 입력하세요" />
+                <Input
+                  name="query"
+                  placeholder="검색어를 입력하세요"
+                  value={inputs.query}
+                  onChange={(e) =>
+                    setInputs((prev) => ({ ...prev, query: e.target.value }))
+                  }
+                />
                 <Button type="submit" variant="primary">
                   검색
                 </Button>

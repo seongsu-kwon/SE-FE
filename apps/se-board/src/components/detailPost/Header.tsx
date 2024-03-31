@@ -78,8 +78,8 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
   );
 
   return (
-    <Box>
-      <Flex borderBottom={`1px solid ${openColors.gray[3]}`}>
+    <Box paddingTop="56px">
+      <Flex py="0.5rem" borderBottom={`1px solid ${openColors.gray[3]}`}>
         <BackButton />
         <Spacer />
         {!isBookmarked ? (
