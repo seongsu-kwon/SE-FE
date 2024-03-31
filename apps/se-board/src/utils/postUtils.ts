@@ -12,6 +12,16 @@ export const isModified = (
   modifiedDateTime: DateType
 ) => !isSameDateTime(createdDateTime, modifiedDateTime);
 
+export const isRecentModifiedPost = (
+  createdDateTime: DateType,
+  modifiedDateTime: DateType
+) => {
+  return (
+    isModified(createdDateTime, modifiedDateTime) &&
+    isRecentPost(modifiedDateTime)
+  );
+};
+
 export const isRecentPost = (createdDateTime: DateType) => {
   const diff = Math.abs(dayjs(createdDateTime).diff(dayjs(), "hour"));
 
