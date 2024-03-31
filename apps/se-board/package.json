@@ -8,7 +8,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "theme": "chakra-cli tokens ./src/styles/chakraTheme.ts",
-    "theme:watch": "chakra-cli tokens ./src/styles/chakraTheme.ts --watch"
+    "theme:watch": "chakra-cli tokens ./src/styles/chakraTheme.ts --watch",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -65,6 +66,7 @@
     "@craco/craco": "^7.1.0",
     "@types/dompurify": "^3.0.0",
     "dayjs": "^1.11.7",
+    "patch-package": "^8.0.0",
     "react-app-alias": "^2.2.2",
     "react-app-alias-ex": "^2.1.0"
   }
