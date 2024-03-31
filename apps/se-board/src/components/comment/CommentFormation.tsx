@@ -14,7 +14,7 @@ import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
 import { useNavigatePage } from "@/hooks";
 import { openColors } from "@/styles";
-import { toYYYYMMDDHHhh } from "@/utils/dateUtils";
+import { isModifiedContent, toYYYYMMDDHHhh } from "@/utils/dateUtils";
 
 import { CommentMoreButton } from "../detailPost";
 import { CommentModifyInput } from "./CommentInput";
@@ -85,6 +85,11 @@ export const CommentFormation = ({
             mt="2px"
           >
             {toYYYYMMDDHHhh(comment.createdAt)}
+            {isModifiedContent(comment.createdAt, comment.modifiedAt) && (
+              <Text as="span" ml="0.25rem" color="gray.6">
+                (수정됨)
+              </Text>
+            )}
           </Text>
           <Box
             display="flex"

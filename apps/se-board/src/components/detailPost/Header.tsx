@@ -16,7 +16,7 @@ import { BsClock, BsFillEyeFill, BsPerson } from "react-icons/bs";
 
 import { useBookmarked, useNavigatePage } from "@/hooks";
 import { openColors } from "@/styles";
-import { toYYYYMMDDHHhhss } from "@/utils/dateUtils";
+import { isModifiedContent, toYYYYMMDDHHhhss } from "@/utils/dateUtils";
 
 import { BackButton } from "./BackButton";
 import { Bookmark, BookmarkFill } from "./Bookmark";
@@ -105,11 +105,19 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
               name={HeadingInfo.author.name}
             />
 
-            <Box display="flex">
+            <Box display="flex" alignItems="baseline">
               <Icon as={BsClock} boxSize="16px" my="auto" />
               <Box ml="6px" fontSize="md">
                 {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
               </Box>
+              {isModifiedContent(
+                HeadingInfo.createdAt,
+                HeadingInfo.modifiedAt
+              ) && (
+                <Box ml="1px" fontSize="sm" color="gray.6">
+                  (수정됨)
+                </Box>
+              )}
             </Box>
             <Box display="flex">
               <Icon as={BsFillEyeFill} boxSize="18px" my="auto" />
@@ -149,11 +157,19 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
             id={HeadingInfo.author.loginId}
             name={HeadingInfo.author.name}
           />
-          <Box display="flex">
+          <Box display="flex" alignItems="baseline">
             <Icon as={BsClock} boxSize="20px" my="auto" />
             <Box ml="6px" fontSize="lg">
               {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
             </Box>
+            {isModifiedContent(
+              HeadingInfo.createdAt,
+              HeadingInfo.modifiedAt
+            ) && (
+              <Box ml="1px" fontSize="sm" color="gray.6">
+                (수정됨)
+              </Box>
+            )}
           </Box>
           <Box display="flex">
             <Icon as={BsFillEyeFill} boxSize="22px" my="auto" />
