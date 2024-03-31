@@ -23,6 +23,10 @@ import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
+import { isModified, isRecentPost } from "@/utils/postUtils";
+
+import { NewIcon } from "./NewIcon";
+import { UpdateIcon } from "./UpdateIcon";
 
 const columnHelper = createColumnHelper<PostListItem>();
 
@@ -45,10 +49,12 @@ const columns: ColumnDef<PostListItem, any>[] = [
         hasAttachment,
         pined,
         postId,
+        createdDateTime,
+        modifiedDateTime,
         category: { name },
       } = info.row.original;
       return (
-        <Flex alignItems="center">
+        <Flex alignItems="center" gap="0.2rem">
           <Link to={`${postId}`}>
             <Text
               noOfLines={1}
@@ -63,6 +69,11 @@ const columns: ColumnDef<PostListItem, any>[] = [
           </Link>
           <Text color="orange.5">[{commentSize}]</Text>
           {hasAttachment && <Icon as={BsLink45Deg} ml="0.25rem" />}
+          {isRecentPost(createdDateTime) ? (
+            <NewIcon />
+          ) : isModified(createdDateTime, modifiedDateTime) ? (
+            <UpdateIcon />
+          ) : null}
         </Flex>
       );
     },

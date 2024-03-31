@@ -4,14 +4,12 @@ import {
   Heading,
   Hide,
   Icon,
-  Img,
   Show,
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
 import { BsPencilFill } from "react-icons/bs";
 
-import NoticeIcon from "@/assets/images/notice_icon.png";
 import { MobilePostPageBottonMenu } from "@/components";
 import { useNavigatePage } from "@/hooks";
 import { useMenu } from "@/hooks/useMenu";
@@ -52,13 +50,13 @@ export const BoardPage = () => {
             borderRadius="0.5rem"
           >
             <Heading fontSize="2rem">{getCurrentMenu()?.name}</Heading>
-            <Img
+            {/* <Img
               src={NoticeIcon}
               position="absolute"
               w="6rem"
               right="2rem"
               top="-1.5rem"
-            />
+            /> */}
           </Flex>
           <Flex justifyContent="flex-end" w="full">
             <PostSearchForm />
