@@ -31,7 +31,7 @@ import { UpdateIcon } from "./UpdateIcon";
 const columnHelper = createColumnHelper<PostListItem>();
 
 const columns: ColumnDef<PostListItem, any>[] = [
-  columnHelper.accessor("postId", {
+  columnHelper.accessor("number", {
     header: "번호",
     cell: (info) => {
       if (info.row.original.pined) {

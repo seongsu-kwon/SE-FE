@@ -36,6 +36,7 @@ declare module "@types" {
     hasAttachment: boolean;
     commentSize: number;
     pined: boolean;
+    number: number; // 몇번째 게시글인지 보여주기 위한용도 다른 의미 없음
   }
 
   interface Author {
