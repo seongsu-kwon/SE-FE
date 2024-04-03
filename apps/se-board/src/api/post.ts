@@ -79,6 +79,7 @@ export const convertPostListItemDTOToPostListItem = (
     hasAttachment: postListItemDTO.hasAttachment,
     commentSize: postListItemDTO.commentSize,
     pined: postListItemDTO.pined,
+    number: 0,
   };
 };
 
