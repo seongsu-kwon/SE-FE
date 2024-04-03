@@ -15,6 +15,7 @@ import {
   Text,
   useBoolean,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BsCheckCircleFill } from "react-icons/bs";
@@ -23,6 +24,7 @@ import { kumohCertification } from "@/api/auth";
 import { useNavigatePage } from "@/hooks";
 import { useCoundDown } from "@/hooks/useCountDown";
 import { useKumohCertification } from "@/react-query/hooks/auth";
+import { queryKeys } from "@/react-query/queryKeys";
 import { secondsToMMSS } from "@/utils/dateUtil";
 
 const kumohDomain = "@kumoh.ac.kr";
@@ -52,6 +54,8 @@ export const KumohCertificationPage = () => {
     useKumohCertification();
 
   const onSubmit: SubmitHandler<KumohCertificationFormFields> = (data) => {};
+
+  const queryClient = useQueryClient();
 
   const sendEmailAuthCode = () => {
     emailAuthCodeMutation
@@ -89,9 +93,10 @@ export const KumohCertificationPage = () => {
       })
       .then(() => {
         setCheckAuthCodeBoxOpen.off();
-        kumohCertification(getValues("email") + kumohDomain).then((res) =>
-          setComplete(true)
-        );
+        kumohCertification(getValues("email") + kumohDomain).then((res) => {
+          setComplete(true);
+          queryClient.invalidateQueries([queryKeys.profile]);
+        });
       })
       .catch(() =>
         setError("authCode", { message: "인증코드가 일치하지 않습니다" })
