@@ -85,9 +85,14 @@ export const useFetchProfilePostList = ({
     {
       enabled: !!loginId && !!perPage,
       onSuccess: (res) => {
-        const list = res.data.content
+        const { content, size, number, totalElements } = res.data;
+        const list = content
           .map((v) => convertPostListItemDTOToPostListItem(v))
-          .map((v) => ({ ...v, pined: false }));
+          .map((v, i) => ({
+            ...v,
+            pined: false,
+            number: totalElements - size * number - i,
+          }));
         setPosts((prev) => ({ ...prev, postList: list }));
         setTotalItems(res.data.totalElements);
       },
