@@ -29,7 +29,7 @@ import { toYYMMDD_DOT } from "@/utils/dateUtils";
 const columnHelper = createColumnHelper<CommentListItemDTO>();
 
 const columns: ColumnDef<CommentListItemDTO, any>[] = [
-  columnHelper.accessor("commentId", {
+  columnHelper.accessor("number", {
     header: "번호",
     cell: (info) => {
       return info.getValue();

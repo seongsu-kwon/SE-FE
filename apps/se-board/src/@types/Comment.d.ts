@@ -82,6 +82,7 @@ declare module "@types" {
     contents: string;
     createdAt: DateType;
     modifiedAt: DateType;
+    number: number;
   }
 
   interface Sort {

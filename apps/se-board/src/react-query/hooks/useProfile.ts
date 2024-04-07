@@ -181,7 +181,13 @@ export const useFetchProfileCommentList = ({
     {
       enabled: !!loginId && !!perPage,
       onSuccess: (res) => {
-        setComments(res.data.content);
+        const { content, size, number, totalElements } = res.data;
+        setComments(
+          content.map((v, i) => ({
+            ...v,
+            number: totalElements - size * number - i,
+          }))
+        );
         setTotalItems(res.data.totalElements);
       },
       keepPreviousData: true,
