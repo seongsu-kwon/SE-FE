@@ -40,7 +40,7 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
                   _hover={{ color: openColors.gray[7] }}
                 >
                   <a
-                    href={`${process.env.REACT_APP_FILE_ENDPOINT}${file.url}`}
+                    href={`${process.env.REACT_APP_API_FILE_ENDPOINT}${file.url}`}
                     target="_self"
                     download={`${file.originalFileName}`}
                   >
