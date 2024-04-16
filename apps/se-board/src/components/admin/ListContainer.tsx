@@ -5,7 +5,7 @@ import { ListItem } from ".";
 
 interface ListContainerProps {
   data: BannedNickname[] | BannedId[] | IpInfo[] | SpamKeyword[];
-  deleteOnClick: (name: string) => void;
+  deleteOnClick: (name: string, onClose: () => void) => void;
   isLoading: boolean;
 }
 

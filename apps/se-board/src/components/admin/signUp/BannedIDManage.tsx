@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 import { BannedId } from "@types";
 import React, { useEffect, useState } from "react";
 
@@ -21,16 +21,27 @@ export const BannedIDManage = () => {
   const [bannedIds, setBannedIds] = useState<BannedId[]>([]);
   const [identification, setIdentification] = useState<string>("");
 
+  const toast = useToast();
+
   useEffect(() => {
     if (!data) return;
 
     setBannedIds(data.content);
   }, [data]);
 
-  const deleteOnClick = (id: string) => {
+  const deleteOnClick = (id: string, isClose: () => void) => {
     deleteMutate(id, {
       onSuccess: () => {
         refetch();
+        isClose();
+        setIdentification("");
+
+        toast({
+          title: "금지 ID 삭제 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
 
       onError: (error) => {
@@ -44,6 +55,13 @@ export const BannedIDManage = () => {
       onSuccess: () => {
         setIdentification("");
         refetch();
+
+        toast({
+          title: "금지 ID 등록 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
       onError: (error) => {
         errorHandle(error);

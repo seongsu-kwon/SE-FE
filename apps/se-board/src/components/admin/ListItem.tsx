@@ -18,7 +18,7 @@ import { BsX } from "react-icons/bs";
 
 interface ListItemProps {
   item: BannedNickname | BannedId | IpInfo | SpamKeyword | AdminIP;
-  deleteOnClick: (name: string) => void;
+  deleteOnClick: (name: string, onClose: () => void) => void;
   isLoading: boolean;
 }
 
@@ -106,8 +106,8 @@ export const ListItem = ({ item, deleteOnClick, isLoading }: ListItemProps) => {
                 variant="danger"
                 onClick={
                   "word" in item
-                    ? () => deleteOnClick(String(item.id))
-                    : () => deleteOnClick(nameValue(item))
+                    ? () => deleteOnClick(String(item.id), onClose)
+                    : () => deleteOnClick(nameValue(item), onClose)
                 }
                 ml={3}
                 isLoading={isLoading}

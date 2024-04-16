@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 import { BannedNickname } from "@types";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -22,16 +22,27 @@ export const BannedNickNameManage = () => {
   const [bannedNicknames, setBannedNicknames] = useState<BannedNickname[]>([]);
   const [nickName, setNickName] = useState<string>("");
 
+  const toast = useToast();
+
   useEffect(() => {
     if (!data) return;
 
     setBannedNicknames(data.content);
   }, [data]);
 
-  const deleteOnClick = (name: string) => {
+  const deleteOnClick = (name: string, isClose: () => void) => {
     deleteMutate(name, {
       onSuccess: () => {
         refetch();
+        isClose();
+        setNickName("");
+
+        toast({
+          title: "금지 닉네임 삭제 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
 
       onError: (error) => {
@@ -45,6 +56,13 @@ export const BannedNickNameManage = () => {
       onSuccess: () => {
         setNickName("");
         refetch();
+
+        toast({
+          title: "금지 닉네임 등록 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
 
       onError: (error) => {
