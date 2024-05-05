@@ -25,7 +25,7 @@ export const BookmarkPage = () => {
 
   const { postList, isLoading, totalItems, onChangePage } =
     useFetchBookmarkList({
-      loginId: userInfo.email,
+      userId: userInfo.userId,
       page,
       perPage: 20,
     });

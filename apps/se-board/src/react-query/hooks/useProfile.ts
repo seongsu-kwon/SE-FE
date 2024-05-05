@@ -25,10 +25,11 @@ export const useFetchUserSimpleInfo = () => {
   return useQuery([queryKeys.profile], () => fetchUserSimpleInfo(), {
     enabled: !!getStoredAccessToken(),
     onSuccess: (res) => {
-      const { nickname, email, roles } = res.data;
+      const { nickname, userId, email, roles } = res.data;
       setUserState((prev) => ({
         ...prev,
         nickname,
+        userId,
         email,
         roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
       }));
@@ -47,10 +48,11 @@ export const useUpdateUserProfile = () => {
   return useMutation((data: { nickname: string }) => updateUserProfile(data), {
     onSuccess: () => {
       fetchUserSimpleInfo().then((res) => {
-        const { nickname, email, roles } = res.data;
+        const { nickname, userId, email, roles } = res.data;
         setUserState((prev) => ({
           ...prev,
           nickname,
+          userId,
           email,
           roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
         }));
@@ -112,11 +114,11 @@ export const useFetchProfilePostList = ({
 };
 
 export const useFetchBookmarkList = ({
-  loginId,
+  userId,
   perPage = 0,
   page = 0,
 }: {
-  loginId: string;
+  userId: number;
   perPage?: number;
   page?: number;
 }) => {
@@ -127,15 +129,15 @@ export const useFetchBookmarkList = ({
   const [totalItems, setTotalItems] = useState(0);
 
   const { isLoading: postListLoading } = useQuery(
-    [queryKeys.postList, loginId, perPage, page],
+    [queryKeys.postList, userId, perPage, page],
     () =>
       fetchBookmarkListByLoginId({
-        loginId,
+        userId,
         perPage,
         page,
       }),
     {
-      enabled: !!loginId && !!perPage,
+      enabled: userId !== -1 && !!perPage,
       onSuccess: (res) => {
         const list = res.data.content
           .map((v) => convertPostListItemDTOToPostListItem(v))
