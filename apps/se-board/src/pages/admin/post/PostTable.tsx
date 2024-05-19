@@ -20,12 +20,10 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { AdminPost } from "@types";
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { BsRecord, BsXLg } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
@@ -33,30 +31,58 @@ import { toYYMMDD_DOT } from "@/utils/dateUtils";
 import { getExposeOptionName } from "@/utils/postUtils";
 
 interface AdminPostTableProps {
-  posts?: AdminPost[];
-  setSelectedPostIds: (ids: number[]) => void;
+  posts: AdminPost[];
+  selectedPostIds: number[];
+  setSelectedPostIds: React.Dispatch<React.SetStateAction<number[]>>;
 }
 export const AdminPostTable = ({
   posts,
+  selectedPostIds,
   setSelectedPostIds,
 }: AdminPostTableProps) => {
+  // 전체선택
+  const toggleSelectAllRow = () => {
+    console.log("selected : ");
+    console.log(selectedPostIds);
+    console.log("posts : ");
+    console.log(posts);
+    if (selectedPostIds.length === posts.length) {
+      setSelectedPostIds([]);
+    } else {
+      setSelectedPostIds(posts.map((v) => v.postId));
+    }
+  };
+
+  // 한 개 선택
+  const toggleSelectRow = (postId: number) => {
+    if (selectedPostIds.includes(postId)) {
+      setSelectedPostIds((prev) => prev.filter((v) => v !== postId));
+    } else {
+      setSelectedPostIds((prev) => [...prev, postId]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(selectedPostIds);
+  }, [selectedPostIds]);
+
   const columns = useMemo<ColumnDef<AdminPost>[]>(
     () => [
-      {
-        id: "checkbox",
-        header: ({ table }) => (
-          <Checkbox
-            isChecked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            isChecked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        ),
-      },
+      // {
+      //   id: "checkbox",
+      //   header: ({ table }) => (
+      //     <Checkbox
+      //       isChecked={posts?.length === selectedPostIds.length}
+      //       onChange={toggleSelectAllRow}
+      //     />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <Checkbox
+      //       isChecked={selectedPostIds.includes(row.original.postId)}
+      //       onChange={() => toggleSelectRow(row.original.postId)}
+      //     />
+      //   ),
+      // },
       {
         accessorFn: (row) => row.menu.name,
         header: "게시판",
@@ -146,22 +172,22 @@ export const AdminPostTable = ({
     columns,
     // enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
-
-  useEffect(() => {
-    const selectedIds = table
-      .getSelectedRowModel()
-      .rows.map((row) => row.original.postId);
-    setSelectedPostIds(selectedIds);
-  }, [table.getSelectedRowModel().rows]);
 
   return (
     <Table w="full" fontSize="sm" textAlign="center">
       <Thead w="full" whiteSpace="nowrap">
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
+            <Th>
+              <Checkbox
+                borderColor="gray.4"
+                isChecked={
+                  0 < posts.length && posts.length === selectedPostIds.length
+                }
+                onChange={toggleSelectAllRow}
+              ></Checkbox>
+            </Th>
             {headerGroup.headers.map((header) => {
               return (
                 <Th key={header.id} colSpan={header.colSpan} textAlign="center">
@@ -183,6 +209,12 @@ export const AdminPostTable = ({
         {table.getRowModel().rows.map((row) => {
           return (
             <Tr key={row.id}>
+              <Td>
+                <Checkbox
+                  isChecked={selectedPostIds.includes(row.original.postId)}
+                  onChange={() => toggleSelectRow(row.original.postId)}
+                />
+              </Td>
               {row.getVisibleCells().map((cell) => {
                 return (
                   <Td key={cell.id}>
