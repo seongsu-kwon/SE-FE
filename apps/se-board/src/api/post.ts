@@ -193,16 +193,16 @@ export const fetchCommentListByLoginId = ({
 };
 
 export const fetchBookmarkListByLoginId = ({
-  loginId,
+  userId,
   page = 0,
   perPage = 0,
 }: {
-  loginId: string;
+  userId: number;
   page?: number;
   perPage?: number;
 }) => {
   return _axios<FetchPostListResponse>({
-    url: `/profile/${loginId}/bookmarks`,
+    url: `/profile/${userId}/bookmarks`,
     method: HTTP_METHODS.GET,
     headers: { ...getJWTHeader() },
     params: { page, perPage },

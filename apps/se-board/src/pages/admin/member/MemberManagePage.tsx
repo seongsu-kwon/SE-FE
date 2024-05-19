@@ -7,7 +7,10 @@ import { useSearchParams } from "react-router-dom";
 import { Pagination } from "@/components";
 import { PageHeaderTitle } from "@/components/admin";
 import { useAdminMemberSearchParams } from "@/hooks";
-import { useAdminFetchMemberList } from "@/react-query/hooks/admin/useAdminMemberQuery";
+import {
+  useAdminDeleteMembers,
+  useAdminFetchMemberList,
+} from "@/react-query/hooks/admin/useAdminMemberQuery";
 
 import { MemberEditModal } from "./MemberEditModal";
 import { AdminMemberTable } from "./MemberTable";
@@ -26,9 +29,26 @@ export const MemberManagePage = () => {
   const { data } = useAdminFetchMemberList(params);
   const { setPageSearchParam } = useAdminMemberSearchParams();
 
+  const { mutate: deleteMembers, isLoading } = useAdminDeleteMembers();
+
+  const emptySelectMemberIds = () => {
+    setSelectedMemberIds([]);
+  };
+
   const onChangePage = (page: number) => {
+    emptySelectMemberIds();
     setPageSearchParam(page);
     window.scrollTo(0, 0);
+  };
+
+  // 선택된 회원 삭제
+  const onDeleteButtonClick = () => {
+    deleteMembers(selectedPMemberIds);
+    emptySelectMemberIds();
+  };
+
+  const deleteMember = (accountId: number) => {
+    deleteMembers([accountId]);
   };
 
   const openEditModal = (member: AdminMember) => {
@@ -58,17 +78,19 @@ export const MemberManagePage = () => {
         bgColor="white"
       >
         <AdminMemberTable
-          members={data?.content}
+          members={data?.content || []}
+          selectedMemberIds={selectedPMemberIds}
           setSelectedMemberIds={setSelectedMemberIds}
           onClickEdit={openEditModal}
+          onClickDelete={deleteMember}
         />
         <Flex mt="0.5rem" justify="end">
           <Button
             leftIcon={<BsTrash3 />}
             variant="danger"
             isDisabled={selectedPMemberIds.length === 0}
-            // onClick={onDeleteButtonClick}
-            // isLoading={isLoading}
+            onClick={onDeleteButtonClick}
+            isLoading={isLoading}
             loadingText="삭제 중"
           >
             삭제

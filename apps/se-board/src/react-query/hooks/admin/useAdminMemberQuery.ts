@@ -7,6 +7,7 @@ import {
 import { AxiosError, AxiosResponse } from "axios";
 
 import {
+  adminDeleteMembers,
   adminFetchMemberList,
   adminUpdateMember,
 } from "@/api/admin/memberManage";
@@ -68,4 +69,28 @@ export const useAdminUpdateMenber = () => {
       },
     }
   );
+};
+
+export const useAdminDeleteMembers = () => {
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  return useMutation((ids: number[]) => adminDeleteMembers(ids), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([queryKeys.admin, queryKeys.memberList]);
+      toast({
+        title: "삭제가 완료되었습니다",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    onError: (error: { code: number; message: string }) => {
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
 };
