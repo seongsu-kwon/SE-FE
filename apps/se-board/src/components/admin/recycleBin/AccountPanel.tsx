@@ -67,10 +67,10 @@ export const AccountPanel = () => {
 
   const columns = useMemo<ColumnDef<AccountContent, any>[]>(
     () => [
-      columnHelper.accessor("accountId", {
+      columnHelper.accessor("loginId", {
         header: "아이디",
         cell: (info) => {
-          return <Text>{info.row.original.accountId}</Text>;
+          return <Text>{info.row.original.loginId}</Text>;
         },
       }),
       columnHelper.accessor("name", {
@@ -98,14 +98,14 @@ export const AccountPanel = () => {
           return <Text>{toYYMMDD_DOT(info.row.original.registeredDate)}</Text>;
         },
       }),
-      columnHelper.accessor("authorities", {
+      columnHelper.accessor("roles", {
         header: "회원그룹",
         cell: (info) => {
           return (
             <Box>
-              {info.row.original.authorities.map((v) => {
-                return <Text>{v.authority}</Text>;
-              })}
+              <Text>
+                {info.row.original.roles.map((v) => v.alias).join(", ")}
+              </Text>
             </Box>
           );
         },
