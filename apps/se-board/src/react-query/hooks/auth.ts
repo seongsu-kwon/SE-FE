@@ -113,10 +113,11 @@ export const useLogin = (maintainLogin: boolean = false) => {
       }
 
       fetchUserSimpleInfo().then((res) => {
-        const { nickname, email, roles } = res.data;
+        const { nickname, userId, email, roles } = res.data;
         setUserState((prev) => ({
           ...prev,
           nickname,
+          userId,
           email,
           roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
         }));
@@ -137,10 +138,11 @@ export const useKakaoLogin = async (id: string) => {
     setStoredRefreshToken(res.data.refreshToken);
 
     fetchUserSimpleInfo().then((res) => {
-      const { nickname, email, roles } = res.data;
+      const { nickname, userId, email, roles } = res.data;
       setUserState((prev) => ({
         ...prev,
         nickname,
+        userId,
         email,
         roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
       }));
@@ -187,11 +189,11 @@ export const useReissueToken = () => {
       }
 
       fetchUserSimpleInfo().then((res) => {
-        const { nickname, email, roles } = res.data;
+        const { nickname, userId, roles } = res.data;
         setUserState((prev) => ({
           ...prev,
           nickname,
-          email,
+          userId,
           roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
         }));
       });

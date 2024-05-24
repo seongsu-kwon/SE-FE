@@ -67,6 +67,7 @@ export const WritingEditor = ({
       ],
     },
     extraPlugins: [uploadPlugin],
+    mediaEmbed: { previewsInData: true },
   };
 
   return (

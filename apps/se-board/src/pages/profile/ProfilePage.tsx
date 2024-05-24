@@ -190,7 +190,7 @@ export const ProfilePage = () => {
                     ml="auto"
                   />
                 </Flex>
-                {userInfo.email === userId && (
+                {userInfo.userId === Number(userId) && (
                   <>
                     {/* 북마크 */}
                     <Flex

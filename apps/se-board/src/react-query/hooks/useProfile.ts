@@ -25,10 +25,11 @@ export const useFetchUserSimpleInfo = () => {
   return useQuery([queryKeys.profile], () => fetchUserSimpleInfo(), {
     enabled: !!getStoredAccessToken(),
     onSuccess: (res) => {
-      const { nickname, email, roles } = res.data;
+      const { nickname, userId, email, roles } = res.data;
       setUserState((prev) => ({
         ...prev,
         nickname,
+        userId,
         email,
         roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
       }));
@@ -47,10 +48,11 @@ export const useUpdateUserProfile = () => {
   return useMutation((data: { nickname: string }) => updateUserProfile(data), {
     onSuccess: () => {
       fetchUserSimpleInfo().then((res) => {
-        const { nickname, email, roles } = res.data;
+        const { nickname, userId, email, roles } = res.data;
         setUserState((prev) => ({
           ...prev,
           nickname,
+          userId,
           email,
           roles: roles.map((v) => roleNames[v as keyof typeof roleNames]),
         }));
@@ -85,9 +87,14 @@ export const useFetchProfilePostList = ({
     {
       enabled: !!loginId && !!perPage,
       onSuccess: (res) => {
-        const list = res.data.content
+        const { content, size, number, totalElements } = res.data;
+        const list = content
           .map((v) => convertPostListItemDTOToPostListItem(v))
-          .map((v) => ({ ...v, pined: false }));
+          .map((v, i) => ({
+            ...v,
+            pined: false,
+            number: totalElements - size * number - i,
+          }));
         setPosts((prev) => ({ ...prev, postList: list }));
         setTotalItems(res.data.totalElements);
       },
@@ -107,11 +114,11 @@ export const useFetchProfilePostList = ({
 };
 
 export const useFetchBookmarkList = ({
-  loginId,
+  userId,
   perPage = 0,
   page = 0,
 }: {
-  loginId: string;
+  userId: number;
   perPage?: number;
   page?: number;
 }) => {
@@ -122,15 +129,15 @@ export const useFetchBookmarkList = ({
   const [totalItems, setTotalItems] = useState(0);
 
   const { isLoading: postListLoading } = useQuery(
-    [queryKeys.postList, loginId, perPage, page],
+    [queryKeys.postList, userId, perPage, page],
     () =>
       fetchBookmarkListByLoginId({
-        loginId,
+        userId,
         perPage,
         page,
       }),
     {
-      enabled: !!loginId && !!perPage,
+      enabled: userId !== -1 && !!perPage,
       onSuccess: (res) => {
         const list = res.data.content
           .map((v) => convertPostListItemDTOToPostListItem(v))
@@ -176,7 +183,13 @@ export const useFetchProfileCommentList = ({
     {
       enabled: !!loginId && !!perPage,
       onSuccess: (res) => {
-        setComments(res.data.content);
+        const { content, size, number, totalElements } = res.data;
+        setComments(
+          content.map((v, i) => ({
+            ...v,
+            number: totalElements - size * number - i,
+          }))
+        );
         setTotalItems(res.data.totalElements);
       },
       keepPreviousData: true,

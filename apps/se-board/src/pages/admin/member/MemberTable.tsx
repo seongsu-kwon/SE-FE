@@ -22,40 +22,45 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { AdminMember, Role } from "@types";
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { BsPencil, BsThreeDots, BsTrash3 } from "react-icons/bs";
 
 import { toYYMMDD_DOT } from "@/utils/dateUtils";
 
 interface AdminMemberTableProps {
-  members?: AdminMember[];
-  setSelectedMemberIds: (ids: number[]) => void;
+  members: AdminMember[];
+  selectedMemberIds: number[];
+  setSelectedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
   onClickEdit: (member: AdminMember) => void;
+  onClickDelete: (accountId: number) => void;
 }
 export const AdminMemberTable = ({
   members,
+  selectedMemberIds,
   setSelectedMemberIds,
   onClickEdit,
+  onClickDelete,
 }: AdminMemberTableProps) => {
+  // 전체선택
+  const toggleSelectAllRow = () => {
+    if (selectedMemberIds.length === members.length) {
+      setSelectedMemberIds([]);
+    } else {
+      setSelectedMemberIds(members.map((v) => v.accountId));
+    }
+  };
+
+  // 한 개 선택
+  const toggleSelectRow = (postId: number) => {
+    if (selectedMemberIds.includes(postId)) {
+      setSelectedMemberIds((prev) => prev.filter((v) => v !== postId));
+    } else {
+      setSelectedMemberIds((prev) => [...prev, postId]);
+    }
+  };
+
   const columns = useMemo<ColumnDef<AdminMember>[]>(
     () => [
-      {
-        id: "checkbox",
-        header: ({ table }) => (
-          <Checkbox
-            isChecked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <Box textAlign="center">
-            <Checkbox
-              isChecked={row.getIsSelected()}
-              onChange={row.getToggleSelectedHandler()}
-            />
-          </Box>
-        ),
-      },
       {
         accessorFn: (row) => row.loginId,
         header: "로그인 ID",
@@ -125,6 +130,7 @@ export const AdminMemberTable = ({
                     backgroundColor: "red.7",
                     color: "white",
                   }}
+                  onClick={() => onClickDelete(props.row.original.accountId)}
                 >
                   삭제
                 </MenuItem>
@@ -156,6 +162,15 @@ export const AdminMemberTable = ({
       <Thead w="full" whiteSpace="nowrap">
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
+            <Th>
+              <Checkbox
+                isChecked={
+                  0 < members.length &&
+                  selectedMemberIds.length === members.length
+                }
+                onChange={toggleSelectAllRow}
+              />
+            </Th>
             {headerGroup.headers.map((header) => {
               return (
                 <Th key={header.id} colSpan={header.colSpan} textAlign="center">
@@ -177,6 +192,12 @@ export const AdminMemberTable = ({
         {table.getRowModel().rows.map((row) => {
           return (
             <Tr key={row.id}>
+              <Td>
+                <Checkbox
+                  isChecked={selectedMemberIds.includes(row.original.accountId)}
+                  onChange={() => toggleSelectRow(row.original.accountId)}
+                />
+              </Td>
               {row.getVisibleCells().map((cell) => {
                 return (
                   <Td key={cell.id} py="0.25rem">
