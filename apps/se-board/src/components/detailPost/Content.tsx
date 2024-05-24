@@ -14,7 +14,10 @@ export const Content = ({ contents }: { contents: string }) => {
       <Box
         m="16px"
         dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(contents, { ALLOWED_TAGS: ["iframe"] }),
+          __html: DOMPurify.sanitize(contents, {
+            ADD_TAGS: ["iframe"],
+            ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
+          }),
         }}
       />
     </Box>
