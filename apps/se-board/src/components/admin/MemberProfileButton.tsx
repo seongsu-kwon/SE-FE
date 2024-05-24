@@ -12,7 +12,7 @@ export const MemberProfileButton = ({
 }: MemberProfileButtonProps) => {
   const { goToProfilePage } = useNavigatePage();
 
-  if (memberInfo.loginId === null) {
+  if (memberInfo.userId === null) {
     return (
       <Menu>
         <MenuButton cursor="not-allowed">{memberInfo.name}</MenuButton>
@@ -26,7 +26,7 @@ export const MemberProfileButton = ({
         {memberInfo.name}
       </MenuButton>
       <MenuList>
-        <MenuItem onClick={() => goToProfilePage(memberInfo.loginId)}>
+        <MenuItem onClick={() => goToProfilePage(memberInfo.userId)}>
           프로필 보기
         </MenuItem>
       </MenuList>
