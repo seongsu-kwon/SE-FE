@@ -30,14 +30,19 @@ export default () => {
 
   const { mutate: trahsPostList, isLoading } = useAdminTrashPost();
 
+  const emptySelectPostIds = () => {
+    setSelectedPostIds([]);
+  };
+
   const onChangePage = (page: number) => {
+    emptySelectPostIds();
     setPageSearchParam(page);
     window.scrollTo(0, 0);
   };
 
   const onDeleteButtonClick = () => {
     trahsPostList(selectedPostIds);
-    setSelectedPostIds([]);
+    emptySelectPostIds();
   };
 
   useEffect(() => {
@@ -68,7 +73,8 @@ export default () => {
       >
         <AdminPostFilter />
         <AdminPostTable
-          posts={data?.content}
+          posts={data?.content ?? []}
+          selectedPostIds={selectedPostIds}
           setSelectedPostIds={setSelectedPostIds}
         />
         <Flex mt="0.5rem" justify="end">

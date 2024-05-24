@@ -6,6 +6,7 @@ export const roleNames = {
 
 export const userState = atom<{
   nickname: string;
+  userId: number;
   email: string;
   roles: string[];
 }>({
@@ -13,6 +14,7 @@ export const userState = atom<{
   default: {
     nickname: "",
     email: "",
+    userId: -1,
     roles: [],
   },
 });
@@ -22,6 +24,6 @@ export const useUserState = () => {
 
   return {
     userInfo: user,
-    hasAuth: !!user.email,
+    hasAuth: user.userId !== -1,
   };
 };

@@ -38,7 +38,17 @@ export const BoardPage = () => {
     <>
       <Show above="md">
         <Stack alignItems="center" maxW="1180px" w="full" px="1rem" py="3rem">
+          {/* <----- 게시판 제목과 아이콘 시작 -----> 
           <Flex
+            position="relative"
+            alignItems="center"
+            maxW="container.sm"
+            w="full"
+            px="2rem"
+            py="1.2rem"
+            mb="2rem"
+          ></Flex>
+       <Flex
             position="relative"
             alignItems="center"
             maxW="container.sm"
@@ -50,15 +60,19 @@ export const BoardPage = () => {
             borderRadius="0.5rem"
           >
             <Heading fontSize="2rem">{getCurrentMenu()?.name}</Heading>
-            {/* <Img
+            <Img
               src={NoticeIcon}
               position="absolute"
               w="6rem"
               right="2rem"
               top="-1.5rem"
-            /> */}
-          </Flex>
-          <Flex justifyContent="flex-end" w="full">
+            />
+          </Flex> 
+          <----- 게시판 제목과 아이콘 종료 -----> */}
+          <Flex justifyContent="space-between" alignItems="center" w="full">
+            <Heading fontSize="2xl" pl="1rem">
+              {getCurrentMenu()?.name}
+            </Heading>
             <PostSearchForm />
           </Flex>
           <Flex

@@ -23,7 +23,7 @@ export const ProfileCommentListPage = () => {
   const { commentList, isLoading, totalItems } = useFetchProfileCommentList({
     loginId: userId!,
     page,
-    perPage: 40,
+    perPage: 20,
   });
 
   return (
@@ -69,7 +69,7 @@ export const ProfileCommentListPage = () => {
             <CommentTable
               data={commentList}
               totalItems={totalItems}
-              perPage={40}
+              perPage={20}
               page={page}
             />
           )}
@@ -101,7 +101,7 @@ export const ProfileCommentListPage = () => {
           <CommentList
             data={commentList}
             totalItems={totalItems}
-            perPage={40}
+            perPage={20}
             page={page}
           />
         )}

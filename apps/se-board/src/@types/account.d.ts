@@ -1,4 +1,4 @@
-import { PageableInfo } from "@types";
+import { PageableInfo, Role } from "@types";
 
 declare module "@types" {
   interface AccountContent {
@@ -7,12 +7,7 @@ declare module "@types" {
     name: string;
     nickname: string;
     registeredDate: string;
-    authorities: {
-      description: string;
-      id: number;
-      authority: string;
-      immutable: boolean;
-    }[];
+    roles: Role[];
   }
 
   interface DeletedAccounts extends PageableInfo {

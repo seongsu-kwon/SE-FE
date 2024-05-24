@@ -13,7 +13,9 @@ export const Content = ({ contents }: { contents: string }) => {
     >
       <Box
         m="16px"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(contents) }}
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(contents, { ALLOWED_TAGS: ["iframe"] }),
+        }}
       />
     </Box>
   );

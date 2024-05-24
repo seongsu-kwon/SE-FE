@@ -45,7 +45,8 @@ export const PostListItem = ({
       to={menuUrlId ? `${menuUrlId}/${postId}` : `${postId}`}
       display="flex"
       alignItems="flex-start"
-      p="1rem"
+      px="1rem"
+      py="0.5rem"
       _hover={{ bgColor: "gray.0", cursor: "pointer" }}
     >
       {pined && <Icon as={BsPinAngleFill} mr="0.5rem" color="primary" />}
@@ -55,6 +56,7 @@ export const PostListItem = ({
           size="sm"
           noOfLines={ellipsisLine}
           fontWeight={pined ? "black" : "bold"}
+          fontSize="sm"
           color={pined ? "primary" : "gray.7"}
         >
           [{category.name}] {title}
@@ -62,7 +64,7 @@ export const PostListItem = ({
         <Flex
           alignItems="center"
           columnGap="0.375rem"
-          fontSize="sm"
+          fontSize="xs"
           flexWrap="wrap"
         >
           <Flex alignItems="center" columnGap="0.375rem">
@@ -96,7 +98,7 @@ export const PostListItem = ({
         bgColor="gray.2"
         rounded="xl"
         whiteSpace="nowrap"
-        fontSize="0.875rem"
+        fontSize="xs"
         fontWeight="bold"
       >
         <Text>댓글</Text>
