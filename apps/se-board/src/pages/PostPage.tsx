@@ -1,6 +1,7 @@
 import { Box, Hide, Show } from "@chakra-ui/react";
 import { ErrorCode, PostDetail } from "@types";
 import { useEffect, useRef, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { CommentSection } from "@/components/comment";
@@ -53,7 +54,8 @@ export const PostPage = () => {
     }
   }, [data]);
 
-  const onSubmit = () => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     mutate(
       { postId: Number(postId), password },
       {
