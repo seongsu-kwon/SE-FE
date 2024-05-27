@@ -4,8 +4,9 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
-import { usePostFileQuery } from "@/react-query/hooks/useFileQuery";
+import { postFile } from "@/api/file";
 import { modifyPostState, writePostState } from "@/store";
+import { errorHandle } from "@/utils/errorHandling";
 
 export const WritingEditor = ({
   title,
@@ -20,8 +21,6 @@ export const WritingEditor = ({
   const [writePost, setWritePost] = useRecoilState(writePostState);
   const [modifyPost, setModifyPost] = useRecoilState(modifyPostState);
 
-  const { mutate } = usePostFileQuery();
-
   useEffect(() => {
     setEditorData(`<h1>${title}</h1>` + contents);
   }, [title, contents]);
@@ -30,24 +29,30 @@ export const WritingEditor = ({
     return {
       upload: () => {
         return new Promise((resolve, reject) => {
-          const data = new FormData();
+          const uploadData = new FormData();
 
           loader.file.then((file: File) => {
-            data.append("files", file);
+            uploadData.append("files", file);
 
-            mutate(data, {
-              onSuccess: (data) => {
-                console.log(data);
-                resolve({
-                  default: `${process.env.REACT_APP_FILE_ENDPOINT}${data?.fileMetaDataList[0].url}`, // TODO: 서버 주소 변경
-                });
-              },
-              onError: (error) => {
-                reject(error);
-              },
-            });
+            postFile(uploadData)
+              .then((res) => {
+                const urls = res.fileMetaDataList.map(
+                  (resFile) =>
+                    `${process.env.REACT_APP_API_FILE_ENDPOINT}${resFile.url}`
+                );
+
+                if (urls.length > 1) {
+                  resolve({ default: urls });
+                } else {
+                  resolve({ default: urls[0] });
+                }
+              })
+              .catch((err) => reject(errorHandle(err)));
           });
         });
+      },
+      abort: () => {
+        console.log("abort...");
       },
     };
   };

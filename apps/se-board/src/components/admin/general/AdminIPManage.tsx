@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import {
@@ -19,10 +19,21 @@ export const AdminIPManage = () => {
   const { mutate: deleteMutate, isLoading: deleteLoading } =
     useDeleteAdminIPMutation();
 
-  const deleteOnClick = (ipAddress: string) => {
+  const toast = useToast();
+
+  const deleteOnClick = (ipAddress: string, onClose: () => void) => {
     deleteMutate(ipAddress, {
       onSuccess: () => {
         refetch();
+        onClose();
+        setIp("");
+
+        toast({
+          title: "관리자 IP 삭제 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   };
@@ -32,6 +43,13 @@ export const AdminIPManage = () => {
       onSuccess: () => {
         refetch();
         setIp("");
+
+        toast({
+          title: "관리자 IP 등록 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   };
@@ -64,7 +82,7 @@ export const AdminIPManage = () => {
         <ListContainer
           data={data || []}
           deleteOnClick={deleteOnClick}
-          isLoading={false}
+          isLoading={deleteLoading}
         />
         <ItemInput
           label="IP 추가"
@@ -72,7 +90,7 @@ export const AdminIPManage = () => {
           value={ip}
           onChange={onChange}
           addOnClick={addOnClick}
-          isLoading={false}
+          isLoading={postLoading}
         />
       </Box>
     </Box>
