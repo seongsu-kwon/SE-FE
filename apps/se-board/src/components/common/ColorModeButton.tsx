@@ -26,7 +26,7 @@ export const ColorModeButton = () => {
           aria-label="mode button"
           size="lg"
           borderRadius={100}
-          bgColor={colorMode === "light" ? "gary.1" : "whiteAlpha.300"}
+          background="transparent"
           color={colorMode === "light" ? "gray.8" : "whiteAlpha.900"}
           position="fixed"
           right={20}

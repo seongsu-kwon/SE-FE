@@ -38,6 +38,9 @@ export const BoardPage = () => {
   const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
   const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
 
+  const skeletonStartColor = useColorModeValue("gray.1", "whiteAlpha.50");
+  const skeletonEndColor = useColorModeValue("gray.3", "whiteAlpha.100");
+
   return (
     <>
       <Show above="md">
@@ -104,8 +107,8 @@ export const BoardPage = () => {
                 <Skeleton
                   key={i}
                   height="2.5rem"
-                  startColor="gray.1"
-                  endColor="gray.3"
+                  startColor={skeletonStartColor}
+                  endColor={skeletonEndColor}
                 />
               ))}
             </Stack>
@@ -130,8 +133,8 @@ export const BoardPage = () => {
               <Skeleton
                 key={i}
                 height="6rem"
-                startColor="gray.1"
-                endColor="gray.3"
+                startColor={skeletonStartColor}
+                endColor={skeletonEndColor}
               />
             ))}
           </Stack>
