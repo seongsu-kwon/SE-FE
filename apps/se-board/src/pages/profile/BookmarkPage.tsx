@@ -6,6 +6,7 @@ import {
   Show,
   Skeleton,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -30,6 +31,9 @@ export const BookmarkPage = () => {
       perPage: 20,
     });
 
+  const headingBgColor = useColorModeValue("gray.1", "whiteAlpha.200");
+  const headingColor = useColorModeValue("blackAlpha.700", "whiteAlpha.700");
+
   return (
     <>
       <Show above="md">
@@ -42,10 +46,12 @@ export const BookmarkPage = () => {
             px="2rem"
             py="1.2rem"
             mb="2rem"
-            bgColor="gray.1"
+            bgColor={headingBgColor}
             borderRadius="0.5rem"
           >
-            <Heading fontSize="2rem">북마크</Heading>
+            <Heading fontSize="2rem" color={headingColor}>
+              북마크
+            </Heading>
             <Img
               src={NoticeIcon}
               position="absolute"

@@ -120,7 +120,7 @@ export const PostTable = ({ data }: PostTableProps) => {
   });
   const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
   const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
-  const pinnedBgColor = useColorModeValue("gray.1", "whiteAlpha.200");
+  const pinnedBgColor = useColorModeValue("gray.1", "whiteAlpha.100");
 
   return (
     <ChakraTable>

@@ -10,6 +10,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import {
@@ -107,6 +108,9 @@ export const CommentTable = ({
     window.scrollTo(0, 0);
   };
 
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Flex direction="column" alignItems="center" gap="2rem" w="full">
       <ChakraTable>
@@ -119,7 +123,8 @@ export const CommentTable = ({
                   w={columnWidth[i]}
                   fontSize="md"
                   textAlign="center"
-                  borderColor="gray.3"
+                  borderColor={borderColor}
+                  color={titleColor}
                   whiteSpace="nowrap"
                 >
                   {header.isPlaceholder
@@ -141,7 +146,8 @@ export const CommentTable = ({
                   key={cell.id}
                   w={columnWidth[i]}
                   textAlign={cell.column.id === "title" ? "left" : "center"}
-                  borderColor="gray.3"
+                  borderColor={borderColor}
+                  color={titleColor}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
