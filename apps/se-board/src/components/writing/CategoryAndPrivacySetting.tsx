@@ -22,6 +22,7 @@ import {
   StackDivider,
   Text,
   Tooltip,
+  useColorModeValue,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -189,6 +190,8 @@ export const CategoryAndPrivacySetting = ({
     onClose();
   };
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+
   return (
     <Center h="60px">
       <ButtonGroup gap="2.5rem">
@@ -213,7 +216,7 @@ export const CategoryAndPrivacySetting = ({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent color={color}>
           <ModalHeader>카테고리 / 공개범위 설정</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -289,7 +292,7 @@ export const CategoryAndPrivacySetting = ({
                 size="md"
                 borderRadius="3px"
                 borderColor="gray.5"
-                color={openColors.gray[7]}
+                color={color}
                 isChecked={isAnonymous}
                 onChange={onClickAnonymous}
               >
@@ -299,7 +302,7 @@ export const CategoryAndPrivacySetting = ({
                 size="md"
                 borderRadius="3px"
                 borderColor="gray.5"
-                color={openColors.gray[7]}
+                color={color}
                 isChecked={isPined}
                 onChange={onClickPined}
               >
@@ -310,7 +313,7 @@ export const CategoryAndPrivacySetting = ({
                 size="md"
                 borderRadius="3px"
                 borderColor="gray.5"
-                color={openColors.gray[7]}
+                color={color}
                 isChecked={isOldVersion}
                 onChange={onClickOldVersion}
               >
@@ -362,15 +365,19 @@ export const DesktopCategoryAndPrivacySetting = ({
 
   const categoryOptions = getCurrentMenu()?.subMenu;
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Flex
       maxW="100%"
       minHeight="75px"
       margin="60px auto 0 auto"
-      borderY={`1px solid ${openColors.gray[3]}`}
+      borderY={`1px solid`}
+      borderColor={borderColor}
       justifyContent="space-between"
     >
-      <Box my="10px">
+      <Box my="10px" color={color}>
         <Heading as="h4" size="md" pb="4px">
           카테고리
         </Heading>
@@ -398,7 +405,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           ))}
         </Select>
       </Box>
-      <Box my="10px" maxW="344px">
+      <Box my="10px" maxW="344px" color={color}>
         <Box display="flex">
           <Heading as="h4" size="md" pb="4px" pr="4px">
             공개범위
@@ -412,7 +419,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           spacing="0"
           mb="0.25rem"
           border={`1px solid ${openColors.gray[3]}`}
-          divider={<StackDivider borderColor={`${openColors.gray[3]}`} />}
+          divider={<StackDivider borderColor={borderColor} />}
         >
           {privacyOptions.map((option) => (
             <Button
@@ -439,7 +446,7 @@ export const DesktopCategoryAndPrivacySetting = ({
           ""
         )}
       </Box>
-      <Box my="auto" mr="32px">
+      <Box my="auto" mr="32px" color={color}>
         <Heading as="h4" size="md" pb="8px">
           추가 설정
         </Heading>
@@ -454,7 +461,7 @@ export const DesktopCategoryAndPrivacySetting = ({
             size="md"
             borderRadius="3px"
             borderColor="gray.5"
-            color={openColors.gray[7]}
+            color={color}
             isChecked={isAnonymous}
             onChange={onClickAnonymous}
           >
@@ -464,7 +471,7 @@ export const DesktopCategoryAndPrivacySetting = ({
             size="md"
             borderRadius="3px"
             borderColor="gray.5"
-            color={openColors.gray[7]}
+            color={color}
             isChecked={isPined}
             onChange={onClickPined} // 게시글 수정 시 체크되어 있을 수도 있어야 함
           >
@@ -475,7 +482,7 @@ export const DesktopCategoryAndPrivacySetting = ({
             size="md"
             borderRadius="3px"
             borderColor="gray.5"
-            color={openColors.gray[7]}
+            color={color}
             isChecked={isOldVersion}
             onChange={onClickOldVersion}
           >
