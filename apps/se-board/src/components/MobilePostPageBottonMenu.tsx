@@ -16,6 +16,7 @@ import {
   Select,
   Stack,
   Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Menu as MenuType } from "@types";
@@ -54,30 +55,35 @@ export const MobilePostPageBottonMenu = ({
     setInputs({ searchOption, query });
   }, [searchOption, query]);
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const navBgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+  const hoverBgColor = useColorModeValue("gray.1", "whiteAlpha.100");
+
   return (
     <Flex
       position="fixed"
       bottom="0"
       w="full"
-      bgColor="white"
       justifyContent="space-around"
-      borderTop="1px"
-      borderColor="gray.3"
+      borderTop="2px"
+      bgColor={navBgColor}
+      borderColor={borderColor}
       p="0.5rem"
     >
       <Menu autoSelect={false}>
         <MenuButton>
-          <Flex direction="column" alignItems="center">
+          <Flex direction="column" alignItems="center" color={color}>
             <Icon as={BsFunnel} />
             <Text fontSize="sm">카테고리</Text>
           </Flex>
         </MenuButton>
-        <MenuList w="max-content">
+        <MenuList w="max-content" color={color}>
           <MenuItem
             onClick={() => {
               deleteCategory();
             }}
-            bgColor={category === "" ? "gray.1" : ""}
+            bgColor={category === "" ? hoverBgColor : ""}
           >
             전체
           </MenuItem>
@@ -94,13 +100,18 @@ export const MobilePostPageBottonMenu = ({
           ))}
         </MenuList>
       </Menu>
-      <Flex onClick={onOpen} direction="column" alignItems="center">
+      <Flex
+        onClick={onOpen}
+        direction="column"
+        alignItems="center"
+        color={color}
+      >
         <Icon as={BsSearch} />
         <Text fontSize="sm">검색</Text>
       </Flex>
       <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent color={color}>
           <DrawerCloseButton />
           <DrawerHeader>검색</DrawerHeader>
           <DrawerBody>
@@ -142,7 +153,7 @@ export const MobilePostPageBottonMenu = ({
         </DrawerContent>
       </Drawer>
       <Link to="write">
-        <Flex direction="column" alignItems="center">
+        <Flex direction="column" alignItems="center" color={color}>
           <Icon as={BsPencil} />
           <Text fontSize="sm">글쓰기</Text>
         </Flex>
