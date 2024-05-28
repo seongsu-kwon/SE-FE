@@ -20,7 +20,7 @@ export const PostSearchForm = () => {
     query: "",
   });
   const { searchOption, query, search } = usePostSearchParams();
-  const color = useColorModeValue("gray.7", "white");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
 
   const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

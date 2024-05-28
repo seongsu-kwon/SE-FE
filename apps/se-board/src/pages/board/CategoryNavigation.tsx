@@ -9,14 +9,14 @@ export const CategoryNavigation = ({
   categoryList: Menu[];
 }) => {
   const { category, changeCategory, deleteCategory } = usePostSearchParams();
-  const color = useColorModeValue("gray.7", "white");
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
 
   return (
     <HStack flexWrap="wrap">
       <Button
         onClick={deleteCategory}
         variant="ghost"
-        color={!category ? "primary" : color}
+        color={!category ? "primary" : titleColor}
       >
         전체
       </Button>
@@ -27,7 +27,7 @@ export const CategoryNavigation = ({
             changeCategory(item.urlId);
           }}
           variant="ghost"
-          color={category === item.urlId ? "primary" : color}
+          color={category === item.urlId ? "primary" : titleColor}
         >
           {item.name}
         </Button>

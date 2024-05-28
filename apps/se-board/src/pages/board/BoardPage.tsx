@@ -35,7 +35,8 @@ export const BoardPage = () => {
     query,
   });
 
-  const color = useColorModeValue("gray.7", "white");
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
 
   return (
     <>
@@ -73,7 +74,7 @@ export const BoardPage = () => {
           </Flex> 
           <----- 게시판 제목과 아이콘 종료 -----> */}
           <Flex justifyContent="space-between" alignItems="center" w="full">
-            <Heading fontSize="2xl" pl="1rem" color={color}>
+            <Heading fontSize="2xl" pl="1rem" color={titleColor}>
               {getCurrentMenu()?.name}
             </Heading>
             <PostSearchForm />
@@ -84,7 +85,7 @@ export const BoardPage = () => {
             w="full"
             py="0.5rem"
             borderY="1px"
-            borderColor="gray.3"
+            borderColor={borderColor}
             gap="5rem"
           >
             <CategoryNavigation categoryList={getCurrentMenu()?.subMenu!} />

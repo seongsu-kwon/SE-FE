@@ -78,6 +78,8 @@ export const DesktopHeaderNavigation = ({
   const navRef = useRef<any>();
 
   const { colorMode, toggleColorMode } = useColorMode();
+  const headerBgColor = useColorModeValue("white", "gray.800");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
 
   useEffect(() => {
     if (!navRef.current) return;
@@ -92,6 +94,7 @@ export const DesktopHeaderNavigation = ({
   }, [windowSize, navRef]);
   return (
     <Center
+      bgColor={headerBgColor}
       as="header"
       position={{ base: "fixed", md: "relative" }}
       zIndex={10}
@@ -135,7 +138,7 @@ export const DesktopHeaderNavigation = ({
           <Button onClick={toggleColorMode}>다크모드</Button>
           {hasAuth ? (
             <>
-              <Button onClick={goToMyPage} variant="link" color="gray.7">
+              <Button onClick={goToMyPage} variant="link" color={color}>
                 {userInfo.nickname}
               </Button>
               <Button
@@ -160,7 +163,7 @@ export const DesktopHeaderNavigation = ({
         {viewMode == "tablet" && (
           <>
             <Button onClick={onOpen} variant="ghost" p="0">
-              <Icon as={BsList} color="gray.7" boxSize="2rem" />
+              <Icon as={BsList} color={color} boxSize="2rem" />
             </Button>
             <DrawerNavigation
               isOpen={isOpen}
@@ -188,6 +191,8 @@ const DrawerNavigation = ({
   const { mutate: logout } = useLogout();
   const { userInfo, hasAuth } = useUserState();
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+
   return (
     <Drawer isOpen={isOpen} onClose={onClose} {...props}>
       <DrawerOverlay />
@@ -208,7 +213,7 @@ const DrawerNavigation = ({
               }}
             >
               <Avatar />
-              <Text>{userInfo.nickname}</Text>
+              <Text color={color}>{userInfo.nickname}</Text>
             </Flex>
           ) : (
             <Flex
@@ -314,7 +319,7 @@ interface NavItemProps {
 }
 
 const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
-  const color = useColorModeValue("gray.7", "white");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
 
   switch (type) {
     case "MENU":
@@ -361,7 +366,13 @@ const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
       );
     case "EXTERNAL":
       return (
-        <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
+        <WrapItem
+          flexShrink={0}
+          m="0px"
+          fontSize="1.125rem"
+          fontWeight="bold"
+          color={color}
+        >
           <ExternalLink
             href={externalUrl}
             target={
@@ -441,6 +452,9 @@ const DrawerNavItem = ({
   subMenu,
   onClick,
 }: Menu & { onClick?: () => void }) => {
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const hoverColor = useColorModeValue("gray.0", "whiteAlpha.200");
+
   switch (type) {
     case "MENU":
       if (subMenu.length === 0) return null;
@@ -468,9 +482,9 @@ const DrawerNavItem = ({
                   bgColor="transparent"
                   rounded="lg"
                   transition="background-color 0.2s"
-                  _hover={{ bgColor: "gray.0" }}
+                  _hover={{ bgColor: hoverColor }}
                 >
-                  <Text fontWeight="bold" color="gray.7">
+                  <Text fontWeight="bold" color={color}>
                     {name}
                   </Text>
                   {/* <Icon as={BsCaretDownFill} /> */}
@@ -503,9 +517,9 @@ const DrawerNavItem = ({
                 bgColor={isActive ? "gray.1" : "transparent"}
                 rounded="lg"
                 transition="background-color 0.2s"
-                _hover={{ bgColor: "gray.0" }}
+                _hover={{ bgColor: hoverColor }}
               >
-                <Text fontWeight="bold" color={isActive ? "primary" : "gray.7"}>
+                <Text fontWeight="bold" color={isActive ? "primary" : color}>
                   {name}
                 </Text>
               </Box>
@@ -521,6 +535,7 @@ const DrawerNavItem = ({
           m="0px"
           fontSize="1.125rem"
           fontWeight="bold"
+          color={color}
         >
           <ExternalLink
             isExternal
@@ -542,7 +557,7 @@ const DrawerNavItem = ({
               p="1rem"
               rounded="lg"
               transition="background-color 0.2s"
-              _hover={{ bgColor: "gray.0" }}
+              _hover={{ bgColor: hoverColor }}
             >
               <Text>{name}</Text>
               <Icon as={BsBoxArrowUpRight} mb="0.25rem" boxSize="0.875rem" />

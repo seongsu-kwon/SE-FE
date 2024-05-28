@@ -25,7 +25,7 @@ export const BoardPreview = ({
   posts,
 }: BoardPreviewProps) => {
   const navigate = useNavigate();
-  const headingBgColor = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
+  const headingBgColor = useColorModeValue("gray.1", "whiteAlpha.200");
   const headingColor = useColorModeValue("blackAlpha.700", "whiteAlpha.700");
 
   return (
@@ -37,7 +37,7 @@ export const BoardPreview = ({
         w="full"
         px={{ base: "1rem", md: "2rem" }}
         py={{ base: "1rem", md: "1.2rem" }}
-        mb={{ base: "1rem", md: "2rem" }}
+        mb={{ base: "1rem" }}
         bgColor={headingBgColor}
         borderRadius="0.5rem"
         _hover={{ cursor: "pointer" }}
