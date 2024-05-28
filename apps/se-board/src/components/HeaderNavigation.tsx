@@ -21,7 +21,6 @@ import {
   Icon,
   Link as ExternalLink,
   Text,
-  useColorMode,
   useColorModeValue,
   useDisclosure,
   Wrap,
@@ -77,7 +76,6 @@ export const DesktopHeaderNavigation = ({
   const { userInfo, hasAuth } = useUserState();
   const navRef = useRef<any>();
 
-  const { colorMode, toggleColorMode } = useColorMode();
   const headerBgColor = useColorModeValue("white", "gray.800");
   const color = useColorModeValue("gray.7", "whiteAlpha.800");
 
@@ -135,7 +133,6 @@ export const DesktopHeaderNavigation = ({
           w={992 <= windowSize.width ? "auto" : "0px"}
           h={992 <= windowSize.width ? "auto" : "0px"}
         >
-          <Button onClick={toggleColorMode}>다크모드</Button>
           {hasAuth ? (
             <>
               <Button onClick={goToMyPage} variant="link" color={color}>
