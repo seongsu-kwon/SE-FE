@@ -10,12 +10,12 @@ import {
   MenuList,
   Spacer,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { DateType } from "@types";
 import { BsClock, BsFillEyeFill, BsPerson } from "react-icons/bs";
 
 import { useBookmarked, useNavigatePage } from "@/hooks";
-import { openColors } from "@/styles";
 import { isModifiedContent, toYYYYMMDDHHhhss } from "@/utils/dateUtils";
 
 import { BackButton } from "./BackButton";
@@ -77,9 +77,17 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
     HeadingInfo.bookmarked
   );
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.700");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box paddingTop="56px">
-      <Flex py="0.5rem" borderBottom={`1px solid ${openColors.gray[3]}`}>
+      <Flex
+        py="0.5rem"
+        borderBottom={`1px solid`}
+        borderColor={borderColor}
+        color={color}
+      >
         <BackButton />
         <Spacer />
         {!isBookmarked ? (
@@ -92,14 +100,15 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
           isEditable={HeadingInfo.isEditable}
         />
       </Flex>
-      <Box borderBottom={`1px solid ${openColors.gray[3]}`}>
+      <Box borderBottom={`1px solid`} borderColor={borderColor}>
         <Box m="16px 0 16px 16px">
           <Heading
             size="lg"
             w="fit-content"
             wordBreak="keep-all"
+            color={color}
           >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
-          <HStack mt="4px" spacing="12px">
+          <HStack mt="4px" spacing="12px" color={color}>
             <AuthorInfoMenuList
               id={HeadingInfo.author.loginId}
               name={HeadingInfo.author.name}
@@ -138,12 +147,16 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
     HeadingInfo.bookmarked
   );
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.700");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
       display="flex"
       w="100%"
       m="0px auto 0 auto"
-      borderBottom={`1px solid ${openColors.gray[3]}`}
+      borderBottom={`1px solid`}
+      borderColor={borderColor}
     >
       <Box p="1.5rem 0 1.5rem 1rem">
         <Heading
@@ -151,8 +164,9 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
           fontSize="1.625rem"
           w="fit-content"
           wordBreak="keep-all"
+          color={color}
         >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
-        <HStack mt="8px" spacing="12px">
+        <HStack mt="8px" spacing="12px" color={color}>
           <AuthorInfoMenuList
             id={HeadingInfo.author.loginId}
             name={HeadingInfo.author.name}
@@ -180,7 +194,7 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
         </HStack>
       </Box>
       <Spacer />
-      <Box display="flex" my="auto">
+      <Box display="flex" my="auto" color={color}>
         {!isBookmarked ? (
           <Bookmark boxSize="32px" toggleBookmark={toggleBookmark} />
         ) : (

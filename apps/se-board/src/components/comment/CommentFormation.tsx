@@ -7,13 +7,13 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { CommentContent } from "@types";
 import React, { useRef, useState } from "react";
 import { BsArrowReturnRight, BsAt, BsPersonCircle } from "react-icons/bs";
 
 import { useNavigatePage } from "@/hooks";
-import { openColors } from "@/styles";
 import { isModifiedContent, toYYYYMMDDHHhh } from "@/utils/dateUtils";
 
 import { CommentMoreButton } from "../detailPost";
@@ -34,8 +34,10 @@ export const CommentFormation = ({
 
   const commentModifyAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const hoverColor = useColorModeValue("gray.0", "whiteAlpha.200");
+
   return (
-    <Box w="100%" bg={openColors.white} p="16px">
+    <Box w="100%" p="16px">
       {!isModify ? (
         <>
           <Box display="flex" justifyContent="space-between">
@@ -105,7 +107,7 @@ export const CommentFormation = ({
                 p="0"
                 leftIcon={<BsArrowReturnRight />}
                 variant="ghost"
-                _hover={{ bgColor: openColors.white }}
+                _hover={{ bgColor: hoverColor }}
                 onClick={() => setIsWriteState(comment.commentId)}
               >
                 답글 작성

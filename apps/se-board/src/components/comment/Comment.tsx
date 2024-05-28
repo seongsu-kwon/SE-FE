@@ -1,8 +1,6 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Comment as CommentType } from "@types";
 import { useRef, useState } from "react";
-
-import { openColors } from "@/styles";
 
 import { SubCommentInput } from ".";
 import { CommentFormation } from "./CommentFormation";
@@ -16,10 +14,15 @@ export const Comment = ({ comment }: CommentProps) => {
 
   const subCommentAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
-      borderTop={`1px solid ${openColors.gray[3]}`}
+      borderTop={`1px solid`}
+      borderColor={borderColor}
       py={{ base: "0.0125rem", md: "0" }}
+      color={color}
     >
       <CommentFormation comment={comment} setIsWriteState={setIsWriteState} />
       {comment.subComments.map((subComment) => (
@@ -30,8 +33,8 @@ export const Comment = ({ comment }: CommentProps) => {
             base: "36px",
             md: "64px",
           }}
-          borderTop={`1px solid ${openColors.gray[3]}`}
-          bg={openColors.white}
+          borderTop={`1px solid`}
+          borderColor={borderColor}
         >
           <CommentFormation
             comment={subComment}
@@ -41,7 +44,7 @@ export const Comment = ({ comment }: CommentProps) => {
         </Box>
       ))}
       {isWriteState !== null && (
-        <Box borderTop={`1px solid ${openColors.gray[3]}`} py="0.5rem">
+        <Box borderTop={`1px solid`} borderColor={borderColor} py="0.5rem">
           <SubCommentInput
             superCommentId={comment.commentId}
             tagCommentId={isWriteState}
