@@ -1,7 +1,5 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, useColorModeValue } from "@chakra-ui/react";
 import { BsFillPencilFill } from "react-icons/bs";
-
-import { openColors } from "@/styles";
 
 export const DesktopAnonymousRegister = ({
   isModified,
@@ -12,13 +10,14 @@ export const DesktopAnonymousRegister = ({
   onClickRegistration: () => void;
   isLoading: boolean;
 }) => {
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
   return (
     <Box
       h="75px"
       maxW="100%"
       mb="50px"
       borderBottom="1px solid"
-      borderColor={openColors.gray[3]}
+      borderColor={borderColor}
       display="flex"
       justifyContent="flex-end"
       alignItems="center"

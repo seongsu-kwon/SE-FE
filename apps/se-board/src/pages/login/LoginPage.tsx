@@ -6,6 +6,7 @@ import {
   Link as ChakraLink,
   Stack,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -25,6 +26,10 @@ export const LoginPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { goToMainPage } = useNavigatePage();
   const setUserInfo = useSetRecoilState(userState);
+
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -47,7 +52,7 @@ export const LoginPage = () => {
   }, []);
 
   return (
-    <Center w="full" h="100vh" bgColor="gray.0">
+    <Center w="full" h="100vh" bgColor={bgColor} color={color}>
       <Flex
         direction="column"
         alignItems="center"
@@ -57,7 +62,8 @@ export const LoginPage = () => {
         w="full"
         px={{ base: "1rem", md: "3rem" }}
         py="2rem"
-        bgColor="white"
+        borderRadius={3}
+        bgColor={cardBgColor}
       >
         <Logo size="64px" />
         <Flex w="full" pt="3rem" pb="2rem">

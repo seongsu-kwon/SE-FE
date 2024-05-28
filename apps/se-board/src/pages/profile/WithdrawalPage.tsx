@@ -7,6 +7,7 @@ import {
   Icon,
   Input,
   Text,
+  useColorModeValue,
   Wrap,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -32,13 +33,18 @@ export const WithdrawalPage = () => {
     });
   };
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.2", "whiteAlpha.400");
+
   return (
     <Box
       position="relative"
       zIndex={0}
       w="full"
       minH={{ base: "100vh", md: "calc(100vh - 59px)" }}
-      bg="gray.0"
+      bg={bgColor}
     >
       <Flex
         direction="column"
@@ -48,7 +54,10 @@ export const WithdrawalPage = () => {
         w="full"
         pt={{ base: "56px", md: 0 }}
         marginX="auto"
-        bgColor="white"
+        bgColor={cardBgColor}
+        border={"1px solid"}
+        borderColor={borderColor}
+        borderRadius={3}
       >
         {complete ? (
           <CompleteWithdrawal />
@@ -56,7 +65,7 @@ export const WithdrawalPage = () => {
           <>
             <Heading
               fontSize={{ base: "1.25rem", md: "1.5rem" }}
-              color="gray.8"
+              color={color}
               py="0.75rem"
             >
               회원탈퇴
@@ -64,7 +73,7 @@ export const WithdrawalPage = () => {
             <Divider />
             <Flex direction="column" w="full" py="1rem" px="1rem">
               <Wrap mb="1rem">
-                <Text fontSize="sm">
+                <Text fontSize="sm" color={color}>
                   회원 탈퇴를 원하시면 아래에 로그인ID를 입력 후 탈퇴하기를
                   눌러주세요
                 </Text>
@@ -75,6 +84,7 @@ export const WithdrawalPage = () => {
 
               <Input
                 placeholder={userInfo.email}
+                color={color}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 mb="1rem"

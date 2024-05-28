@@ -6,6 +6,7 @@ import {
   Switch,
   Textarea,
   Tooltip,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -54,6 +55,9 @@ export const CommentInput = () => {
     );
   };
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
       display="inline-block"
@@ -61,12 +65,7 @@ export const CommentInput = () => {
       maxW={{ base: "600px", md: "100%" }}
       pb="8px"
     >
-      <Box
-        display="flex"
-        justifyContent="center"
-        w={{ md: "784px" }}
-        bgColor={openColors.white}
-      >
+      <Box display="flex" justifyContent="center" w={{ md: "784px" }}>
         <Textarea
           placeholder="댓글을 입력해주세요."
           value={value}
@@ -75,7 +74,9 @@ export const CommentInput = () => {
           h={{ md: "120px" }}
           maxW={{ base: "600px", md: "100%" }}
           borderRadius={{ base: "0", md: "8px" }}
-          border={`1px solid ${openColors.gray[5]}`}
+          border={`1px solid`}
+          color={color}
+          borderColor={borderColor}
           focusBorderColor={openColors.blue[5]}
           my="10px"
           mx={{ base: "12px", md: "0" }}
@@ -88,7 +89,6 @@ export const CommentInput = () => {
         h="fit-content"
         mx={{ base: "12px", md: "0" }}
         ml={{ md: "20px" }}
-        bgColor={openColors.white}
         alignItems="center"
         justifyContent="right"
         float="right"
@@ -108,9 +108,9 @@ export const CommentInput = () => {
         w="fit-content"
         h="fit-content"
         minH={{ base: "30px", md: "40px" }}
-        bgColor={openColors.white}
         alignItems="center"
         float="right"
+        color={color}
       >
         <FormControl
           display="flex"
@@ -215,6 +215,9 @@ export const SubCommentInput = ({
     );
   };
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
       display="inline-block"
@@ -222,12 +225,7 @@ export const SubCommentInput = ({
       maxW={{ base: "600px", md: "100%" }}
       pb="8px"
     >
-      <Box
-        display="flex"
-        justifyContent="center"
-        w={{ md: "100%" }}
-        bgColor={openColors.white}
-      >
+      <Box display="flex" justifyContent="center" w={{ md: "100%" }}>
         <Textarea
           placeholder="댓글을 입력해주세요."
           value={text}
@@ -236,7 +234,9 @@ export const SubCommentInput = ({
           h={{ md: "120px" }}
           maxW={{ base: "600px", md: "100%" }}
           borderRadius={{ base: "0", md: "8px" }}
-          border={`1px solid ${openColors.gray[5]}`}
+          border={`1px solid`}
+          borderColor={borderColor}
+          color={color}
           focusBorderColor={openColors.blue[5]}
           my="10px"
           mx={{ base: "12px", md: "0" }}
@@ -251,7 +251,6 @@ export const SubCommentInput = ({
         h="fit-content"
         mx={{ base: "12px", md: "0" }}
         ml={{ md: "20px" }}
-        bgColor={openColors.white}
         alignItems="center"
         justifyContent="space-between"
         float="right"
@@ -282,7 +281,6 @@ export const SubCommentInput = ({
         w="fit-content"
         h="fit-content"
         minH={{ base: "30px", md: "40px" }}
-        bgColor={openColors.white}
         alignItems="center"
         float="right"
       >
@@ -297,6 +295,7 @@ export const SubCommentInput = ({
             display="flex"
             alignItems="center"
             mr={{ base: "12px", sm: "16px" }}
+            color={color}
           >
             <FormLabel htmlFor="anonymous" mb="0" mr="2px" minW="36px">
               익명
@@ -316,7 +315,7 @@ export const SubCommentInput = ({
             bg={openColors.gray[7]}
             closeDelay={1000}
           >
-            <Box display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" color={color}>
               <FormLabel htmlFor="secret" mb="0" mr="2px" minW="64px">
                 비밀댓글
               </FormLabel>

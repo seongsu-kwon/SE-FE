@@ -1,4 +1,4 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Button, HStack, useColorModeValue } from "@chakra-ui/react";
 import { Menu } from "@types";
 
 import { usePostSearchParams } from "@/hooks/usePostSearchParams";
@@ -9,13 +9,14 @@ export const CategoryNavigation = ({
   categoryList: Menu[];
 }) => {
   const { category, changeCategory, deleteCategory } = usePostSearchParams();
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
 
   return (
     <HStack flexWrap="wrap">
       <Button
         onClick={deleteCategory}
         variant="ghost"
-        color={!category ? "primary" : ""}
+        color={!category ? "primary" : titleColor}
       >
         전체
       </Button>
@@ -26,7 +27,7 @@ export const CategoryNavigation = ({
             changeCategory(item.urlId);
           }}
           variant="ghost"
-          color={category === item.urlId ? "primary" : ""}
+          color={category === item.urlId ? "primary" : titleColor}
         >
           {item.name}
         </Button>

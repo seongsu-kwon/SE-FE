@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -287,6 +288,8 @@ export const PostMoreButton = ({
     );
   };
 
+  const hoverBgColor = useColorModeValue("blackAlpha.300", "whiteAlpha.300");
+
   return (
     <Menu>
       <MenuButton
@@ -295,9 +298,9 @@ export const PostMoreButton = ({
         icon={<BsThreeDotsVertical />}
         fontSize="24px"
         mx="1vw"
-        backgroundColor={openColors.white}
-        _hover={{ backgroundColor: openColors.white }}
-        _expanded={{ backgroundColor: openColors.white }}
+        backgroundColor="transparent"
+        _hover={{ backgroundColor: hoverBgColor }}
+        _expanded={{ backgroundColor: hoverBgColor }}
       />
       <MenuList minWidth="120px" shadow="xl">
         {isEditable ? (
@@ -478,6 +481,8 @@ export const CommentMoreButton = ({
   };
   const { postId } = useParams();
 
+  const hoverBgColor = useColorModeValue("blackAlpha.300", "whiteAlpha.300");
+
   return (
     <Menu>
       <MenuButton
@@ -486,9 +491,9 @@ export const CommentMoreButton = ({
         icon={<BsThreeDotsVertical />}
         fontSize="24px"
         mx="1vw"
-        backgroundColor={openColors.white}
-        _hover={{ backgroundColor: openColors.white }}
-        _expanded={{ backgroundColor: openColors.white }}
+        backgroundColor="transparent"
+        _hover={{ backgroundColor: hoverBgColor }}
+        _expanded={{ backgroundColor: hoverBgColor }}
       />
       <MenuList minWidth="120px" shadow="xl">
         {isEditable ? (

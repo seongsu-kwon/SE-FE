@@ -11,6 +11,7 @@ import {
   Progress,
   Text,
   UnorderedList,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FileUploaderProps } from "@types";
 import { BsPaperclip } from "react-icons/bs";
@@ -32,13 +33,17 @@ export const DesktopFileUploader = ({
     isFileDeleteLoading,
   } = useFileInput(isModified, beforeFiles);
 
+  const bgColor = useColorModeValue("gray.0", "whiteAlpha.50");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
       margin="0 auto"
       maxWidth="full"
       minH="80px"
-      backgroundColor="gray.0"
-      borderBottom={`1px solid ${openColors.gray[3]}`}
+      backgroundColor={bgColor}
+      borderBottom={`1px solid`}
+      borderColor={borderColor}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
@@ -46,7 +51,8 @@ export const DesktopFileUploader = ({
         <Flex
           justifyContent="center"
           h="70px"
-          borderBottom={`1px solid ${openColors.gray[3]}`}
+          borderBottom={`1px solid`}
+          borderColor={borderColor}
         >
           <FormLabel
             w="100%"
@@ -55,6 +61,7 @@ export const DesktopFileUploader = ({
             p="4px 8px"
             mr="0"
             htmlFor="file-input"
+            cursor="pointer"
             color={openColors.gray[6]}
             _hover={{
               color: openColors.gray[8],
