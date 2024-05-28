@@ -14,6 +14,7 @@ import {
   InputRightElement,
   Text,
   useBoolean,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -112,13 +113,18 @@ export const KumohCertificationPage = () => {
     }
   }, [count]);
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.2", "whiteAlpha.400");
+
   return (
     <Box
       position="relative"
       zIndex={0}
       w="full"
       minH={{ base: "100vh", md: "calc(100vh - 59px)" }}
-      bg="gray.0"
+      bg={bgColor}
     >
       <Flex
         direction="column"
@@ -128,7 +134,10 @@ export const KumohCertificationPage = () => {
         w="full"
         pt={{ base: "56px", md: 0 }}
         marginX="auto"
-        bgColor="white"
+        bgColor={cardBgColor}
+        border="1px solid"
+        borderColor={borderColor}
+        borderRadius={3}
       >
         {complete ? (
           <CompleteKumohCertification />
@@ -136,7 +145,7 @@ export const KumohCertificationPage = () => {
           <>
             <Heading
               fontSize={{ base: "1.25rem", md: "1.5rem" }}
-              color="gray.8"
+              color={color}
               py="0.75rem"
             >
               금오인 인증
@@ -145,13 +154,14 @@ export const KumohCertificationPage = () => {
             <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
               <Flex direction="column" w="full" py="1rem" px="1rem" gap="1rem">
                 <FormControl isInvalid={!!errors.email}>
-                  <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+                  <FormLabel ml="0.5rem" color={color} fontWeight="bold">
                     금오메일
                   </FormLabel>
                   <FormHelperText ml="0.5rem"></FormHelperText>
                   <Flex alignItems="center" gap="0.5rem">
                     <Input
                       placeholder="금오메일"
+                      color={color}
                       {...register("email", { required: true })}
                     />
                     <Text pr="1rem">@kumoh.ac.kr</Text>
@@ -178,9 +188,9 @@ export const KumohCertificationPage = () => {
                     gap="0.5rem"
                     px="1rem"
                     py="1.5rem"
-                    bgColor="gray.1"
+                    bgColor={cardBgColor}
                   >
-                    <Text ml="0.5rem" fontSize="sm">
+                    <Text ml="0.5rem" fontSize="sm" color={color}>
                       이메일로 전송된 인증코드를 입력해주세요
                     </Text>
 
@@ -189,7 +199,8 @@ export const KumohCertificationPage = () => {
                         <Input
                           isInvalid={getFieldState("authCode").invalid}
                           placeholder="인증코드"
-                          bgColor="white"
+                          color={color}
+                          bgColor={bgColor}
                           {...register("authCode", { required: true })}
                           maxLength={8}
                         />
@@ -215,13 +226,13 @@ export const KumohCertificationPage = () => {
                     <Text ml="0.5rem" fontSize="sm" color="red.500">
                       {errors.authCode?.message}
                     </Text>
-                    <Flex gap="0.25rem" ml="0.5rem">
+                    <Flex gap="0.25rem" ml="0.5rem" color={color}>
                       <Text fontSize="xs">이메일을 받지 못하셨나요?</Text>
                       <Button
                         onClick={resendEmailAuthCode}
                         variant="link"
                         fontSize="xs"
-                        color="gray.8"
+                        color={color}
                       >
                         이메일 재전송
                       </Button>

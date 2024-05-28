@@ -6,6 +6,7 @@ import {
   Skeleton,
   Stack,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
@@ -35,6 +36,12 @@ export const ProfilePage = () => {
   const navigate = useNavigate();
   const { data, isError, isLoading } = useFetchUserProfile(userId!);
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const subColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.2", "whiteAlpha.400");
+
   const onClickKumohCertification = () => {
     if (userInfo.roles.includes("금오인")) {
       toast({
@@ -58,7 +65,7 @@ export const ProfilePage = () => {
         zIndex={0}
         w="full"
         minH={{ base: "100vh", md: "calc(100vh - 59px)" }}
-        bg="gray.0"
+        bg={bgColor}
       >
         <Flex
           direction="column"
@@ -83,11 +90,12 @@ export const ProfilePage = () => {
             <>
               <Flex
                 w="full"
-                bg="white"
+                bg={cardBgColor}
                 py="1rem"
                 px="1rem"
                 border="1px"
-                borderColor="gray.2"
+                borderColor={borderColor}
+                borderRadius={3}
               >
                 <Flex gap="1rem" alignItems="center">
                   <Avatar size="lg" />
@@ -97,6 +105,7 @@ export const ProfilePage = () => {
                         fontSize={{ base: "1.25rem", sm: "1.5rem" }}
                         fontWeight="bold"
                         mr="0.5rem"
+                        color={titleColor}
                       >
                         {data?.nickname}
                       </Text>
@@ -109,17 +118,18 @@ export const ProfilePage = () => {
                         />
                       )}
                     </Flex>
-                    <Text color="gray.6">{userId}</Text>
-                    <Text color="gray.6">{userInfo.roles.join(" ")}</Text>
+                    <Text color={subColor}>{userId}</Text>
+                    <Text color={subColor}>{userInfo.roles.join(" ")}</Text>
                   </Flex>
                 </Flex>
               </Flex>
               <Flex
                 direction="column"
                 mt="1rem"
-                bg="white"
+                bg={cardBgColor}
                 border="1px"
-                borderColor="gray.2"
+                borderColor={borderColor}
+                borderRadius={3}
                 _hover={{ cursor: "pointer" }}
               >
                 {/* 작성한 글 */}
@@ -129,7 +139,7 @@ export const ProfilePage = () => {
                   w="full"
                   py="1rem"
                   px="1rem"
-                  color="gray.7"
+                  color={titleColor}
                 >
                   <Icon
                     as={BsFileText}
@@ -163,7 +173,7 @@ export const ProfilePage = () => {
                   w="full"
                   py="1rem"
                   px="1rem"
-                  color="gray.7"
+                  color={titleColor}
                 >
                   <Icon
                     as={BsChatLeftText}
@@ -199,7 +209,7 @@ export const ProfilePage = () => {
                       w="full"
                       py="1rem"
                       px="1rem"
-                      color="gray.7"
+                      color={titleColor}
                     >
                       <Icon
                         as={BsBookmark}
@@ -259,7 +269,7 @@ export const ProfilePage = () => {
                       w="full"
                       py="1rem"
                       px="1rem"
-                      color="gray.7"
+                      color={titleColor}
                     >
                       <Icon
                         as={BsKey}
@@ -285,7 +295,7 @@ export const ProfilePage = () => {
                       w="full"
                       py="1rem"
                       px="1rem"
-                      color="gray.7"
+                      color={titleColor}
                     >
                       <Icon
                         as={BsCheckLg}

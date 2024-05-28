@@ -9,6 +9,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Icon, Text } from "@chakra-ui/react";
 import {
@@ -67,7 +68,7 @@ const columns: ColumnDef<PostListItem, any>[] = [
               [{name}] {info.getValue()}
             </Text>
           </Link>
-          <Text color="orange.5">[{commentSize}]</Text>
+          <Text color={"orange.5"}>[{commentSize}]</Text>
           {hasAttachment && <Icon as={BsLink45Deg} ml="0.25rem" />}
           {isRecentPost(createdDateTime) ? (
             <NewIcon />
@@ -117,6 +118,9 @@ export const PostTable = ({ data }: PostTableProps) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+  const pinnedBgColor = useColorModeValue("gray.1", "whiteAlpha.100");
 
   return (
     <ChakraTable>
@@ -129,8 +133,9 @@ export const PostTable = ({ data }: PostTableProps) => {
                 w={columnWidth[i]}
                 fontSize="md"
                 textAlign="center"
-                borderColor="gray.3"
+                borderColor={borderColor}
                 whiteSpace="nowrap"
+                color={titleColor}
               >
                 {header.isPlaceholder
                   ? null
@@ -147,15 +152,16 @@ export const PostTable = ({ data }: PostTableProps) => {
         {table.getRowModel().rows.map((row, i) => (
           <Tr
             key={i}
-            bgColor={row.original.pined ? "gray.1" : "transparent"}
+            bgColor={row.original.pined ? pinnedBgColor : "transparent"}
             fontSize="sm"
+            color={titleColor}
           >
             {row.getVisibleCells().map((cell, i) => (
               <Td
                 key={cell.id}
                 w={columnWidth[i]}
                 textAlign={cell.column.id === "title" ? "left" : "center"}
-                borderColor="gray.3"
+                borderColor={borderColor}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </Td>

@@ -6,6 +6,7 @@ import {
   Show,
   Skeleton,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
@@ -26,6 +27,9 @@ export const ProfileCommentListPage = () => {
     perPage: 20,
   });
 
+  const headingBgColor = useColorModeValue("gray.1", "whiteAlpha.200");
+  const headingColor = useColorModeValue("blackAlpha.700", "whiteAlpha.700");
+
   return (
     <>
       <Show above="md">
@@ -38,10 +42,12 @@ export const ProfileCommentListPage = () => {
             px="2rem"
             py="1.2rem"
             mb="2rem"
-            bgColor="gray.1"
+            bgColor={headingBgColor}
             borderRadius="0.5rem"
           >
-            <Heading fontSize="2rem">작성한 댓글</Heading>
+            <Heading fontSize="2rem" color={headingColor}>
+              작성한 댓글
+            </Heading>
             <Img
               src={NoticeIcon}
               position="absolute"

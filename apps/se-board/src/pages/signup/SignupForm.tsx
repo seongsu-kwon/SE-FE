@@ -12,6 +12,7 @@ import {
   Spinner,
   Text,
   useBoolean,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -120,11 +121,15 @@ export const SignupForm = () => {
     }
   }, [count]);
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+
   return (
     <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
       <Flex direction="column" gap="1.5rem">
         <FormControl isInvalid={getFieldState("email").invalid}>
-          <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+          <FormLabel ml="0.5rem" color={color} fontWeight="bold">
             이메일
           </FormLabel>
           <FormHelperText ml="0.5rem">
@@ -133,6 +138,7 @@ export const SignupForm = () => {
           <Flex alignItems="center" gap="0.5rem">
             <InputGroup>
               <Input
+                color={color}
                 isInvalid={getFieldState("email").invalid}
                 disabled={checkAuthCodeMutation.isSuccess}
                 placeholder="이메일"
@@ -173,7 +179,7 @@ export const SignupForm = () => {
             gap="0.5rem"
             px="1rem"
             py="1.5rem"
-            bgColor="gray.1"
+            bgColor={cardBgColor}
           >
             <Text ml="0.5rem" fontSize="sm">
               이메일로 전송된 인증코드를 입력해주세요
@@ -182,9 +188,10 @@ export const SignupForm = () => {
             <Flex gap="0.5rem">
               <InputGroup>
                 <Input
+                  color={color}
                   isInvalid={getFieldState("authCode").invalid}
                   placeholder="인증코드"
-                  bgColor="white"
+                  bgColor={bgColor}
                   {...register("authCode", { required: true })}
                   maxLength={8}
                 />
@@ -216,7 +223,7 @@ export const SignupForm = () => {
                 onClick={resendEmailAuthCode}
                 variant="link"
                 fontSize="xs"
-                color="gray.8"
+                color={color}
               >
                 이메일 재전송
               </Button>
@@ -224,7 +231,7 @@ export const SignupForm = () => {
           </Flex>
         )}
         <FormControl>
-          <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+          <FormLabel ml="0.5rem" color={color} fontWeight="bold">
             비밀번호
           </FormLabel>
           <FormHelperText ml="0.5rem"></FormHelperText>
@@ -238,7 +245,7 @@ export const SignupForm = () => {
           <FormErrorMessage></FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={watch("password") !== watch("passwordConfirm")}>
-          <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+          <FormLabel ml="0.5rem" color={color} fontWeight="bold">
             비밀번호 확인
           </FormLabel>
           <FormHelperText ml="0.5rem"></FormHelperText>
@@ -255,7 +262,7 @@ export const SignupForm = () => {
           <FormErrorMessage>비밀번호와 일치하지 않습니다</FormErrorMessage>
         </FormControl>
         <FormControl>
-          <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+          <FormLabel ml="0.5rem" color={color} fontWeight="bold">
             이름
           </FormLabel>
           <FormHelperText ml="0.5rem"></FormHelperText>
@@ -268,7 +275,7 @@ export const SignupForm = () => {
           <FormErrorMessage></FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.nickname}>
-          <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+          <FormLabel ml="0.5rem" color={color} fontWeight="bold">
             닉네임
           </FormLabel>
           <FormHelperText ml="0.5rem"></FormHelperText>

@@ -5,6 +5,7 @@ import {
   Icon,
   Link as ChakraLink,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
@@ -39,6 +40,11 @@ export const PostListItem = ({
   ellipsisLine = 0,
   menuUrlId,
 }: PostListItemProps) => {
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const subTitleColor = useColorModeValue("gray.7", "whiteAlpha.700");
+  const commentBgColor = useColorModeValue("gray.1", "whiteAlpha.200");
+  const hoverColor = useColorModeValue("gray.0", "whiteAlpha.200");
+
   return (
     <ChakraLink
       as={Link}
@@ -47,7 +53,7 @@ export const PostListItem = ({
       alignItems="flex-start"
       px="1rem"
       py="0.5rem"
-      _hover={{ bgColor: "gray.0", cursor: "pointer" }}
+      _hover={{ bgColor: hoverColor, cursor: "pointer" }}
     >
       {pined && <Icon as={BsPinAngleFill} mr="0.5rem" color="primary" />}
       <Flex direction="column" gap="0.5rem" mr="2rem">
@@ -57,7 +63,7 @@ export const PostListItem = ({
           noOfLines={ellipsisLine}
           fontWeight={pined ? "black" : "bold"}
           fontSize="sm"
-          color={pined ? "primary" : "gray.7"}
+          color={pined ? "primary" : titleColor}
         >
           [{category.name}] {title}
         </Heading>
@@ -66,6 +72,7 @@ export const PostListItem = ({
           columnGap="0.375rem"
           fontSize="xs"
           flexWrap="wrap"
+          color={subTitleColor}
         >
           <Flex alignItems="center" columnGap="0.375rem">
             <Text>{author.name}</Text>
@@ -95,7 +102,8 @@ export const PostListItem = ({
         flexDirection="column"
         p="0.75rem"
         ml="auto"
-        bgColor="gray.2"
+        bgColor={commentBgColor}
+        color={titleColor}
         rounded="xl"
         whiteSpace="nowrap"
         fontSize="xs"

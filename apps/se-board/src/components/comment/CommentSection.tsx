@@ -1,10 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Comment, CommentPaginationInfo } from "@types";
 import { useEffect, useState } from "react";
 
 import { useGetCommentQuery } from "@/react-query/hooks";
-import { openColors } from "@/styles";
 
 import { CommentContents } from "./CommentContents";
 import { CommentHeader } from "./CommentHeader";
@@ -42,13 +41,18 @@ export const CommentSection = ({
     setComments(data.pages.map((page) => page.content).flat());
   }, [data]);
 
+  const color = useColorModeValue("gray.7", "whiteAlpha.700");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+
   return (
     <Box
       maxW="100%"
       mx="auto"
-      borderBottom={`1px solid ${openColors.gray[3]}`}
+      borderBottom={`1px solid`}
+      borderColor={borderColor}
       mb="100px"
       textAlign="center"
+      color={color}
     >
       <CommentHeader commentTotalSize={pagenationInfo?.totalAllSize || 0} />
       <CommentInput />
