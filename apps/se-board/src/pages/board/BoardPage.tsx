@@ -7,6 +7,7 @@ import {
   Show,
   Skeleton,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { BsPencilFill } from "react-icons/bs";
 
@@ -33,6 +34,8 @@ export const BoardPage = () => {
     searchOption,
     query,
   });
+
+  const color = useColorModeValue("gray.7", "white");
 
   return (
     <>
@@ -70,7 +73,7 @@ export const BoardPage = () => {
           </Flex> 
           <----- 게시판 제목과 아이콘 종료 -----> */}
           <Flex justifyContent="space-between" alignItems="center" w="full">
-            <Heading fontSize="2xl" pl="1rem">
+            <Heading fontSize="2xl" pl="1rem" color={color}>
               {getCurrentMenu()?.name}
             </Heading>
             <PostSearchForm />

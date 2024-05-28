@@ -22,7 +22,7 @@ root.render(
     <RecoilRoot>
       <ChakraProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <ColorModeScript />
+          <ColorModeScript initialColorMode={"system"} />
           <App />
           <ReactQueryDevtools />
         </QueryClientProvider>

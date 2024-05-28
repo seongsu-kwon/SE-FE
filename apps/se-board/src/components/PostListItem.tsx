@@ -5,6 +5,7 @@ import {
   Icon,
   Link as ChakraLink,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { BsLink45Deg, BsPinAngleFill } from "react-icons/bs";
@@ -39,6 +40,8 @@ export const PostListItem = ({
   ellipsisLine = 0,
   menuUrlId,
 }: PostListItemProps) => {
+  const color = useColorModeValue("gray.7", "white");
+
   return (
     <ChakraLink
       as={Link}
@@ -57,7 +60,7 @@ export const PostListItem = ({
           noOfLines={ellipsisLine}
           fontWeight={pined ? "black" : "bold"}
           fontSize="sm"
-          color={pined ? "primary" : "gray.7"}
+          color={pined ? "primary" : color}
         >
           [{category.name}] {title}
         </Heading>

@@ -7,6 +7,7 @@ import {
   InputRightElement,
   Select,
   Tooltip,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
@@ -19,6 +20,7 @@ export const PostSearchForm = () => {
     query: "",
   });
   const { searchOption, query, search } = usePostSearchParams();
+  const color = useColorModeValue("gray.7", "white");
 
   const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +42,7 @@ export const PostSearchForm = () => {
           name="option"
           rounded="full"
           w="13rem"
+          color={color}
         >
           <option value="ALL">전체</option>
           <option value="TITLE">제목</option>
@@ -56,6 +59,7 @@ export const PostSearchForm = () => {
             name="query"
             placeholder="검색"
             rounded="full"
+            color={color}
           />
           <Tooltip label="검색">
             <InputRightElement>

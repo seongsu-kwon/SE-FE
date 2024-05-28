@@ -5,6 +5,7 @@ import {
   Skeleton,
   Stack,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { PostListItem as PostListItemInfo } from "@types";
 import { Fragment } from "react";
@@ -24,6 +25,9 @@ export const BoardPreview = ({
   posts,
 }: BoardPreviewProps) => {
   const navigate = useNavigate();
+  const headingBgColor = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
+  const headingColor = useColorModeValue("blackAlpha.700", "whiteAlpha.700");
+
   return (
     <Stack w="full">
       <Flex
@@ -34,11 +38,13 @@ export const BoardPreview = ({
         px={{ base: "1rem", md: "2rem" }}
         py={{ base: "1rem", md: "1.2rem" }}
         mb={{ base: "1rem", md: "2rem" }}
-        bgColor="gray.1"
+        bgColor={headingBgColor}
         borderRadius="0.5rem"
         _hover={{ cursor: "pointer" }}
       >
-        <Heading fontSize={{ base: "1.5rem", md: "2rem" }}>{menuName}</Heading>
+        <Heading fontSize={{ base: "1.5rem", md: "2rem" }} color={headingColor}>
+          {menuName}
+        </Heading>
         {/* <Img
           src={NoticeIcon}
           position="absolute"

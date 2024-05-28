@@ -21,6 +21,8 @@ import {
   Icon,
   Link as ExternalLink,
   Text,
+  useColorMode,
+  useColorModeValue,
   useDisclosure,
   Wrap,
   WrapItem,
@@ -75,6 +77,8 @@ export const DesktopHeaderNavigation = ({
   const { userInfo, hasAuth } = useUserState();
   const navRef = useRef<any>();
 
+  const { colorMode, toggleColorMode } = useColorMode();
+
   useEffect(() => {
     if (!navRef.current) return;
     if (
@@ -92,8 +96,7 @@ export const DesktopHeaderNavigation = ({
       position={{ base: "fixed", md: "relative" }}
       zIndex={10}
       w="full"
-      bgColor="white"
-      shadow="base"
+      borderBottomWidth={2}
     >
       <Flex
         maxW="container.xl"
@@ -129,6 +132,7 @@ export const DesktopHeaderNavigation = ({
           w={992 <= windowSize.width ? "auto" : "0px"}
           h={992 <= windowSize.width ? "auto" : "0px"}
         >
+          <Button onClick={toggleColorMode}>다크모드</Button>
           {hasAuth ? (
             <>
               <Button onClick={goToMyPage} variant="link" color="gray.7">
@@ -310,13 +314,15 @@ interface NavItemProps {
 }
 
 const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
+  const color = useColorModeValue("gray.7", "white");
+
   switch (type) {
     case "MENU":
       // 하위메뉴가 없으면 렌더링 X
       if (subMenu.length === 0) return null;
       return (
         <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
-          <Text fontWeight="bold" color="gray.7" position="relative" py="1rem">
+          <Text fontWeight="bold" color={color} position="relative" py="1rem">
             {name}
           </Text>
         </WrapItem>
@@ -328,7 +334,7 @@ const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
             {({ isActive }) => (
               <Text
                 fontWeight="bold"
-                color={isActive ? "primary" : "gray.7"}
+                color={isActive ? "primary" : color}
                 position="relative"
                 py="1rem"
                 _before={
