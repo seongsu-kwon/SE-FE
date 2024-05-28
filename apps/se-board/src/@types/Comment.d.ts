@@ -8,7 +8,7 @@ declare module "@types" {
   interface CommentContent {
     commentId: number;
     author: {
-      loginId: string;
+      userId: string;
       name: string;
     };
     createdAt: string;

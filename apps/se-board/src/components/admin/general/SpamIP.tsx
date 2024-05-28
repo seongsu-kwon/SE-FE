@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 import { IpInfo } from "@types";
 import React, { useEffect, useState } from "react";
 
@@ -20,16 +20,27 @@ export const SpamIP = () => {
   const [bannedIps, setBannedIps] = useState<IpInfo[]>([]);
   const [ip, setIp] = useState<string>("");
 
+  const toast = useToast();
+
   useEffect(() => {
     if (!data) return;
 
     setBannedIps(data);
   }, [data]);
 
-  const deleteOnClick = (ipAddress: string) => {
+  const deleteOnClick = (ipAddress: string, onClose: () => void) => {
     deleteMutate(ipAddress, {
       onSuccess: () => {
         refetch();
+        onClose();
+        setIp("");
+
+        toast({
+          title: "스팸 IP 삭제 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   };
@@ -39,6 +50,13 @@ export const SpamIP = () => {
       onSuccess: () => {
         setIp("");
         refetch();
+
+        toast({
+          title: "스팸 IP 등록 성공!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       },
     });
   };

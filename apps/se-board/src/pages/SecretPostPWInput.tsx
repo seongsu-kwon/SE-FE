@@ -14,7 +14,7 @@ import { BsFillLockFill } from "react-icons/bs";
 interface Props {
   password: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: () => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const PWInput = ({ password, handleChange, onSubmit }: Props) => {
@@ -34,25 +34,28 @@ export const PWInput = ({ password, handleChange, onSubmit }: Props) => {
           <Text size="xs" pt="2px" pl="3px">
             비밀번호를 입력해주세요.
           </Text>
-          <InputGroup h="fit-content" my="20%">
-            <Input
-              w={{ base: "150px", md: "200px" }}
-              size={{ base: "sm", md: "md" }}
-              type="password"
-              onChange={handleChange}
-              value={password}
-              placeholder="비밀번호"
-              borderColor="gray.6"
-            />
-            <Button
-              size={{ base: "sm", md: "md" }}
-              variant="primary"
-              onClick={onSubmit}
-              ml="12px"
-            >
-              확인
-            </Button>
-          </InputGroup>
+          <form onSubmit={onSubmit}>
+            <InputGroup h="fit-content" my="20%">
+              <Input
+                w={{ base: "150px", md: "200px" }}
+                size={{ base: "sm", md: "md" }}
+                type="password"
+                onChange={handleChange}
+                value={password}
+                placeholder="비밀번호"
+                borderColor="gray.6"
+              />
+              <Button
+                type="submit"
+                size={{ base: "sm", md: "md" }}
+                variant="primary"
+                // onClick={onSubmit}
+                ml="12px"
+              >
+                확인
+              </Button>
+            </InputGroup>
+          </form>
         </Box>
       </Center>
     </Center>

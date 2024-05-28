@@ -41,7 +41,7 @@ export const CommentFormation = ({
           <Box display="flex" justifyContent="space-between">
             <AuthorInfoMenuList
               name={comment.author.name}
-              authorId={comment.author.loginId}
+              authorId={comment.author.userId}
             />
             <Box w="fit-content">
               {comment.isActive && (

@@ -11,7 +11,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
     if (banners.length === 0) return;
     const interval = setInterval(() => {
       setViewIndex((prev) => (prev + 1) % banners.length);
-    }, 10000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);

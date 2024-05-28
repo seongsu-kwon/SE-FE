@@ -21,7 +21,7 @@ declare module "@types" {
   }
 
   interface AuthorDTO {
-    loginId: string | null;
+    userId: string | null;
     name: string;
   }
 
@@ -40,7 +40,7 @@ declare module "@types" {
   }
 
   interface Author {
-    loginId: string | null;
+    userId: string | null;
     name: string;
   }
 

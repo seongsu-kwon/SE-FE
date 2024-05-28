@@ -67,7 +67,7 @@ export const convertPostInfo = (post: PostDetail) => {
   return {
     postId,
     title,
-    author: { loginId: author.loginId || "", name: author.name },
+    author: { loginId: author.userId || "", name: author.name },
     views,
     category: category.name,
     createdAt,
