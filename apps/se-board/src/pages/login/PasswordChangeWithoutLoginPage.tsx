@@ -14,6 +14,7 @@ import {
   InputRightElement,
   Text,
   useBoolean,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -118,8 +119,12 @@ export const PasswordChangeWithoutLoginPage = () => {
     }
   }, [count]);
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const color = useColorModeValue("gray.7", "whiteAlpha.800");
+
   return (
-    <Center w="full" minH="100vh" bgColor="gray.0" py={{ md: "3rem" }}>
+    <Center w="full" minH="100vh" bgColor={bgColor} py={{ md: "3rem" }}>
       {isChangePasswordComplete ? (
         <PasswordChangeComplete />
       ) : (
@@ -129,11 +134,12 @@ export const PasswordChangeWithoutLoginPage = () => {
           maxW={{ base: "full", md: "480px" }}
           minH={{ base: "100vh", md: "max-content" }}
           w="full"
-          bgColor="white"
+          bgColor={cardBgColor}
+          borderRadius={3}
         >
           <Heading
             fontSize={{ base: "1rem", md: "1.5rem" }}
-            color="gray.8"
+            color={color}
             py="0.75rem"
           >
             비밀번호 재설정
@@ -149,16 +155,17 @@ export const PasswordChangeWithoutLoginPage = () => {
               <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
                 <Flex direction="column" gap="1.5rem">
                   <FormControl isInvalid={getFieldState("email").invalid}>
-                    <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+                    <FormLabel ml="0.5rem" color={color} fontWeight="bold">
                       이메일
                     </FormLabel>
-                    <FormHelperText ml="0.5rem">
+                    <FormHelperText ml="0.5rem" color={color}>
                       재학생은 금오공대 이메일을 사용해주세요
                     </FormHelperText>
                     <Flex alignItems="center" gap="0.5rem">
                       <InputGroup>
                         <Input
                           isInvalid={getFieldState("email").invalid}
+                          color={color}
                           disabled={checkAuthCodeMutation.isSuccess}
                           placeholder="이메일"
                           {...register("email", {
@@ -200,7 +207,8 @@ export const PasswordChangeWithoutLoginPage = () => {
                       gap="0.5rem"
                       px="1rem"
                       py="1.5rem"
-                      bgColor="gray.1"
+                      bgColor={cardBgColor}
+                      color={color}
                     >
                       <Text ml="0.5rem" fontSize="sm">
                         이메일로 전송된 인증코드를 입력해주세요
@@ -211,7 +219,8 @@ export const PasswordChangeWithoutLoginPage = () => {
                           <Input
                             isInvalid={getFieldState("authCode").invalid}
                             placeholder="인증코드"
-                            bgColor="white"
+                            bgColor={bgColor}
+                            color={color}
                             {...register("authCode", { required: true })}
                             maxLength={8}
                           />
@@ -243,7 +252,7 @@ export const PasswordChangeWithoutLoginPage = () => {
                           onClick={resendEmailAuthCode}
                           variant="link"
                           fontSize="xs"
-                          color="gray.8"
+                          color={color}
                         >
                           이메일 재전송
                         </Button>
@@ -251,7 +260,7 @@ export const PasswordChangeWithoutLoginPage = () => {
                     </Flex>
                   )}
                   <FormControl>
-                    <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+                    <FormLabel ml="0.5rem" color={color} fontWeight="bold">
                       새 비밀번호
                     </FormLabel>
                     <FormHelperText ml="0.5rem"></FormHelperText>
@@ -259,6 +268,7 @@ export const PasswordChangeWithoutLoginPage = () => {
                       <Input
                         type="password"
                         placeholder="새 비밀번호"
+                        color={color}
                         {...register("password", { required: true })}
                       />
                     </Flex>
@@ -267,12 +277,13 @@ export const PasswordChangeWithoutLoginPage = () => {
                   <FormControl
                     isInvalid={watch("password") !== watch("passwordConfirm")}
                   >
-                    <FormLabel ml="0.5rem" color="gray.8" fontWeight="bold">
+                    <FormLabel ml="0.5rem" color={color} fontWeight="bold">
                       새 비밀번호 확인
                     </FormLabel>
                     <FormHelperText ml="0.5rem"></FormHelperText>
                     <Flex alignItems="center" gap="0.5rem">
                       <Input
+                        color={color}
                         isInvalid={
                           watch("password") !== watch("passwordConfirm")
                         }
