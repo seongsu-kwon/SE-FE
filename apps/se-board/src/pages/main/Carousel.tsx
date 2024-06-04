@@ -63,6 +63,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
               objectFit="contain"
               w="full"
               h="full"
+              borderRadius={10}
               key={i}
               src={`${process.env.REACT_APP_API_FILE_ENDPOINT}/${banner.fileMetaData.url}`}
             />
