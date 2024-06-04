@@ -62,8 +62,10 @@ const buttonStyle: ComponentStyleConfig = {
 };
 
 export const theme = extendTheme({
-  initialColorMode: "system",
-  useSystemColorMode: true,
+  config: {
+    initialColorMode: "system",
+    useSystemColorMode: true,
+  },
   styles: {
     global: {
       "html, body": {
