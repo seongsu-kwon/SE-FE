@@ -1,5 +1,12 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Flex, Icon, IconButton, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { BannerDTO } from "@types";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +15,9 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
   const [viewIndex, setViewIndex] = useState(0);
   const timerRef = useRef<number | undefined>(undefined);
   const navigate = useNavigate();
+
+  const activeColor = useColorModeValue("gray.8", "whiteAlpha.800");
+  const inactiveColor = useColorModeValue("gray.4", "whiteAlpha.400");
 
   useEffect(() => {
     if (banners.length === 0) return;
@@ -54,14 +64,13 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
               w="full"
               h="full"
               key={i}
-              // display={viewIndex === i ? "block" : "none"}
               src={`${process.env.REACT_APP_API_FILE_ENDPOINT}/${banner.fileMetaData.url}`}
             />
           </Box>
         ))}
       </Flex>
       <Flex justifyContent="left" h="20%">
-        <Box>
+        <Flex alignItems="center" gap={1}>
           <IconButton
             aria-label="left-btn"
             bgColor="transparent"
@@ -69,7 +78,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
             icon={<ChevronLeftIcon />}
           />
           {banners.map((_, i) => (
-            <CircleIcon color={viewIndex === i ? "gray.8" : "gray.4"} />
+            <CircleIcon color={viewIndex === i ? activeColor : inactiveColor} />
           ))}
           <IconButton
             aria-label="right-btn"
@@ -77,7 +86,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
             onClick={() => handleClickBtn(1)}
             icon={<ChevronRightIcon />}
           />
-        </Box>
+        </Flex>
       </Flex>
     </Flex>
   );
