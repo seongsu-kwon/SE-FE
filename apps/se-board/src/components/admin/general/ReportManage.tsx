@@ -10,11 +10,13 @@ import {
 import { NumberCount } from "../NumberCount";
 
 export const ReportManage = () => {
-  const [postCount, setPostCount] = useState<number>(5);
-  const [commentCount, setCommentCount] = useState<number>(5);
-
   const { data } = useGetReportThreshold();
   const { mutate, isLoading } = usePostReportThreshold();
+
+  const [postCount, setPostCount] = useState<number>(data?.postThreshold || 5);
+  const [commentCount, setCommentCount] = useState<number>(
+    data?.commentThreshold || 5
+  );
 
   const toast = useToast();
 
@@ -83,7 +85,7 @@ export const ReportManage = () => {
             count={postCount}
             setCount={onPostCountChange}
             min={1}
-            max={100}
+            max={50}
           />
           <Divider />
           <NumberCount
@@ -93,7 +95,7 @@ export const ReportManage = () => {
             count={commentCount}
             setCount={onCommentCountChange}
             min={1}
-            max={100}
+            max={50}
           />
         </Box>
         <Box w="full" textAlign="right" pr={{ base: "1rem", md: "1.5rem" }}>
