@@ -20,8 +20,6 @@ export const postReportThreshold = (threshold: ReportThreshold) => {
     },
     url: "/admin/report/threshold",
     method: HTTP_METHODS.POST,
-    data: {
-      threshold,
-    },
+    data: threshold,
   });
 };

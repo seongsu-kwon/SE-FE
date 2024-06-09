@@ -16,21 +16,21 @@ const alerts = {
 };
 
 export const LoginPolicy = () => {
-  const [count, setCount] = useState<number>(0);
-  const [time, setTime] = useState<number>(0);
-
   const { data } = useGetLoginPolicyQuery();
   const { mutate } = usePostLoginPolicyMutation();
+
+  const [count, setCount] = useState<number>(data?.loginTryCount || 0);
+  const [time, setTime] = useState<number>(data?.loginLimitTime || 0);
 
   const toast = useToast();
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (data) {
-      setCount(data.loginTryCount);
-      setTime(data.loginLimitTime);
-    }
+    if (!data) return;
+
+    setCount(data.loginTryCount);
+    setTime(data.loginLimitTime);
   }, [data]);
 
   const onCountChange = (value: string) => {

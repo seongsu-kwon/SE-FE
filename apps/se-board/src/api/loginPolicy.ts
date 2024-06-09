@@ -13,13 +13,13 @@ export const getLoginPolicy = () => {
   }).then((res) => res.data);
 };
 
-export const postLoginPolicy = (LoginPolicy: LoginPolicy) => {
+export const putLoginPolicy = (LoginPolicy: LoginPolicy) => {
   return _axios({
     headers: {
       ...getJWTHeader(),
     },
     url: "/admin/loginSettings",
-    method: HTTP_METHODS.POST,
+    method: HTTP_METHODS.PUT,
     data: LoginPolicy,
   }).then((res) => res.data);
 };

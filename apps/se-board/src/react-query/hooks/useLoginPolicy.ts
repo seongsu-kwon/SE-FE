@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoginPolicy } from "@types";
 
-import { getLoginPolicy, postLoginPolicy } from "@/api/loginPolicy";
+import { getLoginPolicy, putLoginPolicy } from "@/api/loginPolicy";
 import { errorHandle } from "@/utils/errorHandling";
 
 export const useGetLoginPolicyQuery = () => {
@@ -17,7 +17,5 @@ export const useGetLoginPolicyQuery = () => {
 };
 
 export const usePostLoginPolicyMutation = () => {
-  return useMutation((loginPolicy: LoginPolicy) =>
-    postLoginPolicy(loginPolicy)
-  );
+  return useMutation((loginPolicy: LoginPolicy) => putLoginPolicy(loginPolicy));
 };
