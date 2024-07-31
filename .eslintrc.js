@@ -1,6 +1,6 @@
 module.exports = {
   extends: ["eslint:recommended", "plugin:prettier/recommended"],
-  plugins: ["unused-imports", "simple-import-sort"],
+  plugins: ["unused-imports", "simple-import-sort", "jest"],
   parser: "@typescript-eslint/parser",
 
   rules: {
@@ -15,5 +15,6 @@ module.exports = {
     browser: true,
     node: true,
     es6: true,
+    jest: true,
   },
 };
