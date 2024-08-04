@@ -10,6 +10,12 @@ module.exports = {
     // https://github.com/lydell/eslint-plugin-simple-import-sort
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
   },
   env: {
     browser: true,
