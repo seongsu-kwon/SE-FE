@@ -20,7 +20,7 @@ declare module "@types" {
   }
 
   interface SubCommentContent extends CommentContent {
-    tag: number;
+    tag?: number;
   }
 
   interface CommentsData {
