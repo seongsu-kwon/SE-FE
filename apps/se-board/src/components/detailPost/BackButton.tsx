@@ -8,14 +8,17 @@ export const BackButton = () => {
   const handleClick = () => {
     if (window.history.length === 1) {
       navigate("/");
+      console.log("/");
     } else {
       navigate(-1);
+      console.log("-1");
     }
   };
 
   return (
     <Icon
       aria-label="뒤로가기"
+      title="뒤로가기"
       as={BsArrowLeft}
       w="40px"
       h="40px"
