@@ -1,49 +1,87 @@
-import { errorHandle } from "@/utils/errorHandling";
-import { ErrorCode } from "@types";
+import { errorHandle, incorrectPostPassword } from '@/utils/errorHandling';
+import { ErrorCode } from '@types';
 
-global.alert = jest.fn();
-global.location.reload = jest.fn();
-global.location.replace = jest.fn();
-global.window.history.back = jest.fn();
+describe('Error Handling Functions', () => {
+  let originalLocation: Location;
 
-describe('errorHandle', () => {
+  beforeEach(() => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest.spyOn(window.history, 'back').mockImplementation(() => {});
+
+    originalLocation = window.location;
+
+    delete (window as any).location;
+    window.location = {
+      ...originalLocation,
+      replace: jest.fn(),
+      reload: jest.fn(),
+    };
+  });
+
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
+    window.location = originalLocation;
   });
 
-  it('should call alert with the error message for codes in errorCodeToAlert', () => {
-    const error: ErrorCode = { code: 103, message: "An error occurred." };
-    errorHandle(error);
-    expect(global.alert).toHaveBeenCalledWith("An error occurred.");
+  describe('incorrectPostPassword', () => {
+    it('should alert "비밀번호가 틀렸습니다."', () => {
+      incorrectPostPassword();
+      expect(window.alert).toHaveBeenCalledWith('비밀번호가 틀렸습니다.');
+    });
   });
 
-  it('should call alert and window.history.back for codes in errorCodeToAlertAndGoToBack', () => {
-    const error: ErrorCode = { code: 104, message: "Go back error." };
-    errorHandle(error);
-    expect(global.alert).toHaveBeenCalledWith("Go back error.");
-    expect(global.window.history.back).toHaveBeenCalled();
-  });
+  describe('errorHandle', () => {
+    it('should alert the message for error codes in errorCodeToAlert', () => {
+      const errorCodesToTest = [
+        103, 109, 114, 115, 117, 118, 122, 123, 124, 125, 126, 127, 128, 129, 
+        130, 131, 132, 133, 134, 135, 136, 137, 138, 140, 141, 142, 143, 144, 
+        145, 202, 203, 204, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 
+        311, 400
+      ];
 
-  it('should call alert and location.replace for codes in errorCodeToAlertAndMain', () => {
-    const error: ErrorCode = { code: 146, message: "Redirect to main error." };
-    errorHandle(error);
-    expect(global.alert).toHaveBeenCalledWith("Redirect to main error.");
-    expect(global.location.replace).toHaveBeenCalledWith("/");
-  });
+      errorCodesToTest.forEach(code => {
+        const error: ErrorCode = { code, message: `Error message for code ${code}` };
+        errorHandle(error);
+        expect(window.alert).toHaveBeenCalledWith(`Error message for code ${code}`);
+      });
+    });
 
-  it('should call alert and location.reload for code 139', () => {
-    const error: ErrorCode = { code: 139, message: "Failed to write comment." };
-    errorHandle(error);
-    expect(global.alert).toHaveBeenCalledWith("댓글 작성에 실패했습니다. 다시 시도해주세요.");
-    expect(global.location.reload).toHaveBeenCalled();
-  });
+    it('should alert the message and go back for error codes in errorCodeToAlertAndGoToBack', () => {
+      const errorCodesToTest = [104, 200, 201, 300];
 
-  it('should not call alert or any other action for an unknown error code', () => {
-    const error: ErrorCode = { code: 999, message: "Unknown error." };
-    errorHandle(error);
-    expect(global.alert).not.toHaveBeenCalled();
-    expect(global.window.history.back).not.toHaveBeenCalled();
-    expect(global.location.replace).not.toHaveBeenCalled();
-    expect(global.location.reload).not.toHaveBeenCalled();
+      errorCodesToTest.forEach(code => {
+        const error: ErrorCode = { code, message: `Error message for code ${code}` };
+        errorHandle(error);
+        expect(window.alert).toHaveBeenCalledWith(`Error message for code ${code}`);
+        expect(window.history.back).toHaveBeenCalled();
+      });
+    });
+
+    it('should alert the message and go to the main page for error codes in errorCodeToAlertAndMain', () => {
+      const errorCodesToTest = [146];
+
+      errorCodesToTest.forEach(code => {
+        const error: ErrorCode = { code, message: `Error message for code ${code}` };
+        errorHandle(error);
+        expect(window.alert).toHaveBeenCalledWith(`Error message for code ${code}`);
+        expect(window.location.replace).toHaveBeenCalledWith('/');
+      });
+    });
+
+    it('should alert the message and reload the page for code 139', () => {
+      const error: ErrorCode = { code: 139, message: 'Specific message for 139' };
+      errorHandle(error);
+      expect(window.alert).toHaveBeenCalledWith('댓글 작성에 실패했습니다. 다시 시도해주세요.');
+      expect(window.location.reload).toHaveBeenCalled();
+    });
+
+    it('should do nothing for unknown error codes', () => {
+      const error: ErrorCode = { code: 999, message: 'Unknown error code' };
+      errorHandle(error);
+      expect(window.alert).not.toHaveBeenCalled();
+      expect(window.history.back).not.toHaveBeenCalled();
+      expect(window.location.replace).not.toHaveBeenCalled();
+      expect(window.location.reload).not.toHaveBeenCalled();
+    });
   });
 });
