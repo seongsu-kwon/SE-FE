@@ -3,6 +3,7 @@ import { SubCommentContent } from "@types";
 import { getTagName } from "@/utils/commentUtils";
 
 let subComment: SubCommentContent = {
+  tag: null,
   commentId: 90,
   author: {
     userId: "",
