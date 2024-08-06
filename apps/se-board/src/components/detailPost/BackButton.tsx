@@ -8,10 +8,8 @@ export const BackButton = () => {
   const handleClick = () => {
     if (window.history.length === 1) {
       navigate("/");
-      console.log("/");
     } else {
       navigate(-1);
-      console.log("-1");
     }
   };
 
