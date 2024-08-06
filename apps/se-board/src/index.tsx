@@ -13,6 +13,11 @@ import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 
+if (process.env.NODE_ENV === "development") {
+  const { server } = require("@/mocks/node");
+  server.listen();
+}
+
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
 const root = ReactDOM.createRoot(container);
