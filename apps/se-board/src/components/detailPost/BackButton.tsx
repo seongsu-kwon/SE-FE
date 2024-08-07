@@ -16,6 +16,7 @@ export const BackButton = () => {
   return (
     <Icon
       aria-label="뒤로가기"
+      title="뒤로가기"
       as={BsArrowLeft}
       w="40px"
       h="40px"

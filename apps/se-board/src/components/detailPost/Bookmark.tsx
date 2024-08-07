@@ -12,6 +12,7 @@ export const Bookmark = ({ boxSize, toggleBookmark }: BookmarkProps) => {
   return (
     <Icon
       aria-label="북마크"
+      title="Bookmark"
       as={BsBookmark}
       boxSize={boxSize || "24px"}
       my="auto"
@@ -25,6 +26,7 @@ export const BookmarkFill = ({ boxSize, toggleBookmark }: BookmarkProps) => {
   return (
     <Icon
       aria-label="북마크"
+      title="BookmarkFill"
       as={BsFillBookmarkFill}
       boxSize={boxSize || "24px"}
       my="auto"

@@ -32,7 +32,7 @@ export const AttachmentFile = ({ files }: AttachmentFileProps) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
-            {files.map((file) => (
+            {files?.map((file) => (
               <Tooltip
                 key={file.fileMetaDataId}
                 label="다운로드"
