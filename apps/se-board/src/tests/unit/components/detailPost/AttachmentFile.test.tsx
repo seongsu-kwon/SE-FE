@@ -30,7 +30,7 @@ describe("AttachmentFileTest", () => {
         <AttachmentFile files={files} />
       </ChakraProvider>
     );
-    expect(screen.getByText("originaltest1")).toBeTruthy();
+    expect(screen.queryByText("originaltest1")).toBeTruthy();
     expect(screen.queryByText("originaltest2")).toBeNull();
   });
 
@@ -54,7 +54,7 @@ describe("AttachmentFileTest", () => {
         <AttachmentFile files={files} />
       </ChakraProvider>
     );
-    expect(screen.getByText("originaltest1")).toBeTruthy();
-    expect(screen.getByText("originaltest2")).toBeTruthy();
+    expect(screen.queryByText("originaltest1")).toBeTruthy();
+    expect(screen.queryByText("originaltest2")).toBeTruthy();
   });
 });
