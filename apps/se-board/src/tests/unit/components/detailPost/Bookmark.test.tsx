@@ -10,7 +10,7 @@ describe("BookmarkTest", () => {
         <Bookmark toggleBookmark={() => {}} />
       </ChakraProvider>
     );
-    expect(screen.getByTitle("Bookmark")).toBeTruthy();
+    expect(screen.queryByTitle("Bookmark")).toBeTruthy();
     expect(screen.queryByTitle("BookmarkFill")).toBeNull();
   });
 
@@ -20,7 +20,7 @@ describe("BookmarkTest", () => {
         <BookmarkFill toggleBookmark={() => {}} />
       </ChakraProvider>
     );
-    expect(screen.getByTitle("BookmarkFill")).toBeTruthy();
+    expect(screen.queryByTitle("BookmarkFill")).toBeTruthy();
     expect(screen.queryByTitle("Bookmark")).toBeNull();
   });
 });
