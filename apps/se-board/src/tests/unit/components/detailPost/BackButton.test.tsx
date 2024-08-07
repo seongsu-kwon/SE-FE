@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useNavigate } from "react-router-dom";
 
 import { BackButton } from "@/components/detailPost/BackButton";
@@ -23,14 +24,18 @@ describe("BackButtonTest", () => {
     );
   });
 
-  it("히스토리가 없을 때 /", () => {
-    fireEvent.click(screen.getByTitle("뒤로가기"));
+  it("히스토리가 없을 때 /", async () => {
+    const user = userEvent.setup();
+    await user.click(screen.getByTitle("뒤로가기"));
+
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  it("히스토리가 있을 때 -1", () => {
+  it("히스토리가 있을 때 -1", async () => {
     window.history.pushState({}, "Test page", "/test");
-    fireEvent.click(screen.getByTitle("뒤로가기"));
+    const user = userEvent.setup();
+    await user.click(screen.getByTitle("뒤로가기"));
+
     expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });
