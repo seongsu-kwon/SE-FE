@@ -74,7 +74,7 @@ export const putMainPageMenus = (menuIds: number[]) => {
     },
   }).then((res) => res.data);
 };
-
+// UNUSED
 export const getMenuInfo = (categoryId: number | undefined) => {
   return _axios<MenuInfo>({
     headers: {
@@ -84,7 +84,7 @@ export const getMenuInfo = (categoryId: number | undefined) => {
     method: HTTP_METHODS.GET,
   }).then((res) => res.data);
 };
-
+// UNUSED
 export const postMenuInfo = (categoryId: number, data: PostMenuInfo) => {
   return _axios({
     headers: {
