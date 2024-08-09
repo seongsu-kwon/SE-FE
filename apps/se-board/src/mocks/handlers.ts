@@ -1,3 +1,10 @@
-import { putLoginLimitTimeHandler } from "./loginHandlers";
+import { menuHandlers } from "@/mocks/menuHandlers";
 
-export const handlers = [...putLoginLimitTimeHandler];
+import { putLoginLimitTimeHandler } from "./loginHandlers";
+import { mainpageHandlers } from "./mainpageHandlers";
+
+export const handlers = [
+  ...putLoginLimitTimeHandler,
+  ...mainpageHandlers,
+  ...menuHandlers,
+];
