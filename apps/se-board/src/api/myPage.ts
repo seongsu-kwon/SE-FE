@@ -2,7 +2,7 @@ import { FetchUserSimpleInfoResponse } from "@types";
 
 import { HTTP_METHODS } from ".";
 import { _axios, getJWTHeader } from "./axiosInstance";
-
+// UNUSED
 export const fetchUserSimpleInfo = async () => {
   return _axios<FetchUserSimpleInfoResponse>({
     url: "mypage",

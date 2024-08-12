@@ -5,7 +5,11 @@ import { bannerHandlers } from "./bannerHandlers";
 import { generalPolicyHandlers } from "./generalPolicyHandlers";
 import { putLoginLimitTimeHandler } from "./loginHandlers";
 import { loginPolicyHandlers } from "./loginPolicyHandlers";
+import { mainpageHandlers } from "./mainpageHandlers";
 import { memberManageHandlers } from "./memberManageHandlers";
+import { menuHandlers } from "./menuHandlers";
+import { mypageHandlers } from "./mypageHandlers";
+import { passwordChangeWithoutLoginHandlers } from "./passwordChangeWithoutLoginHandlers";
 import { postManageHandlers } from "./postManageHandlers";
 
 export const handlers = [
@@ -19,4 +23,8 @@ export const handlers = [
   ...accountHandlers,
   ...adminHandlers,
   ...authHandlers,
+  ...mainpageHandlers,
+  ...menuHandlers,
+  ...mypageHandlers,
+  ...passwordChangeWithoutLoginHandlers,
 ];
