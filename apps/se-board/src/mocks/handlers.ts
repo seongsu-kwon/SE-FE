@@ -1,11 +1,11 @@
+import { bannerHandlers } from "./bannerHandlers";
+import { generalPolicyHandlers } from "./generalPolicyHandlers";
 import { putLoginLimitTimeHandler } from "./loginHandlers";
-import {
-  getLoginPolicyHandler,
-  putLoginPolicyHandler,
-} from "./loginPolicyHandlers";
+import { loginPolicyHandlers } from "./loginPolicyHandlers";
 
 export const handlers = [
   ...putLoginLimitTimeHandler,
-  ...getLoginPolicyHandler,
-  ...putLoginPolicyHandler,
+  ...loginPolicyHandlers,
+  ...bannerHandlers,
+  ...generalPolicyHandlers,
 ];
