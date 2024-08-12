@@ -66,7 +66,10 @@ export const menuHandlers = [
       message: "string",
     });
   }),
-  http.post("/admin/menu?categoryType=:categoryType", () => {
+  http.post("/admin/menu", ({ request }) => {
+    const url = new URL(request.url);
+    // not used searchParams
+    //const categoryType = url.searchParams.get("categoryType");
     return HttpResponse.json({ status: 200 });
   }),
   http.put("/admin/menu/:categoryId", () => {
