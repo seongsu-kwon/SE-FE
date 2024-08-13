@@ -10,6 +10,7 @@ import { memberManageHandlers } from "./memberManageHandlers";
 import { menuHandlers } from "./menuHandlers";
 import { mypageHandlers } from "./mypageHandlers";
 import { passwordChangeWithoutLoginHandlers } from "./passwordChangeWithoutLoginHandlers";
+import { postHandlers } from "./postHandlers";
 import { postManageHandlers } from "./postManageHandlers";
 
 export const handlers = [
@@ -27,4 +28,5 @@ export const handlers = [
   ...menuHandlers,
   ...mypageHandlers,
   ...passwordChangeWithoutLoginHandlers,
+  ...postHandlers,
 ];
