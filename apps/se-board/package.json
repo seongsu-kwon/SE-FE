@@ -79,5 +79,10 @@
     "ts-jest": "^29.2.3",
     "undici": "5.28.4",
     "whatwg-fetch": "^3.6.20"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
