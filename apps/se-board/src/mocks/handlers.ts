@@ -12,6 +12,9 @@ import { mypageHandlers } from "./mypageHandlers";
 import { passwordChangeWithoutLoginHandlers } from "./passwordChangeWithoutLoginHandlers";
 import { postManageHandlers } from "./postManageHandlers";
 import { profileHandlers } from "./profileHandlers";
+import { reportHandlers } from "./reportHandlers";
+import { roleHandlers } from "./roleHandlers";
+import { signUpPolicyHandlers } from "./signUpPolicyHandlers";
 
 export const handlers = [
   ...putLoginLimitTimeHandler,
@@ -29,4 +32,7 @@ export const handlers = [
   ...mypageHandlers,
   ...passwordChangeWithoutLoginHandlers,
   ...profileHandlers,
+  ...reportHandlers,
+  ...roleHandlers,
+  ...signUpPolicyHandlers,
 ];

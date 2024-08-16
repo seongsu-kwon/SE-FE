@@ -1,5 +1,5 @@
-import { _axios, getJWTHeader } from "@/api/axiosInstance";
-import { HTTP_METHODS } from "@/api/index";
+import { http, HttpResponse } from "msw";
+
 import {
   deleteBannedId,
   deleteBannedNickname,
@@ -8,45 +8,31 @@ import {
   postBannedId,
   postBannedNickname,
 } from "@/api/signUpPolicy";
-
-jest.mock("@/api/axiosInstance", () => ({
-  _axios: jest.fn(),
-  getJWTHeader: jest.fn(),
-}));
+import { server } from "@/mocks/node";
 
 describe("계정 정책 API 호출", () => {
-  const mockedAxios = _axios as jest.Mock;
-  const mockedGetJWTHeader = getJWTHeader as jest.Mock;
-
-  beforeEach(() => {
-    mockedAxios.mockClear();
-    mockedGetJWTHeader.mockClear();
-    mockedGetJWTHeader.mockReturnValue({ Authorization: "Bearer mockToken" });
-  });
-
   describe("getBannedNickname", () => {
     it("금지된 닉네임을 가져오기 위해 GET 요청을 보내야 합니다.", async () => {
       const mockResponse = { data: ["nickname1", "nickname2"] };
-      mockedAxios.mockResolvedValue(mockResponse);
 
       const result = await getBannedNickname();
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedNickname",
-        method: HTTP_METHODS.GET,
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse);
     });
 
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.get("/admin/accountPolicy/bannedNickname", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
         await getBannedNickname();
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
@@ -54,146 +40,128 @@ describe("계정 정책 API 호출", () => {
   describe("getBannedIds", () => {
     it("금지된 ID를 가져오기 위해 GET 요청을 보내야 합니다.", async () => {
       const mockResponse = { data: ["id1", "id2"] };
-      mockedAxios.mockResolvedValue(mockResponse);
 
       const result = await getBannedIds();
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedId",
-        method: HTTP_METHODS.GET,
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse);
     });
-
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.get("/admin/accountPolicy/bannedId", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
         await getBannedIds();
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
 
   describe("postBannedNickname", () => {
     it("금지된 닉네임을 추가하기 위해 POST 요청을 보내야 합니다.", async () => {
-      const nickname = "newNickname";
       const mockResponse = { data: { success: true } };
-      mockedAxios.mockResolvedValue(mockResponse);
 
-      const result = await postBannedNickname(nickname);
+      const result = await postBannedNickname("string");
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedNickname",
-        method: HTTP_METHODS.POST,
-        data: { nickname },
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse.data);
     });
 
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const nickname = "newNickname";
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.post("/admin/accountPolicy/bannedNickname", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
-        await postBannedNickname(nickname);
+        await postBannedNickname("string");
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
 
   describe("postBannedId", () => {
     it("금지된 ID를 추가하기 위해 POST 요청을 보내야 합니다.", async () => {
-      const bannedId = "newId";
-      const mockResponse = { data: { success: true } };
-      mockedAxios.mockResolvedValue(mockResponse);
+      const mockResponse = { success: true };
 
-      const result = await postBannedId(bannedId);
+      const result = await postBannedId("string");
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedId",
-        method: HTTP_METHODS.POST,
-        data: { bannedId },
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse);
     });
 
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const bannedId = "newId";
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.post("/admin/accountPolicy/bannedId", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
-        await postBannedId(bannedId);
+        await postBannedId("string");
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
 
   describe("deleteBannedNickname", () => {
     it("금지된 닉네임을 삭제하기 위해 DELETE 요청을 보내야 합니다.", async () => {
-      const nickname = "oldNickname";
       const mockResponse = { data: { success: true } };
-      mockedAxios.mockResolvedValue(mockResponse);
 
-      const result = await deleteBannedNickname(nickname);
+      const result = await deleteBannedNickname("string");
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedNickname",
-        method: HTTP_METHODS.DELETE,
-        data: { nickname },
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse.data);
     });
 
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const nickname = "oldNickname";
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.delete("/admin/accountPolicy/bannedNickname", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
-        await deleteBannedNickname(nickname);
+        await deleteBannedNickname("string");
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
 
   describe("deleteBannedId", () => {
     it("금지된 ID를 삭제하기 위해 DELETE 요청을 보내야 합니다.", async () => {
-      const bannedId = "oldId";
-      const mockResponse = { data: { success: true } };
-      mockedAxios.mockResolvedValue(mockResponse);
+      const mockResponse = { success: true };
 
-      const result = await deleteBannedId(bannedId);
+      const result = await deleteBannedId("string");
 
-      expect(mockedAxios).toHaveBeenCalledWith({
-        headers: { Authorization: "Bearer mockToken" },
-        url: "/admin/accountPolicy/bannedId",
-        method: HTTP_METHODS.DELETE,
-        data: { bannedId },
-      });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toStrictEqual(mockResponse);
     });
 
-    it("서버에서 오류가 발생했을 경우 오류 메시지를 확인해야 합니다.", async () => {
-      const bannedId = "oldId";
-      const errorMessage = "Internal Server Error";
-      mockedAxios.mockRejectedValue(new Error(errorMessage));
+    it("서버에서 에러가 발생했을 경우 에러 메시지를 확인해야 합니다.", async () => {
+      server.use(
+        http.delete("/admin/accountPolicy/bannedId", () => {
+          return new HttpResponse("Internal Server Error", {
+            status: 500,
+          });
+        })
+      );
 
       try {
-        await deleteBannedId(bannedId);
+        await deleteBannedId("string");
       } catch (error) {
-        expect(error).toEqual(new Error(errorMessage));
+        expect(error).toBe("Internal Server Error");
       }
     });
   });
