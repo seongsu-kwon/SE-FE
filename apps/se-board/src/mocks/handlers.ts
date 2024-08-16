@@ -11,6 +11,7 @@ import { menuHandlers } from "./menuHandlers";
 import { mypageHandlers } from "./mypageHandlers";
 import { passwordChangeWithoutLoginHandlers } from "./passwordChangeWithoutLoginHandlers";
 import { postManageHandlers } from "./postManageHandlers";
+import { profileHandlers } from "./profileHandlers";
 
 export const handlers = [
   ...putLoginLimitTimeHandler,
@@ -27,4 +28,5 @@ export const handlers = [
   ...menuHandlers,
   ...mypageHandlers,
   ...passwordChangeWithoutLoginHandlers,
+  ...profileHandlers,
 ];
