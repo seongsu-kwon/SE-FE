@@ -1,8 +1,13 @@
 import { http, HttpResponse } from "msw";
 
 const getDeletedAccountsHandler = http.get(
-  "/admin/accounts?status=TEMP_DELETED&page=0&perPage=25",
-  () => {
+  "/admin/accounts",
+  async ({ request }) => {
+    const url = new URL(request.url);
+    // not used searchParams
+    // const status = url.searchParams.get("status");
+    // const page = url.searchParams.get("page");
+    // const perPage = url.searchParams.get("perPage");
     const response = {
       totalElements: 0,
       totalPages: 0,

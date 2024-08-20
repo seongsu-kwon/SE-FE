@@ -14,8 +14,8 @@ import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 
 if (process.env.NODE_ENV === "development") {
-  const { server } = require("@/mocks/node");
-  server.listen();
+  const { browser } = require("@/mocks/browser");
+  browser.start();
 }
 
 const container = document.getElementById("root");
