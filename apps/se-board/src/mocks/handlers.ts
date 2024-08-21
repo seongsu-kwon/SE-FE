@@ -10,7 +10,12 @@ import { memberManageHandlers } from "./memberManageHandlers";
 import { menuHandlers } from "./menuHandlers";
 import { mypageHandlers } from "./mypageHandlers";
 import { passwordChangeWithoutLoginHandlers } from "./passwordChangeWithoutLoginHandlers";
+import { postHandlers } from "./postHandlers";
 import { postManageHandlers } from "./postManageHandlers";
+import { profileHandlers } from "./profileHandlers";
+import { reportHandlers } from "./reportHandlers";
+import { roleHandlers } from "./roleHandlers";
+import { signUpPolicyHandlers } from "./signUpPolicyHandlers";
 
 export const handlers = [
   ...putLoginLimitTimeHandler,
@@ -27,4 +32,10 @@ export const handlers = [
   ...menuHandlers,
   ...mypageHandlers,
   ...passwordChangeWithoutLoginHandlers,
+  ...postHandlers,
+  ...profileHandlers,
+  ...reportHandlers,
+  ...roleHandlers,
+  ...signUpPolicyHandlers,
+
 ];
